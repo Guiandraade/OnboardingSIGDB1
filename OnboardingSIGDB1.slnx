@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/OnboardingSIGDB1.API/OnboardingSIGDB1.API.csproj" />
+    <Project Path="src/OnboardingSIGDB1.Application/OnboardingSIGDB1.Application.csproj" />
+    <Project Path="src/OnboardingSIGDB1.Domain/OnboardingSIGDB1.Domain.csproj" />
+    <Project Path="src/OnboardingSIGDB1.Infrastructure/OnboardingSIGDB1.Infrastructure.csproj" />
+  </Folder>
+</Solution>
