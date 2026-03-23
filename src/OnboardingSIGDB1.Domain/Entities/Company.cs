@@ -1,0 +1,66 @@
+﻿using OnboardingSIGDB1.Domain.Notifications;
+using OnboardingSIGDB1.Domain.Utils;
+
+namespace OnboardingSIGDB1.Domain.Entities;
+
+public class Company : Notifiable
+{
+    public int Id { get; private set; }
+    public string Name { get; private set; }
+    public string Cnpj { get; private set; }
+    public DateTime FoundationDate  { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+
+    private readonly List<Employee> _employees = new();
+    public IReadOnlyCollection<Employee> Employees => _employees.AsReadOnly();
+    
+    protected Company() { }
+
+    public Company(string name, string  cnpj, DateTime foundationDate)
+    {
+        SetName(name);
+        SetCnpj(cnpj);
+        SetFoundationDate(foundationDate);
+        CreatedAt = DateTime.UtcNow;
+    }
+
+    public void UpdateName(string name) => SetName(name);
+    private void SetName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            AddNotification("Name", "Name is required.");
+        
+        else if (name.Length > 150)
+            AddNotification("Name", "Company name must not exceed 150 characters.");
+        
+        else
+            Name = name.Trim();
+    }
+
+    private void SetCnpj(string cnpj)
+    {
+        if (string.IsNullOrWhiteSpace(cnpj))
+        {
+            AddNotification("Cnpj", "CNPJ is required.");
+            return;
+        }
+        
+        if(!CnpjValidator.IsValid(cnpj))
+        {
+            AddNotification("Cnpj", "Invalid CNPJ.");
+            return;
+        }
+
+        Cnpj = StringUtils.OnlyNumbers(cnpj);
+    }
+
+    private void SetFoundationDate(DateTime foundationDate)
+    {
+        if (foundationDate == DateTime.MinValue)
+            AddNotification("FoundationDate", "Foundation date is required.");
+        else if (foundationDate > DateTime.UtcNow)
+            AddNotification("FoundationDate", "Foundation date cannot be in the future.");
+        else
+            FoundationDate = foundationDate;
+    }
+}
