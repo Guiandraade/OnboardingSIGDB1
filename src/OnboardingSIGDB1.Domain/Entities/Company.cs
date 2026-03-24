@@ -8,7 +8,7 @@ public class Company : Notifiable
     public int Id { get; private set; }
     public string Name { get; private set; }
     public string Cnpj { get; private set; }
-    public DateTime FoundationDate  { get; private set; }
+    public DateTime? FoundationDate  { get; private set; }
     public DateTime CreatedAt { get; private set; }
 
     private readonly List<Employee> _employees = new();
@@ -16,7 +16,7 @@ public class Company : Notifiable
     
     protected Company() { }
 
-    public Company(string name, string  cnpj, DateTime foundationDate)
+    public Company(string name, string  cnpj, DateTime? foundationDate)
     {
         SetName(name);
         SetCnpj(cnpj);
@@ -54,11 +54,9 @@ public class Company : Notifiable
         Cnpj = StringUtils.OnlyNumbers(cnpj);
     }
 
-    private void SetFoundationDate(DateTime foundationDate)
+    private void SetFoundationDate(DateTime? foundationDate)
     {
-        if (foundationDate == DateTime.MinValue)
-            AddNotification("FoundationDate", "Foundation date is required.");
-        else if (foundationDate > DateTime.UtcNow)
+        if(foundationDate.HasValue && foundationDate > DateTime.UtcNow)
             AddNotification("FoundationDate", "Foundation date cannot be in the future.");
         else
             FoundationDate = foundationDate;
