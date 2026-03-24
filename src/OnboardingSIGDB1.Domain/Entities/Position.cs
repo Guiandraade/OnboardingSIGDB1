@@ -1,12 +1,11 @@
-﻿using OnboardingSIGDB1.Domain.Notifications;
+﻿using OnboardingSIGDB1.Domain.Base;
+using OnboardingSIGDB1.Domain.Notifications;
 
 namespace OnboardingSIGDB1.Domain.Entities;
 
-public class Position : Notifiable
+public class Position :  BaseEntity
 {
-    public int Id { get; private set; }
     public string Description { get; private set; }
-    public DateTime CreatedAt { get; private set; }
     private readonly List<EmployeePosition> _employeePositions = new();
     public IReadOnlyCollection<EmployeePosition> EmployeePositions => _employeePositions.AsReadOnly();
 

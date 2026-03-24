@@ -1,15 +1,14 @@
-﻿using OnboardingSIGDB1.Domain.Notifications;
+﻿using OnboardingSIGDB1.Domain.Base;
+using OnboardingSIGDB1.Domain.Notifications;
 using OnboardingSIGDB1.Domain.Utils;
 
 namespace OnboardingSIGDB1.Domain.Entities;
 
-public class Employee : Notifiable
+public class Employee : BaseEntity
 {
-    public int Id { get; private set; }
     public string Name { get; private set; }
     public string Cpf { get; private set; }
     public DateTime? HireDate { get; private set; }
-    public DateTime CreatedAt { get; private set; }
     
     public int CompanyId { get; private set; }
     public Company Company { get; private set; }
