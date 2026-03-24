@@ -12,11 +12,11 @@ public class EmployeePosition : BaseEntity
     public Position Position { get; private set; }
     public int PositionId { get; private set; }
     
-    public DateTime StartDate { get; private set; }
+    public DateTime? StartDate { get; private set; }
 
     protected EmployeePosition() { }
     
-    public EmployeePosition(Employee employee, Position position, DateTime startDate)
+    public EmployeePosition(Employee employee, Position position, DateTime? startDate)
     {
         SetEmployee(employee);
         SetPosition(position);
@@ -48,11 +48,9 @@ public class EmployeePosition : BaseEntity
         Position = position;
     }
 
-    private void SetStartDate(DateTime startDate)
+    private void SetStartDate(DateTime? startDate)
     {
-        if (startDate == DateTime.MinValue)
-            AddNotification("StartDate", "The start date cannot be null.");
-        else if (startDate > DateTime.UtcNow)
+        if (startDate.HasValue && startDate > DateTime.UtcNow)
             AddNotification("StartDate", "The start date cannot be in the future.");
         else
             StartDate = startDate;
