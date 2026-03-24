@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace OnboardingSIGDB1.Infrastructure.Migrations
+namespace OnboardingSIGDB1.Data.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
