@@ -8,7 +8,7 @@ public class Employee : Notifiable
     public int Id { get; private set; }
     public string Name { get; private set; }
     public string Cpf { get; private set; }
-    public DateTime HireDate { get; private set; }
+    public DateTime? HireDate { get; private set; }
     public DateTime CreatedAt { get; private set; }
     
     public int CompanyId { get; private set; }
@@ -19,7 +19,7 @@ public class Employee : Notifiable
 
     protected Employee(){}
     
-    public Employee(string name, string cpf, DateTime hireDate, Company company)
+    public Employee(string name, string cpf, DateTime? hireDate, Company company)
     {
         SetName(name);
         SetCpf(cpf);
@@ -88,11 +88,9 @@ public class Employee : Notifiable
         Cpf = StringUtils.OnlyNumbers(cpf);
     }
 
-    private void SetHireDate(DateTime hireDate)
+    private void SetHireDate(DateTime? hireDate)
     {
-        if (hireDate == DateTime.MinValue)
-            AddNotification("HireDate", "Hire date is required.");
-        else if (hireDate > DateTime.UtcNow)
+        if (hireDate.HasValue && hireDate > DateTime.UtcNow)
             AddNotification("HireDate", "Hire date cannot be in the future.");
         else
             HireDate = hireDate;

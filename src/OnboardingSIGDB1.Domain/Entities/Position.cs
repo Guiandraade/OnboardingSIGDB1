@@ -7,6 +7,8 @@ public class Position : Notifiable
     public int Id { get; private set; }
     public string Description { get; private set; }
     public DateTime CreatedAt { get; private set; }
+    private readonly List<EmployeePosition> _employeePositions = new();
+    public IReadOnlyCollection<EmployeePosition> EmployeePositions => _employeePositions.AsReadOnly();
 
     protected Position() { }
 
