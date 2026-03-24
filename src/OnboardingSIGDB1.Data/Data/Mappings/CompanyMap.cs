@@ -21,7 +21,7 @@ public class CompanyMap : IEntityTypeConfiguration<Company>
             .IsRequired()
             .HasMaxLength(14);
 
-        builder.Property(c => c.FoundationDate);
+        builder.Property(c => c.FoundationDate).IsRequired(false);
 
         builder.Property(c => c.CreatedAt)
             .IsRequired();
