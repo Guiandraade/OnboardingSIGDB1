@@ -1,15 +1,14 @@
-﻿using OnboardingSIGDB1.Domain.Notifications;
+﻿using OnboardingSIGDB1.Domain.Base;
+using OnboardingSIGDB1.Domain.Notifications;
 using OnboardingSIGDB1.Domain.Utils;
 
 namespace OnboardingSIGDB1.Domain.Entities;
 
-public class Company : Notifiable
-{
-    public int Id { get; private set; }
+public class Company : BaseEntity
+{ 
     public string Name { get; private set; }
     public string Cnpj { get; private set; }
     public DateTime? FoundationDate  { get; private set; }
-    public DateTime CreatedAt { get; private set; }
 
     private readonly List<Employee> _employees = new();
     public IReadOnlyCollection<Employee> Employees => _employees.AsReadOnly();

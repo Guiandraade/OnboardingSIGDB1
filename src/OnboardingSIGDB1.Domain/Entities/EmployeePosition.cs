@@ -1,10 +1,10 @@
-﻿using OnboardingSIGDB1.Domain.Notifications;
+﻿using OnboardingSIGDB1.Domain.Base;
+using OnboardingSIGDB1.Domain.Notifications;
 
 namespace OnboardingSIGDB1.Domain.Entities;
 
-public class EmployeePosition : Notifiable
+public class EmployeePosition : BaseEntity
 {
-    public int Id { get; private set; }
     
     public Employee Employee { get; private set; }
     public int EmployeeId { get; private set; }
@@ -13,7 +13,6 @@ public class EmployeePosition : Notifiable
     public int PositionId { get; private set; }
     
     public DateTime StartDate { get; private set; }
-    public DateTime CreatedAt { get; private set; }
 
     protected EmployeePosition() { }
     
