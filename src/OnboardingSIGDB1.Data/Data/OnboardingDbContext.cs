@@ -3,7 +3,7 @@ using OnboardingSIGDB1.Domain.Entities;
 using OnboardingSIGDB1.Domain.Notifications;
 using OnboardingSIGDB1.Infrastructure.Data.Mappings;
 
-namespace OnboardingSIGDB1.Infrastructure.Data;
+namespace OnboardingSIGDB1.Data;
 
 public class OnboardingDbContext : Microsoft.EntityFrameworkCore.DbContext
 {

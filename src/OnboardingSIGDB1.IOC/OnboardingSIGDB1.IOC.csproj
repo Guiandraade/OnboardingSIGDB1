@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\OnboardingSIGDB1.Domain\OnboardingSIGDB1.Domain.csproj" />
+    <ProjectReference Include="..\OnboardingSIGDB1.Data\OnboardingSIGDB1.Data.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>OnboardingSIGDB1.IOC</RootNamespace>
+  </PropertyGroup>
+
+</Project>
