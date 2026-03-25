@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-using OnboardingSIGDB1.Infrastructure.Data;
 using OnboardingSIGDB1.IOC;
 
 var builder = WebApplication.CreateBuilder(args);

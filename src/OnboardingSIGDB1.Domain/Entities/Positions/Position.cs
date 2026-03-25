@@ -1,7 +1,7 @@
 ﻿using OnboardingSIGDB1.Domain.Base;
-using OnboardingSIGDB1.Domain.Notifications;
+using OnboardingSIGDB1.Domain.Entities.Employees;
 
-namespace OnboardingSIGDB1.Domain.Entities;
+namespace OnboardingSIGDB1.Domain.Entities.Positions;
 
 public class Position :  BaseEntity
 {

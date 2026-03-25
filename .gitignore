@@ -403,6 +403,9 @@ FodyWeavers.xsd
 *.msp
 
 # JetBrains Rider
+.idea/
+*.sln.DotSettings
+*.csproj.DotSettings
 *.sln.iml
 .idea/
 
@@ -483,3 +486,5 @@ $RECYCLE.BIN/
 
 # Local development settings
 appsettings.Development.json
+
+*.csproj.DotSettings

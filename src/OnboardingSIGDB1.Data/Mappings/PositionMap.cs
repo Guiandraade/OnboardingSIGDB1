@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OnboardingSIGDB1.Domain.Entities;
+using OnboardingSIGDB1.Domain.Entities.Positions;
 
-namespace OnboardingSIGDB1.Data.Mappings;
+namespace OnboardingSIGDB1.Data;
 
 public class PositionMap : IEntityTypeConfiguration<Position>
 {

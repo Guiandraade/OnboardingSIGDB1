@@ -1,5 +1,7 @@
 ﻿using OnboardingSIGDB1.Domain.Base;
-using OnboardingSIGDB1.Domain.Notifications;
+using OnboardingSIGDB1.Domain.Entities.Companies;
+using OnboardingSIGDB1.Domain.Entities.Employees;
+using OnboardingSIGDB1.Domain.Entities.Positions;
 using OnboardingSIGDB1.Domain.Utils;
 
 namespace OnboardingSIGDB1.Domain.Entities;
