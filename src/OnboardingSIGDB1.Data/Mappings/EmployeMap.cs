@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnboardingSIGDB1.Domain.Entities;
 
-namespace OnboardingSIGDB1.Infrastructure.Data.Mappings;
+namespace OnboardingSIGDB1.Data;
 
 public class EmployeMap : IEntityTypeConfiguration<Employee>
 {
@@ -21,7 +21,7 @@ public class EmployeMap : IEntityTypeConfiguration<Employee>
             .IsRequired()
             .HasMaxLength(11);
 
-        builder.Property(e => e.HireDate);
+        builder.Property(e => e.HireDate).IsRequired(false);
 
         builder.Property(e => e.CreatedAt)
             .IsRequired();
