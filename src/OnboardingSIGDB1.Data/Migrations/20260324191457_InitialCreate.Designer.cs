@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnboardingSIGDB1.Data;
+using OnboardingSIGDB1.Data.Context;
 
 #nullable disable
 
@@ -16,7 +17,7 @@ namespace OnboardingSIGDB1.Data.Migrations
     partial class InitialCreate
     {
         /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
