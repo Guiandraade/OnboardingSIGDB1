@@ -1,7 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using OnboardingSIGDB1.Data;
+using OnboardingSIGDB1.Data.Context;
+using OnboardingSIGDB1.Data.Repositories;
+using OnboardingSIGDB1.Domain.Interfaces.Repositories;
+
 namespace OnboardingSIGDB1.IOC;
 
 public static class Startup
@@ -12,5 +15,10 @@ public static class Startup
         
         services.AddDbContext<OnboardingDbContext>(options =>
             options.UseSqlServer(connectionString));
+
+        services.AddScoped<ICompanyRepository, CompanyRepository>();
+        services.AddScoped<IPositionRepository, PositionRepository>();
+        services.AddScoped<IEmployeePositionRepository, EmployeePositionRepository>();
+        services.AddScoped<IEmployeeRepository, EmployeeRepository>();
     }
 }
