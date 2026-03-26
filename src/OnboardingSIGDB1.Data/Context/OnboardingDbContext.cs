@@ -6,9 +6,9 @@ using OnboardingSIGDB1.Domain.Entities.Positions;
 
 using OnboardingSIGDB1.Domain.Notifications;
 
-namespace OnboardingSIGDB1.Data;
+namespace OnboardingSIGDB1.Data.Context;
 
-public class OnboardingDbContext : Microsoft.EntityFrameworkCore.DbContext
+public class OnboardingDbContext : DbContext
 {
     public OnboardingDbContext(DbContextOptions<OnboardingDbContext> options) : base(options){ }
     
