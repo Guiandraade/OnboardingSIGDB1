@@ -9,16 +9,14 @@ public class PositionMap : IEntityTypeConfiguration<Position>
     public void Configure(EntityTypeBuilder<Position> builder)
     {
         builder.ToTable("Positions");
-        
         builder.HasKey(p => p.Id);
         builder.Property(p => p.Id).ValueGeneratedOnAdd();
         
-        builder.Property(p => p.Description)
-            .IsRequired()
-            .HasMaxLength(250);
+        builder.Property(p => p.Description).IsRequired().HasMaxLength(250);
+
+        builder.Ignore(e => e.ValidationResult);
         
-        builder.Property(p => p.CreatedAt)
-            .IsRequired();
+        builder.Property(p => p.CreatedAt).IsRequired();
 
         builder.HasMany(p => p.EmployeePositions)
             .WithOne(p => p.Position)

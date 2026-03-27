@@ -9,14 +9,13 @@ public class EmployeePositionMap : IEntityTypeConfiguration<EmployeePosition>
     public void Configure(EntityTypeBuilder<EmployeePosition> builder)
     {
         builder.ToTable("EmployeePositions");
-        
-        builder.HasKey(e => e.Id);
-        builder.Property(e => e.Id).ValueGeneratedOnAdd();
+        builder.HasKey(e => new { e.EmployeeId, e.PositionId });
 
-        builder.Property(e => e.StartDate).IsRequired(false);
+        builder.Property(e => e.StartDate).IsRequired();
         
-        builder.Property(e => e.CreatedAt)
-            .IsRequired();
+        builder.Property(e => e.CreatedAt).IsRequired();
+        
+        builder.Ignore(e => e.ValidationResult);
         
         builder.HasOne(e => e.Employee)
             .WithMany(e => e.Positions)
