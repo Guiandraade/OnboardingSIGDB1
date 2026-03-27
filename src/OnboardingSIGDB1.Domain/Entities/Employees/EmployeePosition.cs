@@ -1,58 +1,57 @@
-﻿using OnboardingSIGDB1.Domain.Base;
+﻿using FluentValidation;
+using OnboardingSIGDB1.Domain.Base;
 using OnboardingSIGDB1.Domain.Entities.Positions;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace OnboardingSIGDB1.Domain.Entities.Employees;
 
-public class EmployeePosition : BaseEntity
+public class EmployeePosition : BaseElement<EmployeePosition>
 {
-    
     public Employee Employee { get; private set; }
     public int EmployeeId { get; private set; }
     
     public Position Position { get; private set; }
     public int PositionId { get; private set; }
     
-    public DateTime? StartDate { get; private set; }
+    public DateTime StartDate { get; private set; }
+    
+    public ValidationResult ValidationResult { get; private set; }
 
     protected EmployeePosition() { }
     
-    public EmployeePosition(Employee employee, Position position, DateTime? startDate)
+    public EmployeePosition(Employee employee, Position position, DateTime startDate)
     {
-        SetEmployee(employee);
-        SetPosition(position);
-        SetStartDate(startDate);
-        CreatedAt = DateTime.UtcNow;
+       Employee = employee;
+       EmployeeId = employee.Id;
+       Position = position;
+       PositionId = position.Id;
+       StartDate = startDate;
     }
 
-    private void SetEmployee(Employee employee)
+    public override bool Validation()
     {
-        if (employee is null)
+        ClearNotifications();
+
+        RuleFor(ep => ep.EmployeeId)
+            .GreaterThan(0).WithMessage("Employee id must be greater than 0");
+        
+        RuleFor(ep => ep.PositionId)
+            .GreaterThan(0).WithMessage("Position id must be greater than 0");
+            
+        RuleFor(ep => ep.StartDate)
+            .NotEmpty().WithMessage("Start date must not be empty")
+            .LessThanOrEqualTo(DateTime.Now).WithMessage("The start date cannot be in the future.");
+        
+        ValidationResult = Validate(this);
+
+        if (!ValidationResult.IsValid)
         {
-            AddNotification("Employee", "The employee cannot be null.");
-            return;
+            foreach (var error in ValidationResult.Errors)
+            {
+                AddNotification(error.PropertyName, error.ErrorMessage);
+            }
         }
         
-        EmployeeId =  employee.Id;
-        Employee = employee;
-    }
-
-    private void SetPosition(Position position)
-    {
-        if (position is null)
-        {
-            AddNotification("Position", "The position cannot be null.");
-            return;
-        }
-
-        PositionId = position.Id;
-        Position = position;
-    }
-
-    private void SetStartDate(DateTime? startDate)
-    {
-        if (startDate.HasValue && startDate > DateTime.UtcNow)
-            AddNotification("StartDate", "The start date cannot be in the future.");
-        else
-            StartDate = startDate;
+        return IsValid;
     }
 }
