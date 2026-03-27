@@ -1,12 +1,13 @@
-﻿using OnboardingSIGDB1.Domain.Base;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using OnboardingSIGDB1.Domain.Base;
 using OnboardingSIGDB1.Domain.Entities.Companies;
-using OnboardingSIGDB1.Domain.Entities.Employees;
 using OnboardingSIGDB1.Domain.Entities.Positions;
 using OnboardingSIGDB1.Domain.Utils;
 
-namespace OnboardingSIGDB1.Domain.Entities;
+namespace OnboardingSIGDB1.Domain.Entities.Employees;
 
-public class Employee : BaseEntity
+public class Employee : BaseEntity<Employee>
 {
     public string Name { get; private set; }
     public string Cpf { get; private set; }
@@ -15,22 +16,49 @@ public class Employee : BaseEntity
     public int CompanyId { get; private set; }
     public Company Company { get; private set; }
     
+    public ValidationResult ValidationResult { get; private set; }
+    
     private readonly List<EmployeePosition> _positions = new();
     public IReadOnlyCollection<EmployeePosition> Positions => _positions.AsReadOnly();
 
     protected Employee(){}
     
-    public Employee(string name, string cpf, DateTime? hireDate, Company company)
+    public Employee(string name, string cpf, DateTime? hireDate)
     {
-        SetName(name);
-        SetCpf(cpf);
-        SetHireDate(hireDate);
-        SetCompany(company);
-        CreatedAt = DateTime.UtcNow;
+        Name = name;
+        Cpf = StringUtils.OnlyNumbers(cpf);
+        HireDate = hireDate;
     }
 
-    public void UpdateName(string newName) => SetName(newName);
+    public override bool Validation()
+    {
+        ClearNotifications();
+        
+        RuleFor(e => e.Name)
+            .NotEmpty().WithMessage("Name is required.")
+            .MaximumLength(150).WithMessage("Name must not exceed 150 characters.");
+        
+        RuleFor(e => e.Cpf)
+            .NotEmpty().WithMessage("CPF is required.")
+            .Length(11).WithMessage("CPF must not exceed 11 characters.");
+        
+        RuleFor(e => e.HireDate)
+            .Must(d => !d.HasValue || d.Value > DateTime.UtcNow)
+            .WithMessage("The hiring date cannot be in the future.");
+        
+        ValidationResult = Validate(this);
 
+        if (!ValidationResult.IsValid)
+        {
+            foreach (var error in ValidationResult.Errors)
+            {
+                AddNotification(error.PropertyName, error.ErrorMessage);
+            }
+        }
+
+        return IsValid;
+    }
+    
     public void AddPosition(Position position, DateTime startDate)
     {
         if(CompanyId == 0)
@@ -54,64 +82,13 @@ public class Employee : BaseEntity
         _positions.Add(new EmployeePosition(this, position, startDate));
     }
 
-    public Position? GetLastPosition()
+    public EmployeePosition? GetLastPosition()
     {
+        if (_positions is null || !_positions.Any())
+            return null;
+
         return _positions
-            .OrderByDescending(ep => ep.StartDate)
-            .Select(ep => ep.Position)
+            .OrderByDescending(e => e.StartDate)
             .FirstOrDefault();
     } 
-    
-    private void SetName(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            AddNotification("Name", "Employee name is required.");
-        else if (name.Length > 150)
-            AddNotification("Name", "Employee name must not exceed 150 characters.");
-        else
-            Name = name.Trim();
-    }
-    
-    private void SetCpf(string cpf)
-    {
-        if (string.IsNullOrWhiteSpace(cpf))
-        {
-            AddNotification("Cpf", "CPF is required.");
-            return;
-        }
-
-        if (!CpfValidator.IsValid(cpf))
-        {
-            AddNotification("Cpf", "Invalid CPF.");
-            return;
-        }
-
-        Cpf = StringUtils.OnlyNumbers(cpf);
-    }
-
-    private void SetHireDate(DateTime? hireDate)
-    {
-        if (hireDate.HasValue && hireDate > DateTime.UtcNow)
-            AddNotification("HireDate", "Hire date cannot be in the future.");
-        else
-            HireDate = hireDate;
-    }
-    
-    private void SetCompany(Company company)
-    {
-        if (company is null)
-        {
-            AddNotification("Company", "Company is required.");
-            return;
-        }
-
-        if (CompanyId != 0)
-        {
-            AddNotification("Company", "Employee is already linked to a company.");
-            return;
-        }
-        
-        Company = company;
-        CompanyId = company.Id;
-    }
 }
