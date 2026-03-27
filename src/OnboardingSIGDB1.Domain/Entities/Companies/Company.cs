@@ -1,63 +1,56 @@
-﻿using OnboardingSIGDB1.Domain.Base;
-using OnboardingSIGDB1.Domain.Entities.Employees;
+﻿using FluentValidation;
 using OnboardingSIGDB1.Domain.Utils;
+using FluentValidation.Results;
+using OnboardingSIGDB1.Domain.Base;
+using OnboardingSIGDB1.Domain.Entities.Employees;
 
 namespace OnboardingSIGDB1.Domain.Entities.Companies;
 
-public class Company : BaseEntity
-{ 
+public class Company : BaseEntity<Company>
+{
     public string Name { get; private set; }
     public string Cnpj { get; private set; }
-    public DateTime? FoundationDate  { get; private set; }
-
+    public DateTime? FoundationDate { get; private set; }
+    
+    public ValidationResult ValidationResult { get; private set; }
+    
     private readonly List<Employee> _employees = new();
     public IReadOnlyCollection<Employee> Employees => _employees.AsReadOnly();
     
     protected Company() { }
-
-    public Company(string name, string  cnpj, DateTime? foundationDate)
+    
+    public Company(string name, string cnpj, DateTime? foundationDate)
     {
-        SetName(name);
-        SetCnpj(cnpj);
-        SetFoundationDate(foundationDate);
-        CreatedAt = DateTime.UtcNow;
-    }
-
-    public void UpdateName(string name) => SetName(name);
-    private void SetName(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            AddNotification("Name", "Name is required.");
-        
-        else if (name.Length > 150)
-            AddNotification("Name", "Company name must not exceed 150 characters.");
-        
-        else
-            Name = name.Trim();
-    }
-
-    private void SetCnpj(string cnpj)
-    {
-        if (string.IsNullOrWhiteSpace(cnpj))
-        {
-            AddNotification("Cnpj", "CNPJ is required.");
-            return;
-        }
-        
-        if(!CnpjValidator.IsValid(cnpj))
-        {
-            AddNotification("Cnpj", "Invalid CNPJ.");
-            return;
-        }
-
+        Name = name;
         Cnpj = StringUtils.OnlyNumbers(cnpj);
+        FoundationDate = foundationDate;
     }
 
-    private void SetFoundationDate(DateTime? foundationDate)
+    public override bool Validation()
     {
-        if(foundationDate.HasValue && foundationDate > DateTime.UtcNow)
-            AddNotification("FoundationDate", "Foundation date cannot be in the future.");
-        else
-            FoundationDate = foundationDate;
+        ClearNotifications();
+        
+        RuleFor(c => c.Name).NotEmpty().WithMessage("Name is required.")
+            .MaximumLength(150).WithMessage("Name must not exceed 150 characters.");
+
+        RuleFor(c => c.Cnpj)
+            .NotEmpty().WithMessage("CNPJ is required.")
+            .Length(14).WithMessage("CNPJ must be exactly 14 characters.");
+
+        RuleFor(c => c.FoundationDate)
+            .Must(d => !d.HasValue || d.Value > DateTime.MinValue)
+            .WithMessage("Foundation date must be a valid date.");
+
+        ValidationResult = Validate(this);
+
+        if (!ValidationResult.IsValid)
+        {
+            foreach (var error in ValidationResult.Errors)
+            {
+                AddNotification(error.PropertyName, error.ErrorMessage);
+            }
+        }
+        
+        return IsValid;
     }
 }
