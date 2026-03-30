@@ -13,7 +13,7 @@ public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Com
         return await DbSet.FirstOrDefaultAsync(c => c.Cnpj == cnpj);
     }
 
-    public async Task<IEnumerable<Company>> SearchAsync(CompanyFilter filter)
+    public async Task<(IEnumerable<Company> Data, int total)> SearchAsync(CompanyFilter filter)
     {
         var query = DbSet.AsNoTracking().AsQueryable();
 
@@ -30,12 +30,16 @@ public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Com
             query = query.Where(c => c.FoundationDate <= filter.FoundedUntil.Value);
         
         int skip = (filter.PageNumber - 1) * filter.PageSize;
+
+        var total = await query.CountAsync();
         
-        return await query
+        var data = await query
             .OrderBy(c => c.Name)
             .Skip(skip)
             .Take(filter.PageSize)
             .ToListAsync();
+
+        return (data, total);
     }
 
     public async Task<bool> HasEmployeesAsync(int id)
