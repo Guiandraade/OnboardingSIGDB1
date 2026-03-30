@@ -13,7 +13,7 @@ public class PositionRepository(OnboardingDbContext context) : BaseRepository<Po
         return await DbSet.FirstOrDefaultAsync(p => p.Description == description);
     }
 
-    public async Task<IEnumerable<Position>> SearchAsync(PositionFilter filter)
+    public async Task<(IEnumerable<Position> Data, int total)> SearchAsync(PositionFilter filter)
     {
         var query = DbSet.AsNoTracking().AsQueryable();
 
@@ -22,10 +22,14 @@ public class PositionRepository(OnboardingDbContext context) : BaseRepository<Po
         
         int skip = (filter.PageNumber - 1) * filter.PageSize;
         
-        return await query
+        var total = await query.CountAsync();
+        
+        var data = await query
             .OrderBy(p => p.Description)
             .Skip(skip)
             .Take(filter.PageSize)
             .ToListAsync();
+        
+        return (data, total);
     }
 }

@@ -16,6 +16,8 @@ public class CompanyMap : IEntityTypeConfiguration<Company>
 
         builder.Property(c => c.Cnpj).IsRequired().HasMaxLength(14);
 
+        builder.Ignore(c => c.ValidationResult);
+
         builder.Property(c => c.FoundationDate).IsRequired(false);
 
         builder.Property(c => c.CreatedAt).IsRequired();

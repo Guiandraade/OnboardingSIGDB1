@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OnboardingSIGDB1.Data.Context;
+using OnboardingSIGDB1.Data.Persistence;
 using OnboardingSIGDB1.Data.Repositories;
+using OnboardingSIGDB1.Domain.Interfaces.Persistence;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
 
 namespace OnboardingSIGDB1.IOC;
@@ -20,5 +22,6 @@ public static class Startup
         services.AddScoped<IPositionRepository, PositionRepository>();
         services.AddScoped<IEmployeePositionRepository, EmployeePositionRepository>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
     }
 }

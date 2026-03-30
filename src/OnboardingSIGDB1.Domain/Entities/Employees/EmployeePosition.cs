@@ -40,7 +40,7 @@ public class EmployeePosition : BaseElement<EmployeePosition>
             
         RuleFor(ep => ep.StartDate)
             .NotEmpty().WithMessage("Start date must not be empty")
-            .LessThanOrEqualTo(DateTime.Now).WithMessage("The start date cannot be in the future.");
+            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("The start date cannot be in the future.");
         
         ValidationResult = Validate(this);
 
