@@ -30,6 +30,23 @@ public class Employee : BaseEntity<Employee>
         HireDate = hireDate;
     }
 
+    public void SetCompany(int companyId)
+    {
+        if (CompanyId > 0)
+        {
+            AddNotification("CompanyId", "The link to the company cannot be changed.");
+            return;
+        }
+
+        if (companyId <= 0)
+        {
+            AddNotification("CompanyId", "The company ID is required.");
+            return;
+        }
+        
+        CompanyId = companyId;
+    }
+
     public override bool Validation()
     {
         ClearNotifications();
@@ -40,11 +57,12 @@ public class Employee : BaseEntity<Employee>
         
         RuleFor(e => e.Cpf)
             .NotEmpty().WithMessage("CPF is required.")
-            .Length(11).WithMessage("CPF must not exceed 11 characters.");
+            .Length(11).WithMessage("CPF must not exceed 11 characters.")
+            .Must(CpfValidator.IsValid).WithMessage("The CPF provided is invalid.");
         
         RuleFor(e => e.HireDate)
-            .Must(d => !d.HasValue || d.Value > DateTime.UtcNow)
-            .WithMessage("The hiring date cannot be in the future.");
+            .Must(d => !d.HasValue || d.Value > DateTime.MinValue)
+            .WithMessage("Invalid hiring data.");
         
         ValidationResult = Validate(this);
 

@@ -35,7 +35,8 @@ public class Company : BaseEntity<Company>
 
         RuleFor(c => c.Cnpj)
             .NotEmpty().WithMessage("CNPJ is required.")
-            .Length(14).WithMessage("CNPJ must be exactly 14 characters.");
+            .Length(14).WithMessage("CNPJ must be exactly 14 characters.")
+            .Must(CnpjValidator.IsValid).WithMessage("CNPJ is invalid.");
 
         RuleFor(c => c.FoundationDate)
             .Must(d => !d.HasValue || d.Value > DateTime.MinValue)
