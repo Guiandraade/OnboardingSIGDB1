@@ -5,5 +5,5 @@ namespace OnboardingSIGDB1.Domain.Interfaces.Repositories;
 
 public interface IEmployeePositionRepository : IBaseRepository<EmployeePosition>
 { 
-    Task<IEnumerable<EmployeePosition>> SearchAsync(EmployeePositionFilter filter);
+    Task<(IEnumerable<EmployeePosition> Data, int total)> SearchAsync(EmployeePositionFilter filter);
 }

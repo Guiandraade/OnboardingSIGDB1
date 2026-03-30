@@ -6,5 +6,5 @@ namespace OnboardingSIGDB1.Domain.Interfaces.Repositories;
 public interface IPositionRepository : IBaseRepository<Position>
 {
     Task<Position?> GetByDescriptionAsync(string description);
-    Task<IEnumerable<Position>> SearchAsync(PositionFilter filter);
+    Task<(IEnumerable<Position> Data, int total)> SearchAsync(PositionFilter filter);
 }
