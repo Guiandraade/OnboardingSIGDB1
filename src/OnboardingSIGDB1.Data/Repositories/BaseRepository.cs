@@ -17,6 +17,4 @@ public class BaseRepository<T>(OnboardingDbContext context) : IBaseRepository<T>
     public virtual void Update(T entity) => DbSet.Update(entity);
     
     public virtual void Delete(T entity) => DbSet.Remove(entity);
-    
-    public async Task<int> SaveChangesAsync() => await Context.SaveChangesAsync();
 }

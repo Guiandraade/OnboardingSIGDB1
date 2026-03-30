@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnboardingSIGDB1.Data.Context;
 using OnboardingSIGDB1.Domain.Dto.filters;
-using OnboardingSIGDB1.Domain.Entities;
+using OnboardingSIGDB1.Domain.Entities.Employees;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
 
 namespace OnboardingSIGDB1.Data.Repositories;
@@ -20,7 +20,7 @@ public class EmployeeRepository(OnboardingDbContext context) : BaseRepository<Em
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Employee>> SearchAsync(EmployeeFilter filter)
+    public async Task<(IEnumerable<Employee> Data, int total)> SearchAsync(EmployeeFilter filter)
     {
         var query = DbSet.AsNoTracking().AsQueryable();
 
@@ -38,10 +38,18 @@ public class EmployeeRepository(OnboardingDbContext context) : BaseRepository<Em
 
         int skip = (filter.PageNumber - 1) * filter.PageSize;
         
-        return await query
-            .OrderBy(c => c.Name)
+        var total = await query.CountAsync();
+
+        var data = await query
+            .Include(e => e.Company)
+            .Include(e => e.Positions)
+                .ThenInclude(p => p.Position)
+            .OrderBy(e => e.Name)
             .Skip(skip)
             .Take(filter.PageSize)
             .ToListAsync();
+
+        return (data, total);
+        
     }
 }

@@ -6,6 +6,6 @@ namespace OnboardingSIGDB1.Domain.Interfaces.Repositories;
 public interface ICompanyRepository : IBaseRepository<Company>
 {
     Task<Company?> GetByCnpjAsync(string cnpj);
-    Task<IEnumerable<Company>> SearchAsync(CompanyFilter filter);
+    Task<(IEnumerable<Company> Data, int total)> SearchAsync(CompanyFilter filter);
     Task<bool> HasEmployeesAsync(int id);
 }
