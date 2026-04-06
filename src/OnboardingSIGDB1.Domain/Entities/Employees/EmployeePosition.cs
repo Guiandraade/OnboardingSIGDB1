@@ -22,9 +22,11 @@ public class EmployeePosition : BaseElement<EmployeePosition>
     public EmployeePosition(Employee employee, Position position, DateTime startDate)
     {
        Employee = employee;
-       EmployeeId = employee.Id;
+       EmployeeId = employee?.Id ?? 0;
+       
        Position = position;
-       PositionId = position.Id;
+       PositionId = position?.Id ?? 0;
+       
        StartDate = startDate;
     }
 
@@ -32,25 +34,25 @@ public class EmployeePosition : BaseElement<EmployeePosition>
     {
         ClearNotifications();
 
+        RuleFor(ep => ep.Position)
+            .NotNull().WithMessage("Position is required.");
+        
+        RuleFor(ep => ep.Employee)
+            .NotNull().WithMessage("Employee is required.");
+        
         RuleFor(ep => ep.EmployeeId)
-            .GreaterThan(0).WithMessage("Employee id must be greater than 0");
+            .GreaterThan(0).WithMessage("EmployeeId must be greater than 0");
         
         RuleFor(ep => ep.PositionId)
             .GreaterThan(0).WithMessage("Position id must be greater than 0");
             
         RuleFor(ep => ep.StartDate)
-            .NotEmpty().WithMessage("Start date must not be empty")
-            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("The start date cannot be in the future.");
+            .Must(d => d > DateTime.MinValue)
+            .WithMessage("Start date must be a valid date.")
+            .LessThanOrEqualTo(DateTime.UtcNow)
+            .WithMessage("The start date cannot be in the future.");
         
-        ValidationResult = Validate(this);
-
-        if (!ValidationResult.IsValid)
-        {
-            foreach (var error in ValidationResult.Errors)
-            {
-                AddNotification(error.PropertyName, error.ErrorMessage);
-            }
-        }
+        ApplyValidation(this);
         
         return IsValid;
     }
