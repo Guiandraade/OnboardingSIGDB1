@@ -7,7 +7,7 @@ public class Notification
 
     public Notification(string key, string message)
     {
-        Key = key;
-        Message = message;
+        Key = key ?? string.Empty;
+        Message = message ?? string.Empty;
     }
 }
