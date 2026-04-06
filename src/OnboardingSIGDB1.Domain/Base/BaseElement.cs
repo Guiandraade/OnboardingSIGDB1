@@ -34,7 +34,7 @@ public abstract class BaseElement<T> : AbstractValidator<T> where T : class
     protected void ApplyValidation(T instance)
     {
         var result = Validate(instance);
-
+    
         foreach (var error in result.Errors)
             AddNotification(error.PropertyName, error.ErrorMessage);
     }

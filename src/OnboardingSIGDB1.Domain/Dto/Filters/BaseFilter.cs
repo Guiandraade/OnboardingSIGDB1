@@ -1,4 +1,4 @@
-﻿namespace OnboardingSIGDB1.Domain.Dto.Filters;
+﻿namespace OnboardingSIGDB1.Domain.Dto.filters;
 
 public abstract class BaseFilter
 {
