@@ -16,8 +16,19 @@ public abstract class BaseElement<T> : AbstractValidator<T> where T : class
     
     protected void AddNotification(string key, string message)
     {
+        if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(message))
+            return;
+        
         if (!_notifications.Any(n => n.Key == key && n.Message == message))
             _notifications.Add(new Notification(key, message));
+    }
+    
+    protected void AddNotifications(IEnumerable<Notification> notifications)
+    {
+        foreach (var notification in notifications)
+        {
+            AddNotification(notification.Key, notification.Message);
+        }
     }
     
     protected void ClearNotifications() => _notifications.Clear();

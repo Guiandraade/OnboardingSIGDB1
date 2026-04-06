@@ -16,6 +16,9 @@ public class Employee : BaseEntity<Employee>
     public int CompanyId { get; private set; }
     public Company Company { get; private set; }
     
+    public string CurrentPositionDescription => 
+        GetLastPosition()?.Position?.Description ?? "No link";
+    
     public ValidationResult ValidationResult { get; private set; }
     
     private readonly List<EmployeePosition> _positions = new();
@@ -23,36 +26,49 @@ public class Employee : BaseEntity<Employee>
 
     protected Employee(){}
     
-    public Employee(string name, string cpf, DateTime? hireDate)
+    public Employee(string name, string cpf, DateTime? hireDate, int companyId, Position position)
     {
         Name = name;
-        Cpf = StringUtils.OnlyNumbers(cpf);
+        Cpf = StringUtils.OnlyNumbers(cpf ?? "");
         HireDate = hireDate;
-    }
+        CompanyId = companyId;
 
-    public void SetCompany(int companyId)
-    {
-        if (CompanyId > 0)
+        if (companyId <= 0 || position == null)
         {
-            AddNotification("CompanyId", "The link to the company cannot be changed.");
-            return;
-        }
-
-        if (companyId <= 0)
-        {
-            AddNotification("CompanyId", "The company ID is required.");
+            if (companyId <= 0) 
+                AddNotification("CompanyId", "Company is required.");
+            
+            if (position == null) 
+                AddNotification("Position", "Initial position is required.");
+            
             return;
         }
         
-        CompanyId = companyId;
+        AddPosition(position, hireDate ?? DateTime.UtcNow);
     }
 
+    public void Update(string name, string cpf, DateTime? hireDate, Position position)
+    {
+        Name = name;
+        
+        if(cpf != null)
+            Cpf = StringUtils.OnlyNumbers(cpf);
+        
+        var lastPosition = GetLastPosition();
+        
+        if (position != null &&
+            (lastPosition == null || lastPosition.PositionId != position.Id))   
+        {
+            AddPosition(position, hireDate ?? DateTime.UtcNow);
+        }
+        
+        Validation();
+    }
     public override bool Validation()
     {
-        ClearNotifications();
-        
         RuleFor(e => e.Name)
             .NotEmpty().WithMessage("Name is required.")
+            .MinimumLength(3).WithMessage("The name must have at least 3 characters.") 
             .MaximumLength(150).WithMessage("Name must not exceed 150 characters.");
         
         RuleFor(e => e.Cpf)
@@ -61,52 +77,43 @@ public class Employee : BaseEntity<Employee>
             .Must(CpfValidator.IsValid).WithMessage("The CPF provided is invalid.");
         
         RuleFor(e => e.HireDate)
-            .Must(d => !d.HasValue || d.Value > DateTime.MinValue)
+            .Must(d => !d.HasValue || (d.Value > DateTime.MinValue && d.Value <= DateTime.UtcNow))
             .WithMessage("Invalid hiring data.");
+
+        RuleFor(e => e.CompanyId)
+            .GreaterThan(0).WithMessage("CompanyId is required.");
         
-        ValidationResult = Validate(this);
-
-        if (!ValidationResult.IsValid)
-        {
-            foreach (var error in ValidationResult.Errors)
-            {
-                AddNotification(error.PropertyName, error.ErrorMessage);
-            }
-        }
-
+        ApplyValidation(this);
+        
         return IsValid;
     }
     
-    public void AddPosition(Position position, DateTime startDate)
+    private void AddPosition(Position position, DateTime startDate)
     {
-        if(CompanyId == 0)
-            AddNotification("Company", "Employee must be linked to a company before assigning a position.");
-        
-        if(position is null)
+        if (position == null)
+        {
             AddNotification("Position", "Position is required.");
-        
-        if(startDate == DateTime.MinValue)
-            AddNotification("StartDate", "Start date is required.");
-        
-        if(startDate > DateTime.UtcNow)
-            AddNotification("StartDate", "Start date cannot be in the future.");
-        
-        if (position != null && _positions.Any(ep => ep.PositionId == position.Id))
-            AddNotification("Position", "Employee already has this position.");
-
-        if (!IsValid)
             return;
-            
-        _positions.Add(new EmployeePosition(this, position, startDate));
+        }
+        
+        var newPosition = new EmployeePosition(this, position, startDate);
+        
+        if (!newPosition.Validation())
+        {
+            AddNotifications(newPosition.Notifications);
+            return;
+        }
+        
+        _positions.Add(newPosition);
     }
 
     public EmployeePosition? GetLastPosition()
     {
-        if (_positions is null || !_positions.Any())
+        if (!_positions.Any())
             return null;
 
         return _positions
             .OrderByDescending(e => e.StartDate)
             .FirstOrDefault();
-    } 
+    }
 }
