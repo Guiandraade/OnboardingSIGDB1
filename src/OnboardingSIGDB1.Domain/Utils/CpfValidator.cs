@@ -12,9 +12,12 @@ public static class CpfValidator
         if (cpf.Length != 11)
             return false;
 
+        if (!cpf.All(char.IsDigit))
+            return false;
+
         if (cpf.All(c => c == cpf[0]))
             return false;
-        
+
         int sum = 0;
         for (int i = 0; i < 9; i++)
             sum += (cpf[i] - '0') * (10 - i);
@@ -22,7 +25,7 @@ public static class CpfValidator
         int firstDigit = (sum * 10) % 11;
         if (firstDigit == 10)
             firstDigit = 0;
-        
+
         sum = 0;
         for (int i = 0; i < 10; i++)
             sum += (cpf[i] - '0') * (11 - i);
