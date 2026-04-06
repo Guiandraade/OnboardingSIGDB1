@@ -18,24 +18,24 @@ public class Position :  BaseEntity<Position>
 
     public Position(string description)
     {
-        Description = description;
+        Description = description.Trim();
+    }
+
+    public void Update(string description)
+    {
+        Description = description.Trim();
+        Validation();
     }
 
     public override bool Validation()
     {
         RuleFor(p => p.Description)
-            .NotEmpty().WithMessage("Description is required");
+            .NotEmpty().WithMessage("Description is required")
+            .MinimumLength(3).WithMessage("Description must have at least 3 characters") 
+            .MaximumLength(100).WithMessage("Description cannot exceed 100 characters"); 
 
-        ValidationResult = Validate(this);
-
-        if (!ValidationResult.IsValid)
-        {
-            foreach (var error in ValidationResult.Errors)
-            {
-                AddNotification(error.PropertyName, error.ErrorMessage);
-            }
-        }
-
+        ApplyValidation(this);
+        
         return IsValid;
     }
 }

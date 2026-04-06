@@ -18,6 +18,7 @@ public class EmployeMap : IEntityTypeConfiguration<Employee>
         builder.HasIndex(e => e.Cpf).IsUnique();
 
         builder.Ignore(e => e.ValidationResult);
+        builder.Ignore(e => e.Notifications);
         
         builder.Property(e => e.HireDate).IsRequired(false);
 

@@ -1,27 +1,48 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnboardingSIGDB1.Data.Context;
-using OnboardingSIGDB1.Domain.Dto.filters;
+using OnboardingSIGDB1.Domain.Dto.Filters;
 using OnboardingSIGDB1.Domain.Entities.Companies;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
+using OnboardingSIGDB1.Domain.Utils;
 
 namespace OnboardingSIGDB1.Data.Repositories;
 
 public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Company>(context), ICompanyRepository
 {
+    public async Task<Company?> GetByIdCompanyAndEmployees(int id)
+    {
+        return await DbSet
+            .AsNoTracking()
+            .Include(c => c.Employees)
+                .ThenInclude(e => e.Positions)
+                    .ThenInclude(e  => e.Position)
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public override async Task<Company?> GetByIdAsync(int id)
+    {
+        return await DbSet
+            .Include(c => c.Employees)
+            .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
     public async Task<Company?> GetByCnpjAsync(string cnpj)
     {
-        return await DbSet.FirstOrDefaultAsync(c => c.Cnpj == cnpj);
+        return await DbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Cnpj == cnpj);
     }
 
     public async Task<(IEnumerable<Company> Data, int total)> SearchAsync(CompanyFilter filter)
     {
         var query = DbSet.AsNoTracking().AsQueryable();
-
+    
         if (!string.IsNullOrWhiteSpace(filter.Name)) 
             query = query.Where(c => c.Name.Contains(filter.Name));
-        
-        if(!string.IsNullOrWhiteSpace(filter.Cnpj)) 
-            query = query.Where(c => c.Cnpj == filter.Cnpj);
+
+        if (!string.IsNullOrWhiteSpace(filter.Cnpj))
+        {            
+            var cnpjClean = StringUtils.OnlyNumbers(filter.Cnpj);
+            query = query.Where(c => c.Cnpj == cnpjClean);
+        }
         
         if (filter.FoundedIn.HasValue) 
             query = query.Where(c => c.FoundationDate >= filter.FoundedIn.Value);
@@ -29,13 +50,12 @@ public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Com
         if (filter.FoundedUntil.HasValue) 
             query = query.Where(c => c.FoundationDate <= filter.FoundedUntil.Value);
         
-        int skip = (filter.PageNumber - 1) * filter.PageSize;
 
         var total = await query.CountAsync();
         
         var data = await query
             .OrderBy(c => c.Name)
-            .Skip(skip)
+            .Skip((filter.PageNumber - 1) * filter.PageSize)
             .Take(filter.PageSize)
             .ToListAsync();
 

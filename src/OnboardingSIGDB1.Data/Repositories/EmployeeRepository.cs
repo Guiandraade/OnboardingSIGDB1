@@ -1,23 +1,35 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnboardingSIGDB1.Data.Context;
-using OnboardingSIGDB1.Domain.Dto.filters;
+using OnboardingSIGDB1.Domain.Dto.Filters;
 using OnboardingSIGDB1.Domain.Entities.Employees;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
+using OnboardingSIGDB1.Domain.Utils;
 
 namespace OnboardingSIGDB1.Data.Repositories;
 
 public class EmployeeRepository(OnboardingDbContext context) : BaseRepository<Employee>(context), IEmployeeRepository
 {
-    public async Task<Employee?> GetByCpfAsync(string cpf)
+    public override async Task<Employee?> GetByIdAsync(int id)
     {
-        return await DbSet.FirstOrDefaultAsync(c => c.Cpf == cpf);
+        return await DbSet
+            .Include(e => e.Company)
+            .Include(e => e.Positions)
+                .ThenInclude(p => p.Position)
+            .FirstOrDefaultAsync(e => e.Id == id);
+    }
+    public async Task<Employee?> GetHistoryAsync(int id)
+    {
+        return await DbSet
+            .Include(e => e.Company)
+            .Include(e => e.Positions)
+                .ThenInclude(p => p.Position)
+            .FirstOrDefaultAsync(e => e.Id == id);
     }
 
-    public async Task<IEnumerable<Employee>> GetByCompanyIdAsync(int companyId)
+    public async Task<Employee?> GetByCpfAsync(string cpf)
     {
-        return await DbSet.AsNoTracking()
-            .Where(e => e.CompanyId == companyId)
-            .ToListAsync();
+        var cpfClean = StringUtils.OnlyNumbers(cpf);
+        return await DbSet.FirstOrDefaultAsync(c => c.Cpf == cpfClean);
     }
 
     public async Task<(IEnumerable<Employee> Data, int total)> SearchAsync(EmployeeFilter filter)
@@ -26,17 +38,18 @@ public class EmployeeRepository(OnboardingDbContext context) : BaseRepository<Em
 
         if (!string.IsNullOrWhiteSpace(filter.Name))
             query = query.Where(e => e.Name.Contains(filter.Name));
-        
-        if(!string.IsNullOrWhiteSpace(filter.Cpf))
-            query = query.Where(e => e.Cpf == filter.Cpf);
+
+        if (!string.IsNullOrWhiteSpace(filter.Cpf))
+        {
+            var cpfClean = StringUtils.OnlyNumbers(filter.Cpf);
+            query = query.Where(e => e.Cpf == cpfClean);
+        }
         
         if(filter.HiredFrom.HasValue)
             query = query.Where(e => e.HireDate >= filter.HiredFrom.Value);
         
-        if(filter.Hireduntil.HasValue)
-            query = query.Where(e => e.HireDate <= filter.Hireduntil.Value);
-
-        int skip = (filter.PageNumber - 1) * filter.PageSize;
+        if(filter.HiredUntil.HasValue)
+            query = query.Where(e => e.HireDate <= filter.HiredUntil.Value);
         
         var total = await query.CountAsync();
 
@@ -45,7 +58,7 @@ public class EmployeeRepository(OnboardingDbContext context) : BaseRepository<Em
             .Include(e => e.Positions)
                 .ThenInclude(p => p.Position)
             .OrderBy(e => e.Name)
-            .Skip(skip)
+            .Skip((filter.PageNumber - 1) * filter.PageSize)
             .Take(filter.PageSize)
             .ToListAsync();
 
