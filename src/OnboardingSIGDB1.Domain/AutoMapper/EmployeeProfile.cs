@@ -33,7 +33,8 @@ public class EmployeeProfile : Profile
             .ForMember(dest => dest.ValidationResult, opt => opt.Ignore())
             .ForMember(dest => dest.Notifications, opt => opt.Ignore());
     }
-
+    
+    
     private void MapEmployeeWithPositions()
     {
         CreateMap<Employee, EmployeeAndPositionsResponse>()

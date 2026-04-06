@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnboardingSIGDB1.Data.Context;
-using OnboardingSIGDB1.Domain.Dto.filters;
+using OnboardingSIGDB1.Domain.Dto.Filters;
 using OnboardingSIGDB1.Domain.Entities.Positions;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
 
@@ -13,6 +13,14 @@ public class PositionRepository(OnboardingDbContext context) : BaseRepository<Po
         return await DbSet.FirstOrDefaultAsync(p => p.Description == description);
     }
 
+    public async Task<bool> HasEmployeesAsync(int id)
+    {
+        return await context
+            .EmployeePositions
+            .AsNoTracking()
+            .AnyAsync(e => e.PositionId == id);
+    }
+
     public async Task<(IEnumerable<Position> Data, int total)> SearchAsync(PositionFilter filter)
     {
         var query = DbSet.AsNoTracking().AsQueryable();
@@ -20,13 +28,11 @@ public class PositionRepository(OnboardingDbContext context) : BaseRepository<Po
         if (!string.IsNullOrWhiteSpace(filter.Description))
             query = query.Where(p => p.Description.Contains(filter.Description));
         
-        int skip = (filter.PageNumber - 1) * filter.PageSize;
-        
         var total = await query.CountAsync();
         
         var data = await query
             .OrderBy(p => p.Description)
-            .Skip(skip)
+            .Skip((filter.PageNumber - 1) * filter.PageSize)
             .Take(filter.PageSize)
             .ToListAsync();
         
