@@ -22,34 +22,37 @@ public class Company : BaseEntity<Company>
     public Company(string name, string cnpj, DateTime? foundationDate)
     {
         Name = name;
-        Cnpj = StringUtils.OnlyNumbers(cnpj);
+        Cnpj = StringUtils.OnlyNumbers(cnpj ?? "");
         FoundationDate = foundationDate;
     }
 
+    public void Update(string name, string cnpj, DateTime? foundationDate)
+    {
+        Name = name;
+        Cnpj = StringUtils.OnlyNumbers(cnpj ?? "");
+        FoundationDate = foundationDate;
+
+        Validation(); 
+    }
+    
     public override bool Validation()
     {
         ClearNotifications();
         
         RuleFor(c => c.Name).NotEmpty().WithMessage("Name is required.")
+            .MinimumLength(3).WithMessage("The name must have at least 3 characters.") 
             .MaximumLength(150).WithMessage("Name must not exceed 150 characters.");
 
         RuleFor(c => c.Cnpj)
             .NotEmpty().WithMessage("CNPJ is required.")
-            .Length(14).WithMessage("CNPJ must be exactly 14 characters.");
+            .Length(14).WithMessage("CNPJ must be exactly 14 characters.")
+            .Must(CnpjValidator.IsValid).WithMessage("CNPJ is invalid.");
 
         RuleFor(c => c.FoundationDate)
-            .Must(d => !d.HasValue || d.Value > DateTime.MinValue)
+            .Must(d => d is null || d <= DateTime.UtcNow)
             .WithMessage("Foundation date must be a valid date.");
 
-        ValidationResult = Validate(this);
-
-        if (!ValidationResult.IsValid)
-        {
-            foreach (var error in ValidationResult.Errors)
-            {
-                AddNotification(error.PropertyName, error.ErrorMessage);
-            }
-        }
+        ApplyValidation(this);
         
         return IsValid;
     }

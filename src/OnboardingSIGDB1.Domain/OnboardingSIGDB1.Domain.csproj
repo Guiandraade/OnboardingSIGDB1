@@ -9,15 +9,12 @@
   <ItemGroup>
     <Compile Remove="Entities\Positions\PositionValidator.cs" />
     <Compile Remove="Notifications\Notifiable.cs" />
+    <Compile Remove="Dto\Employee\EmployeeResponde.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="AutoMapper\" />
-    <Folder Include="Interfaces\Services\" />
   </ItemGroup>
 
 </Project>
