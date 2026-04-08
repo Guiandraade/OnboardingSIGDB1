@@ -2,6 +2,6 @@
 
 public class EmployeePositionHistoryResponse
 {
-    public string PositionName { get; set; }
+    public string PositionName { get; set; } = string.Empty;
     public DateTime StartDate { get; set; }
 }

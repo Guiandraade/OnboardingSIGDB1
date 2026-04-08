@@ -1,3 +1,8 @@
+using Microsoft.EntityFrameworkCore;
+using OnboardingSIGDB1.Data.Context;
+using OnboardingSIGDB1.Domain.Interfaces.Contexts;
+using OnboardingSIGDB1.Domain.Interfaces.Persistence;
+using OnboardingSIGDB1.Domain.Notifications;
 using OnboardingSIGDB1.IOC;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +36,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 app.MapControllers();
+
 app.Run();
 

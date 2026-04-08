@@ -2,9 +2,5 @@
 
 public record EmployeeUpdateRequest(
     string Name,
-    string Cpf,
-    DateTime? HireDate,
-    int PositionId
+    string Cpf
 );
-
-    

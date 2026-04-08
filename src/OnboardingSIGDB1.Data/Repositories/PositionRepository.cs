@@ -20,7 +20,7 @@ public class PositionRepository(OnboardingDbContext context) : BaseRepository<Po
             .AsNoTracking()
             .AnyAsync(e => e.PositionId == id);
     }
-
+    
     public async Task<(IEnumerable<Position> Data, int total)> SearchAsync(PositionFilter filter)
     {
         var query = DbSet.AsNoTracking().AsQueryable();

@@ -39,7 +39,7 @@ public class PositionService : IPositionService
     
     private PositionResponse? AddDomainNotifications(Position position)
     {
-        _notificationContext.AddRange(position.Notifications);
+        _notificationContext.AddRange(position.ValidationResult.Errors);
         return null;
     }
     
@@ -76,7 +76,7 @@ public class PositionService : IPositionService
         
         position.Update(request.Description);
 
-        if (!position.IsValid) return AddDomainNotifications(position);
+        if (!position.Validation()) return AddDomainNotifications(position);
         
         await _unitOfWork.CommitAsync();
         
@@ -103,7 +103,7 @@ public class PositionService : IPositionService
         
         return _mapper.Map<PositionResponse>(position);
     }
-
+    
     public async Task<PagedResponse<PositionResponse>> SearchAsync(PositionFilter filter)
     {
         var validator = new PositionFilterValidator();

@@ -20,8 +20,7 @@ public class CompanyProfile : Profile
     {
         CreateMap<CompanyRequest, Company>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.ValidationResult, opt => opt.Ignore())
-            .ForMember(dest => dest.Notifications, opt => opt.Ignore());
+            .ForMember(dest => dest.ValidationResult, opt => opt.Ignore());
     }
     
     private void MapCompanyToResponse()

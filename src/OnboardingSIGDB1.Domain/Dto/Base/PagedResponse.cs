@@ -2,11 +2,11 @@
 
 public class PagedResponse<T> where T : class
 {
-    public IEnumerable<T> Data { get; set; }
-    public int Total { get; set; }
-    public int PageNumber { get; set; }
-    public int PageSize { get; set; }
-
+    public PagedResponse() 
+    { 
+        Data = Enumerable.Empty<T>();
+    }
+    
     public PagedResponse(IEnumerable<T> data, int total, int pageNumber, int pageSize)
     {
         Data = data;
@@ -14,4 +14,9 @@ public class PagedResponse<T> where T : class
         PageNumber = pageNumber;
         PageSize = pageSize;
     }
+    
+    public IEnumerable<T> Data { get; set; }
+    public int Total { get; set; }
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
 }

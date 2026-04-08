@@ -40,7 +40,7 @@ public class CompanyService : ICompanyService
     
     private T? AddDomainNotifications<T>(Company company) where T : class
     {
-        _notificationContext.AddRange(company.Notifications);
+        _notificationContext.AddRange(company.ValidationResult.Errors);
         return null;
     }
 
@@ -73,13 +73,13 @@ public class CompanyService : ICompanyService
         
         var cnpjClean = StringUtils.OnlyNumbers(request.Cnpj);
         
-        var existingWithCnpj = await _companyRepository.GetByCnpjAsync(request.Cnpj);
+        var existingWithCnpj = await _companyRepository.GetByCnpjAsync(cnpjClean);
         if (existingWithCnpj != null && existingWithCnpj.Id != company.Id) 
             return NotifyError<CompanyResponse>("Cnpj", "A company with this CNPJ is already registered.");
         
         company.Update(request.Name, cnpjClean, request.FoundationDate);
         
-        if (!company.IsValid) return AddDomainNotifications<CompanyResponse>(company);
+        if (!company.Validation()) return AddDomainNotifications<CompanyResponse>(company);
         
         await _unitOfWork.CommitAsync();
         

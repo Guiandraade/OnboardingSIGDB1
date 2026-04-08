@@ -24,7 +24,6 @@ public class Position :  BaseEntity<Position>
     public void Update(string description)
     {
         Description = description.Trim();
-        Validation();
     }
 
     public override bool Validation()
@@ -34,8 +33,7 @@ public class Position :  BaseEntity<Position>
             .MinimumLength(3).WithMessage("Description must have at least 3 characters") 
             .MaximumLength(100).WithMessage("Description cannot exceed 100 characters"); 
 
-        ApplyValidation(this);
-        
-        return IsValid;
+        ValidationResult = Validate(this);
+        return ValidationResult.IsValid;
     }
 }

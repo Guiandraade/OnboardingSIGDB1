@@ -2,7 +2,6 @@
 using FluentValidation.Results;
 using OnboardingSIGDB1.Domain.Base;
 using OnboardingSIGDB1.Domain.Entities.Companies;
-using OnboardingSIGDB1.Domain.Entities.Positions;
 using OnboardingSIGDB1.Domain.Utils;
 
 namespace OnboardingSIGDB1.Domain.Entities.Employees;
@@ -26,44 +25,20 @@ public class Employee : BaseEntity<Employee>
 
     protected Employee(){}
     
-    public Employee(string name, string cpf, DateTime? hireDate, int companyId, Position position)
+    public Employee(string name, string cpf, DateTime? hireDate, int companyId)
     {
         Name = name;
         Cpf = StringUtils.OnlyNumbers(cpf ?? "");
         HireDate = hireDate;
         CompanyId = companyId;
-
-        if (companyId <= 0 || position == null)
-        {
-            if (companyId <= 0) 
-                AddNotification("CompanyId", "Company is required.");
-            
-            if (position == null) 
-                AddNotification("Position", "Initial position is required.");
-            
-            return;
-        }
-        
-        AddPosition(position, hireDate ?? DateTime.UtcNow);
     }
 
-    public void Update(string name, string cpf, DateTime? hireDate, Position position)
+    public void Update(string name, string cpf)
     {
         Name = name;
-        
-        if(cpf != null)
-            Cpf = StringUtils.OnlyNumbers(cpf);
-        
-        var lastPosition = GetLastPosition();
-        
-        if (position != null &&
-            (lastPosition == null || lastPosition.PositionId != position.Id))   
-        {
-            AddPosition(position, hireDate ?? DateTime.UtcNow);
-        }
-        
-        Validation();
+        Cpf = StringUtils.OnlyNumbers(cpf);
     }
+    
     public override bool Validation()
     {
         RuleFor(e => e.Name)
@@ -77,40 +52,22 @@ public class Employee : BaseEntity<Employee>
             .Must(CpfValidator.IsValid).WithMessage("The CPF provided is invalid.");
         
         RuleFor(e => e.HireDate)
-            .Must(d => !d.HasValue || (d.Value > DateTime.MinValue && d.Value <= DateTime.UtcNow))
-            .WithMessage("Invalid hiring data.");
-
-        RuleFor(e => e.CompanyId)
-            .GreaterThan(0).WithMessage("CompanyId is required.");
+            .Must(d => !d.HasValue || (d.Value >= new DateTime(1900, 1, 1) && d.Value <= DateTime.UtcNow))
+            .WithMessage("The hiring date must be between 01/01/1900 and today.")
+            .Must((employee, hireDate) => 
+                !hireDate.HasValue || 
+                employee.Company == null || 
+                !employee.Company.FoundationDate.HasValue ||
+                hireDate >= employee.Company.FoundationDate)
+            .WithMessage("The hiring date cannot be earlier than the company's founding date.");
         
-        ApplyValidation(this);
-        
-        return IsValid;
+        ValidationResult = Validate(this);
+        return ValidationResult.IsValid;
     }
     
-    private void AddPosition(Position position, DateTime startDate)
-    {
-        if (position == null)
-        {
-            AddNotification("Position", "Position is required.");
-            return;
-        }
-        
-        var newPosition = new EmployeePosition(this, position, startDate);
-        
-        if (!newPosition.Validation())
-        {
-            AddNotifications(newPosition.Notifications);
-            return;
-        }
-        
-        _positions.Add(newPosition);
-    }
-
     public EmployeePosition? GetLastPosition()
     {
-        if (!_positions.Any())
-            return null;
+        if (!_positions.Any()) return null;
 
         return _positions
             .OrderByDescending(e => e.StartDate)
