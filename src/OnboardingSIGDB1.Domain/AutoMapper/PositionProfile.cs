@@ -18,7 +18,6 @@ public class PositionProfile : Profile
         CreateMap<PositionRequest, Position>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.ValidationResult, opt => opt.Ignore())
-            .ForMember(dest => dest.Notifications, opt => opt.Ignore())
             .ForMember(dest => dest.EmployeePositions, opt => opt.Ignore())
             .ForMember(dest => dest.CreatedAt, opt => opt.Ignore()); // opcional
     }

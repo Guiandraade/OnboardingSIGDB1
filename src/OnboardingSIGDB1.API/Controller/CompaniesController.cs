@@ -24,7 +24,6 @@ public class CompaniesController : ControllerBase
     }
     
     [HttpGet]
-    [ProducesResponseType(typeof(PagedResponse<CompanyResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] CompanyFilter filter)
     {
         var result = await _companyService.SearchAsync(filter);
@@ -32,9 +31,6 @@ public class CompaniesController : ControllerBase
     }
     
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(CompanyResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(int id)
     {
         var response = await _companyService.GetByIdAsync(id);
@@ -46,8 +42,6 @@ public class CompaniesController : ControllerBase
     }
     
     [HttpGet("{id:int}/employees")]
-    [ProducesResponseType(typeof(CompanyAndEmployeesResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetEmployees(int id)
     {
         var response = await _companyService.GetByIdCompanyAndEmployees(id);
@@ -59,10 +53,11 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(CompanyResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Post([FromBody] CompanyRequest request)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
         var response = await _companyService.CreateAsync(request);
 
         if (_notificationContext.HasNotifications)
@@ -72,11 +67,11 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [ProducesResponseType(typeof(CompanyResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Put(int id, [FromBody] CompanyRequest request)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
         var response = await _companyService.UpdateAsync(id, request);
         
         if (_notificationContext.HasNotifications)
@@ -86,9 +81,6 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
         await _companyService.DeleteAsync(id);
