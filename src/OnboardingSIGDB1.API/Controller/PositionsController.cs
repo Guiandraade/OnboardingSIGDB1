@@ -30,9 +30,6 @@ public class PositionsController : ControllerBase
     }
     
     [HttpGet("{id:int}")]
-    [ProducesResponseType(typeof(PositionResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(int id)
     {
         var response = await _positionService.GetByIdAsync(id);
@@ -44,10 +41,11 @@ public class PositionsController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(PositionResponse), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Post([FromBody] PositionRequest request)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
         var response = await _positionService.CreateAsync(request);
         
         if (_notificationContext.HasNotifications)
@@ -57,11 +55,11 @@ public class PositionsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    [ProducesResponseType(typeof(PositionResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Put(int id, [FromBody] PositionRequest request)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+        
         var response = await _positionService.UpdateAsync(id, request);
 
         if (_notificationContext.HasNotifications)
@@ -71,9 +69,6 @@ public class PositionsController : ControllerBase
     }
 
     [HttpDelete("{id:int}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id)
     {
         await _positionService.DeleteAsync(id);

@@ -14,6 +14,7 @@ public class EmployeePosition : BaseElement<EmployeePosition>
     public int PositionId { get; private set; }
     
     public DateTime StartDate { get; private set; }
+    public DateTime? EndDate { get; private set; }
     
     public ValidationResult ValidationResult { get; private set; }
 
@@ -30,30 +31,37 @@ public class EmployeePosition : BaseElement<EmployeePosition>
        StartDate = startDate;
     }
 
+    public void ClosePosition(DateTime endDate)
+    {
+        EndDate = endDate;
+    }
+    
     public override bool Validation()
     {
-        ClearNotifications();
+        RuleFor(ep => ep.Employee)
+            .NotNull()
+            .WithMessage("Employee is required.");
 
         RuleFor(ep => ep.Position)
-            .NotNull().WithMessage("Position is required.");
-        
-        RuleFor(ep => ep.Employee)
-            .NotNull().WithMessage("Employee is required.");
-        
-        RuleFor(ep => ep.EmployeeId)
-            .GreaterThan(0).WithMessage("EmployeeId must be greater than 0");
+            .NotNull()
+            .WithMessage("Position is required.");
         
         RuleFor(ep => ep.PositionId)
-            .GreaterThan(0).WithMessage("Position id must be greater than 0");
-            
+            .GreaterThan(0)
+            .WithMessage("Position id must be greater than 0.");
+
         RuleFor(ep => ep.StartDate)
-            .Must(d => d > DateTime.MinValue)
-            .WithMessage("Start date must be a valid date.")
-            .LessThanOrEqualTo(DateTime.UtcNow)
-            .WithMessage("The start date cannot be in the future.");
+            .NotEmpty()
+            .WithMessage("Start date is required.")
+            .Must(d => d >= new DateTime(1900, 1, 1) && d <= DateTime.UtcNow)
+            .WithMessage("The start date must be between 01/01/1900 and today.");
         
-        ApplyValidation(this);
+        RuleFor(ep => ep.EndDate)
+            .Must((ep, endDate) => !endDate.HasValue || endDate >= ep.StartDate)
+            .WithMessage("The end date cannot be earlier than the start date.");
         
-        return IsValid;
+        ValidationResult = Validate(this);
+        return ValidationResult.IsValid;
     }
+    
 }

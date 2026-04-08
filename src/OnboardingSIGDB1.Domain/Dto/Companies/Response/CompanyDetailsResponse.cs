@@ -1,9 +1,9 @@
 ﻿namespace OnboardingSIGDB1.Domain.Dto.Companies.Response;
 
-public class CompanyDetailsResponse
+public record CompanyDetailsResponse
 {
-    public int EmployeeId { get; set; }
-    public string EmployeeName { get; set; }
-    public string PositionName { get; set; }
-    public DateTime HiringDate { get; set; }
+    public int EmployeeId { get; init; }
+    public string EmployeeName { get; init; } = string.Empty;
+    public string PositionName { get; init; } = string.Empty;
+    public DateTime HiringDate { get; init; }
 }
