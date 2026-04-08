@@ -70,9 +70,9 @@ OnboardingSIGDB1/
 - [x] **Fase 1**: Configuração inicial / Initial Setup:**
 - [x] **Fase 2**: DbContext e Mappings para Empresa / DbContext and Mappings for Company
 - [x] **Fase 3**: Configuração de DI no IOC / Dependency Injection in IOC
-- [ ] **Fase 4**: Repositórios Genéricos e Unit of Work / Generic Repositories and Unit of Work
-- [ ] **Fase 5**: Domain Services e Validações / Domain Services and Validations
-- [ ] **Fase 6**: Controllers e Endpoints / Controllers and Endpoints
+- [X] **Fase 4**: Repositórios Genéricos e Unit of Work / Generic Repositories and Unit of Work
+- [X] **Fase 5**: Domain Services e Validações / Domain Services and Validations
+- [X] **Fase 6**: Controllers e Endpoints / Controllers and Endpoints
 - [ ] **Fase 7**: Testes e refinamentos / Tests and refinements
 ---
 
