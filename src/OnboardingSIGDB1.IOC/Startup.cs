@@ -36,13 +36,16 @@ public static class Startup
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<ICompanyService, CompanyService>();
 
+        //EmployeeAndPosition
+        services.AddScoped<IEmployeePositionsRepository, EmployeePositionsRepository>();
+        
         //notifications
         services.AddScoped<INotificationContext, NotificationContext>();
 
         //unitOfWork
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        
+        //Automapper
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     }
 }
