@@ -43,8 +43,20 @@ public class PositionsController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] PositionRequest request)
     {
+        if (request == null) 
+        {
+            _notificationContext.AddNotification("Request", "Invalid data or empty request body.");
+            return BadRequest(_notificationContext.Notifications);
+        }
+    
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                _notificationContext.AddNotification("Model", error.ErrorMessage);
+            }
+            return BadRequest(_notificationContext.Notifications);
+        }
         
         var response = await _positionService.CreateAsync(request);
         
@@ -57,8 +69,20 @@ public class PositionsController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Put(int id, [FromBody] PositionRequest request)
     {
+        if (request == null) 
+        {
+            _notificationContext.AddNotification("Request", "Invalid data or empty request body.");
+            return BadRequest(_notificationContext.Notifications);
+        }
+    
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                _notificationContext.AddNotification("Model", error.ErrorMessage);
+            }
+            return BadRequest(_notificationContext.Notifications);
+        }
         
         var response = await _positionService.UpdateAsync(id, request);
 

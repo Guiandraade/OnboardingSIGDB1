@@ -6,6 +6,7 @@ namespace OnboardingSIGDB1.Domain.Interfaces.Repositories;
 public interface IEmployeeRepository : IBaseRepository<Employee>
 {
     Task<Employee?> GetByCpfAsync(string cpf);
+    Task<Employee?> GetByIdWithCompanyAsync(int id);
     Task<Employee?> GetHistoryAsync(int id);
     Task<(IEnumerable<Employee> Data, int total)> SearchAsync(EmployeeFilter filter);
 }

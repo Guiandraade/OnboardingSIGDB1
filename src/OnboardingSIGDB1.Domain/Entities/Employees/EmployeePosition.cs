@@ -54,7 +54,12 @@ public class EmployeePosition : BaseElement<EmployeePosition>
             .NotEmpty()
             .WithMessage("Start date is required.")
             .Must(d => d >= new DateTime(1900, 1, 1) && d <= DateTime.UtcNow)
-            .WithMessage("The start date must be between 01/01/1900 and today.");
+            .WithMessage("The start date must be between 01/01/1900 and today.")
+            .Must((ep, startDate) => 
+                ep.Employee?.Company == null || 
+                !ep.Employee.Company.FoundationDate.HasValue || 
+                startDate >= ep.Employee.Company.FoundationDate)
+            .WithMessage("The position start date cannot be earlier than the company foundation date.");
         
         RuleFor(ep => ep.EndDate)
             .Must((ep, endDate) => !endDate.HasValue || endDate >= ep.StartDate)
