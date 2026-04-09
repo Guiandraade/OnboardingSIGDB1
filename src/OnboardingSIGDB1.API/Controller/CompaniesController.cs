@@ -55,8 +55,20 @@ public class CompaniesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] CompanyRequest request)
     {
+        if (request == null) 
+        {
+            _notificationContext.AddNotification("Request", "Invalid data or empty request body.");
+            return BadRequest(_notificationContext.Notifications);
+        }
+    
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                _notificationContext.AddNotification("Model", error.ErrorMessage);
+            }
+            return BadRequest(_notificationContext.Notifications);
+        }
         
         var response = await _companyService.CreateAsync(request);
 
@@ -69,8 +81,20 @@ public class CompaniesController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Put(int id, [FromBody] CompanyRequest request)
     {
+        if (request == null) 
+        {
+            _notificationContext.AddNotification("Request", "Invalid data or empty request body.");
+            return BadRequest(_notificationContext.Notifications);
+        }
+    
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                _notificationContext.AddNotification("Model", error.ErrorMessage);
+            }
+            return BadRequest(_notificationContext.Notifications);
+        }
         
         var response = await _companyService.UpdateAsync(id, request);
         

@@ -26,6 +26,13 @@ public class EmployeeRepository(OnboardingDbContext context) : BaseRepository<Em
             .FirstOrDefaultAsync(e => e.Id == id);
     }
 
+    public async Task<Employee?> GetByIdWithCompanyAsync(int id)
+    {
+        return await DbSet
+            .Include(e => e.Company)
+            .FirstOrDefaultAsync(e => e.Id == id);
+    }
+
     public async Task<Employee?> GetByCpfAsync(string cpf)
     {
         var cpfClean = StringUtils.OnlyNumbers(cpf);

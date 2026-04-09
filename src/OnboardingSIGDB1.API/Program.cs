@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OnboardingSIGDB1.Data.Context;
 using OnboardingSIGDB1.IOC;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +35,7 @@ var app = builder.Build();
 var supportedCultures = new[] { new System.Globalization.CultureInfo("pt-BR") };
 app.UseRequestLocalization(new RequestLocalizationOptions
 {
-    DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("pt-BR"),
+    DefaultRequestCulture = new RequestCulture("pt-BR"),
     SupportedCultures = supportedCultures,
     SupportedUICultures = supportedCultures
 });
@@ -43,7 +46,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 app.UseHttpsRedirection();
 app.MapControllers();
