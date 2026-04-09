@@ -39,11 +39,16 @@ public class Company : BaseEntity<Company>
             .MinimumLength(3).WithMessage("The name must have at least 3 characters.") 
             .MaximumLength(150).WithMessage("Name must not exceed 150 characters.");
 
-        RuleFor(e => e.FoundationDate)
+        RuleFor(c => c.FoundationDate)
             .Must(d => d is null || d <= DateTime.UtcNow)
             .WithMessage("Foundation date must be a valid date.")
-            .Must(d => !d.HasValue || (d.Value >= new DateTime(1900, 1, 1) && d.Value <= DateTime.UtcNow))
-            .WithMessage("The hiring date must be between 01/01/1900 and today.");
+            .Must(d => !d.HasValue || (d.Value >= new DateTime(1900, 1, 1)))
+            .WithMessage("The foundation date must be after 01/01/1900.")
+            .Must((company, foundationDate) => 
+                !foundationDate.HasValue ||
+                !_employees.Any() ||
+                foundationDate <= _employees.Min(e => e.HireDate))
+            .WithMessage("The foundation date cannot be later than the hiring date of the oldest employee.");
         
         RuleFor(c => c.Cnpj)
             .NotEmpty().WithMessage("CNPJ is required.")
