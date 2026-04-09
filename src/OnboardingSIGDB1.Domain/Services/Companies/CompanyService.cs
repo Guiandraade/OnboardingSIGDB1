@@ -71,6 +71,17 @@ public class CompanyService : ICompanyService
         var company = await _companyRepository.GetByIdAsync(id);
         if (company == null) return NotifyError<CompanyResponse>("Company", "Company not found.");
         
+        if (request.FoundationDate.HasValue)
+        {
+            var earliestHireDate = await _companyRepository.GetEarliestEmployeeHireDateAsync(id);
+        
+            if (earliestHireDate.HasValue && request.FoundationDate > earliestHireDate.Value)
+            {
+                return NotifyError<CompanyResponse>("FoundationDate", 
+                    $"The founding dates cannot be later than the hiring of the longest-serving employee. ({earliestHireDate.Value:dd/MM/yyyy}).");
+            }
+        }
+        
         var cnpjClean = StringUtils.OnlyNumbers(request.Cnpj);
         
         var existingWithCnpj = await _companyRepository.GetByCnpjAsync(cnpjClean);
@@ -97,7 +108,7 @@ public class CompanyService : ICompanyService
 
         _companyRepository.Delete(company);
         
-        return await _unitOfWork.CommitAsync();;
+        return await _unitOfWork.CommitAsync();
     }
 
     public async Task<CompanyResponse?> GetByIdAsync(int id)
