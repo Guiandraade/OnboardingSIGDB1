@@ -1,8 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using OnboardingSIGDB1.Data.Context;
-using OnboardingSIGDB1.Domain.Interfaces.Contexts;
-using OnboardingSIGDB1.Domain.Interfaces.Persistence;
-using OnboardingSIGDB1.Domain.Notifications;
+using Microsoft.AspNetCore.Mvc;
 using OnboardingSIGDB1.IOC;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 builder.Services.AddSwaggerGen(c =>
 {
     c.MapType<DateTime>(() => new Microsoft.OpenApi.Models.OpenApiSchema
@@ -28,6 +28,14 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 Startup.ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
+
+var supportedCultures = new[] { new System.Globalization.CultureInfo("pt-BR") };
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("pt-BR"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
