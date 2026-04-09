@@ -9,6 +9,8 @@ public class PositionFilterValidator : BaseFilterValidator<PositionFilter>
     {
         RuleFor(x => x.Description)
             .MaximumLength(100)
-            .WithMessage("The description filter cannot exceed 100 characters.");
+            .WithMessage("The description filter cannot exceed 100 characters.")
+            .Must(d => string.IsNullOrWhiteSpace(d) || d.Trim().Length >= 2)
+            .WithMessage("The description filter must have at least 2 characters if provided.");
     }
 }

@@ -77,10 +77,13 @@ public class EmployeeService : IEmployeeService
         
         if (company == null) return NotifyFailure<EmployeeResponse>("Company not found.", "Company");
         if (position == null) return NotifyFailure<EmployeeResponse>("Position not found.", "Position");
-        
-        if (request.HireDate.HasValue && request.HireDate < company.FoundationDate)
+
+        if (request.HireDate.HasValue && company.FoundationDate.HasValue)
         {
-            return NotifyFailure<EmployeeResponse>("The hiring date cannot be earlier than the company's founding date.", "HireDate");
+            if (request.HireDate.Value < company.FoundationDate.Value)
+            {
+                return NotifyFailure<EmployeeResponse>("The hiring date cannot be earlier than the company's founding date.", "HireDate");
+            }
         }
         
         var employee = new Employee(request.Name, request.Cpf, request.HireDate, request.CompanyId);
@@ -93,7 +96,9 @@ public class EmployeeService : IEmployeeService
         
         await _employeeRepository.AddAsync(employee);
         
-        var employeeAndPosition = new EmployeePosition(employee, position, DateTime.UtcNow);
+        var startDatePosition = request.HireDate ?? DateTime.UtcNow;
+        
+        var employeeAndPosition = new EmployeePosition(employee, position, startDatePosition);
         if (!employeeAndPosition.Validation())
         {
             return NotifyFailure<EmployeeResponse>(
@@ -105,9 +110,7 @@ public class EmployeeService : IEmployeeService
         await _employeePositionsRepository.AddAsync(employeeAndPosition);
         await _unitOfWork.CommitAsync();
         
-        var result = await _employeeRepository.GetByIdAsync(employee.Id);
-
-        var response = _mapper.Map<EmployeeResponse>(result);
+        var response = _mapper.Map<EmployeeResponse>(employee);
         return Result<EmployeeResponse>.Success(response);
     }
     
@@ -141,21 +144,29 @@ public class EmployeeService : IEmployeeService
     
     public async Task<Result> ChangePositionAsync(int employeeId, ChangeEmployeePositionRequest request)
     {
-        var employee = await _employeeRepository.GetByIdAsync(employeeId);
+        var employee = await _employeeRepository.GetByIdWithCompanyAsync(employeeId);
         if (employee == null) return NotifyFailure("Employee not found.", "Employee");
 
         var position = await _positionRepository.GetByIdAsync(request.PositionId);
         if (position == null) return NotifyFailure("Position not found.", "Position");
 
+        var dateOfChange = DateTime.UtcNow;
+
+        if (employee.Company?.FoundationDate.HasValue == true &&
+            dateOfChange < employee.Company.FoundationDate)
+        {
+            return NotifyFailure(
+                $"The start date ({dateOfChange:dd/MM/yyyy}) cannot be earlier than the company foundation date ({employee.Company.FoundationDate:dd/MM/yyyy}).", 
+                "StartDate");
+        }
+        
         var hasHeldPositionBefore = await _employeePositionsRepository.HasEmployeeEverHeldPosition(employeeId, request.PositionId);
         if (hasHeldPositionBefore) return NotifyFailure("Employee has already held this position before.", "Position");
-
-        var dataOfChange = DateTime.UtcNow;
         
         var activePosition = await _employeePositionsRepository.GetActivePositionAsync(employeeId);
         if (activePosition != null)
         {
-            activePosition.ClosePosition(dataOfChange);
+            activePosition.ClosePosition(dateOfChange);
 
             if (!activePosition.Validation())
             {
@@ -165,7 +176,7 @@ public class EmployeeService : IEmployeeService
             }
         }
         
-        var newPosition = new EmployeePosition(employee, position, dataOfChange);
+        var newPosition = new EmployeePosition(employee, position, dateOfChange);
         if (!newPosition.Validation())
         {
             return NotifyFailure<bool>(
