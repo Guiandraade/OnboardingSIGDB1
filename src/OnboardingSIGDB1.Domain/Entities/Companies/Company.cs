@@ -43,12 +43,7 @@ public class Company : BaseEntity<Company>
             .Must(d => d is null || d <= DateTime.UtcNow)
             .WithMessage("Foundation date must be a valid date.")
             .Must(d => !d.HasValue || (d.Value >= new DateTime(1900, 1, 1)))
-            .WithMessage("The foundation date must be after 01/01/1900.")
-            .Must((company, foundationDate) => 
-                !foundationDate.HasValue ||
-                !_employees.Any() ||
-                foundationDate <= _employees.Min(e => e.HireDate))
-            .WithMessage("The foundation date cannot be later than the hiring date of the oldest employee.");
+            .WithMessage("The foundation date must be after 01/01/1900.");
         
         RuleFor(c => c.Cnpj)
             .NotEmpty().WithMessage("CNPJ is required.")

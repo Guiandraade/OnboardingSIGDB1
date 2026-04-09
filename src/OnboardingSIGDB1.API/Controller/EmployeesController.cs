@@ -47,8 +47,20 @@ public class EmployeesController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] EmployeeRequest request)
     {
+        if (request == null) 
+        {
+            _notificationContext.AddNotification("Request", "Invalid data or empty request body.");
+            return BadRequest(_notificationContext.Notifications);
+        }
+    
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                _notificationContext.AddNotification("Model", error.ErrorMessage);
+            }
+            return BadRequest(_notificationContext.Notifications);
+        }
 
         var result = await _employeeService.CreateAsync(request);
 
@@ -61,8 +73,20 @@ public class EmployeesController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Put(int id, [FromBody] EmployeeUpdateRequest request)
     {
+        if (request == null) 
+        {
+            _notificationContext.AddNotification("Request", "Invalid data or empty request body.");
+            return BadRequest(_notificationContext.Notifications);
+        }
+    
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                _notificationContext.AddNotification("Model", error.ErrorMessage);
+            }
+            return BadRequest(_notificationContext.Notifications);
+        }
 
         var result = await _employeeService.UpdateAsync(id, request);
 
@@ -97,8 +121,20 @@ public class EmployeesController : ControllerBase
     [HttpPost("{id:int}/positions")]
     public async Task<IActionResult> ChangePosition(int id, [FromBody] ChangeEmployeePositionRequest request)
     {
+        if (request == null) 
+        {
+            _notificationContext.AddNotification("Request", "Invalid data or empty request body.");
+            return BadRequest(_notificationContext.Notifications);
+        }
+    
         if (!ModelState.IsValid)
-            return BadRequest(ModelState);
+        {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                _notificationContext.AddNotification("Model", error.ErrorMessage);
+            }
+            return BadRequest(_notificationContext.Notifications);
+        }
 
         var result = await _employeeService.ChangePositionAsync(id, request);
 

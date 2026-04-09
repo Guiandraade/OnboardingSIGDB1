@@ -50,16 +50,10 @@ public class Employee : BaseEntity<Employee>
             .NotEmpty().WithMessage("CPF is required.")
             .Length(11).WithMessage("CPF must not exceed 11 characters.")
             .Must(CpfValidator.IsValid).WithMessage("The CPF provided is invalid.");
-        
+
         RuleFor(e => e.HireDate)
             .Must(d => !d.HasValue || (d.Value >= new DateTime(1900, 1, 1) && d.Value <= DateTime.UtcNow))
-            .WithMessage("The hiring date must be between 01/01/1900 and today.")
-            .Must((employee, hireDate) => 
-                !hireDate.HasValue || 
-                employee.Company == null || 
-                !employee.Company.FoundationDate.HasValue ||
-                hireDate >= employee.Company.FoundationDate)
-            .WithMessage("The hiring date cannot be earlier than the company's founding date.");
+            .WithMessage("The hiring date must be between 01/01/1900 and today.");
         
         ValidationResult = Validate(this);
         return ValidationResult.IsValid;
