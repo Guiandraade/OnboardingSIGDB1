@@ -65,4 +65,12 @@ public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Com
     {
         return await Context.Employees.AnyAsync(e => e.CompanyId == id);
     }
+    
+    public async Task<DateTime?> GetEarliestEmployeeHireDateAsync(int companyId)
+    {
+        return await Context.Employees
+            .Where(e => e.CompanyId == companyId)
+            .Select(e => e.HireDate)
+            .MinAsync();
+    }
 }   
