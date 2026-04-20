@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OnboardingSIGDB1.Data.Context;
 using OnboardingSIGDB1.IOC;
 
 var builder = WebApplication.CreateBuilder(args);

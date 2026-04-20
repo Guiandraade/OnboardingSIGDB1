@@ -5,4 +5,5 @@
     <Project Path="src/OnboardingSIGDB1.Domain/OnboardingSIGDB1.Domain.csproj" />
     <Project Path="src/OnboardingSIGDB1.IOC/OnboardingSIGDB1.IOC.csproj" />
   </Folder>
+  <Project Path="tests/OnboardingSIGDB1.UnitTests/OnboardingSIGDB1.UnitTests.csproj" />
 </Solution>

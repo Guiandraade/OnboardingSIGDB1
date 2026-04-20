@@ -28,7 +28,7 @@ public class Employee : BaseEntity<Employee>
     public Employee(string name, string cpf, DateTime? hireDate, int companyId)
     {
         Name = name;
-        Cpf = StringUtils.OnlyNumbers(cpf ?? "");
+        Cpf = StringUtils.OnlyNumbers(cpf);
         HireDate = hireDate;
         CompanyId = companyId;
     }
@@ -41,28 +41,39 @@ public class Employee : BaseEntity<Employee>
     
     public override bool Validation()
     {
-        RuleFor(e => e.Name)
-            .NotEmpty().WithMessage("Name is required.")
-            .MinimumLength(3).WithMessage("The name must have at least 3 characters.") 
-            .MaximumLength(150).WithMessage("Name must not exceed 150 characters.");
-        
-        RuleFor(e => e.Cpf)
-            .NotEmpty().WithMessage("CPF is required.")
-            .Length(11).WithMessage("CPF must not exceed 11 characters.")
-            .Must(CpfValidator.IsValid).WithMessage("The CPF provided is invalid.");
+        if (!RulesRegistered)
+        {
+            RuleFor(e => e.Name)
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty().WithMessage("Name is required.")
+                .MinimumLength(3).WithMessage("The name must have at least 3 characters.")
+                .MaximumLength(150).WithMessage("Name must not exceed 150 characters.");
 
-        RuleFor(e => e.HireDate)
-            .Must(d => !d.HasValue || (d.Value >= new DateTime(1900, 1, 1) && d.Value <= DateTime.UtcNow))
-            .WithMessage("The hiring date must be between 01/01/1900 and today.");
-        
+            RuleFor(e => e.Cpf)
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty().WithMessage("CPF is required.")
+                .Length(11).WithMessage("CPF must be exactly 11 characters.")
+                .Must(CpfValidator.IsValid).WithMessage("The CPF provided is invalid.");
+
+            RuleFor(e => e.HireDate)
+                .Must(d => !d.HasValue || d.Value.Date <= DateTime.UtcNow.Date)
+                .WithMessage("Hire date cannot be in the future.")
+                .Must(d => !d.HasValue || d.Value > new DateTime(1900, 1, 1))
+                .WithMessage("The hire date must be after 01/01/1900.");
+
+            RuleFor(e => e.CompanyId)
+                .GreaterThan(0)
+                .WithMessage("CompanyId must be greater than zero.");
+
+            MarkRulesAsRegistered();
+        }
+
         ValidationResult = Validate(this);
         return ValidationResult.IsValid;
     }
     
     public EmployeePosition? GetLastPosition()
     {
-        if (!_positions.Any()) return null;
-
         return _positions
             .OrderByDescending(e => e.StartDate)
             .FirstOrDefault();

@@ -38,28 +38,35 @@ public class EmployeePosition : BaseElement<EmployeePosition>
     
     public override bool Validation()
     {
-        RuleFor(ep => ep.Employee)
-            .NotNull()
-            .WithMessage("Employee is required.");
+        if (!RulesRegistered)
+        {
+            RuleFor(ep => ep.Employee)
+                .NotNull()
+                .WithMessage("Employee is required.");
 
-        RuleFor(ep => ep.Position)
-            .NotNull()
-            .WithMessage("Position is required.");
-        
-        RuleFor(ep => ep.PositionId)
-            .GreaterThan(0)
-            .WithMessage("Position id must be greater than 0.");
+            RuleFor(ep => ep.Position)
+                .NotNull()
+                .WithMessage("Position is required.");
 
-        RuleFor(ep => ep.StartDate)
-            .NotEmpty()
-            .WithMessage("Start date is required.")
-            .Must(d => d >= new DateTime(1900, 1, 1) && d <= DateTime.UtcNow)
-            .WithMessage("The start date must be between 01/01/1900 and today.");
-        
-        RuleFor(ep => ep.EndDate)
-            .Must((ep, endDate) => !endDate.HasValue || endDate >= ep.StartDate)
-            .WithMessage("The end date cannot be earlier than the start date.");
-        
+            RuleFor(ep => ep.PositionId)
+                .GreaterThan(0)
+                .WithMessage("Position id must be greater than 0.");
+
+            RuleFor(ep => ep.StartDate)
+                .NotEmpty()
+                .WithMessage("Start date is required.")
+                .Must(d => d.Date <= DateTime.UtcNow.Date)
+                .WithMessage("Start date cannot be in the future.")
+                .Must(d => d > new DateTime(1900, 1, 1))
+                .WithMessage("The start date must be after 01/01/1900.");
+
+            RuleFor(ep => ep.EndDate)
+                .Must((ep, endDate) => !endDate.HasValue || endDate >= ep.StartDate)
+                .WithMessage("The end date cannot be earlier than the start date.");
+
+            MarkRulesAsRegistered();
+        }
+
         ValidationResult = Validate(this);
         return ValidationResult.IsValid;
     }
