@@ -44,7 +44,7 @@ public static class Startup
 
         //unitOfWork
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+        
         //Automapper
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     }
