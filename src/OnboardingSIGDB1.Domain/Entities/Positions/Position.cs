@@ -28,10 +28,15 @@ public class Position :  BaseEntity<Position>
 
     public override bool Validation()
     {
-        RuleFor(p => p.Description)
-            .NotEmpty().WithMessage("Description is required")
-            .MinimumLength(3).WithMessage("Description must have at least 3 characters") 
-            .MaximumLength(100).WithMessage("Description cannot exceed 100 characters"); 
+        if (!RulesRegistered)
+        {
+            RuleFor(p => p.Description)
+                .NotEmpty().WithMessage("Description is required.")
+                .MinimumLength(3).WithMessage("Description must have at least 3 characters.")
+                .MaximumLength(100).WithMessage("Description cannot exceed 100 characters.");
+
+            MarkRulesAsRegistered();
+        }
 
         ValidationResult = Validate(this);
         return ValidationResult.IsValid;
