@@ -1,31 +1,32 @@
 ﻿using AutoMapper;
-using OnboardingSIGDB1.Domain.Base;
+using FluentValidation;
 using OnboardingSIGDB1.Domain.Dto.Base;
 using OnboardingSIGDB1.Domain.Dto.EmployeeAndPositions.Request;
-using OnboardingSIGDB1.Domain.Dto.EmployeeAndPositions.Response;
 using OnboardingSIGDB1.Domain.Dto.Employees.Request;
 using OnboardingSIGDB1.Domain.Dto.Employees.Response;
 using OnboardingSIGDB1.Domain.Dto.Filters;
-using OnboardingSIGDB1.Domain.Dto.filters.Validators;
 using OnboardingSIGDB1.Domain.Entities.Employees;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Persistence;
+using OnboardingSIGDB1.Domain.Interfaces.Providers;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
 using OnboardingSIGDB1.Domain.Interfaces.Services;
+using OnboardingSIGDB1.Domain.Services.Base;
 using OnboardingSIGDB1.Domain.Utils;
 
 namespace OnboardingSIGDB1.Domain.Services.Employees;
 
-public class EmployeeService : IEmployeeService
+public class EmployeeService : BaseService, IEmployeeService
 {
     private readonly ICompanyRepository _companyRepository;
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IEmployeePositionsRepository _employeePositionsRepository;
-    private readonly IPositionRepository _positionRepository; 
-    private readonly IUnitOfWork _unitOfWork;                
+    private readonly IPositionRepository _positionRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private readonly INotificationContext _notificationContext;
-    
+    private readonly IValidator<EmployeeFilter> _employeeFilterValidator;
+    private readonly IDateTimeProvider _dateTimeProvider;
+
     public EmployeeService(
         ICompanyRepository companyRepository,
         IEmployeeRepository employeeRepository,
@@ -33,8 +34,10 @@ public class EmployeeService : IEmployeeService
         IPositionRepository positionRepository,
         IUnitOfWork unitOfWork,
         IMapper mapper,
-        INotificationContext notificationContext
-    )
+        INotificationContext notificationContext,
+        IValidator<EmployeeFilter> employeeFilterValidator,
+        IDateTimeProvider dateTimeProvider)
+        : base(notificationContext)
     {
         _companyRepository = companyRepository;
         _employeeRepository = employeeRepository;
@@ -42,200 +45,146 @@ public class EmployeeService : IEmployeeService
         _positionRepository = positionRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _notificationContext = notificationContext;
+        _employeeFilterValidator = employeeFilterValidator;
+        _dateTimeProvider = dateTimeProvider;
     }
-    
-    private Result<T> NotifyFailure<T>(IEnumerable<(string Key, string Message)> errors)
-    {
-        foreach (var error in errors)
-            _notificationContext.AddNotification(error.Key, error.Message);
-        
-        return Result<T>.Failure("Validation failed");
-    }
-    
-    private Result<T> NotifyFailure<T>(string message, string key = "Error")
-    {
-        _notificationContext.AddNotification(key, message);
-        return Result<T>.Failure(message);
-    }
-    
-    private Result NotifyFailure(string message, string key = "Error")
-    {
-        _notificationContext.AddNotification(key, message);
-        return Result.Failure(message);
-    }
-    
-    public async Task<Result<EmployeeResponse>> CreateAsync(EmployeeRequest request)
+
+
+    public async Task<EmployeeResponse?> CreateAsync(EmployeeRequest request)
     {
         var cleanCpf = StringUtils.OnlyNumbers(request.Cpf);
-        
+
         if (await _employeeRepository.GetByCpfAsync(cleanCpf) != null)
-            return NotifyFailure<EmployeeResponse>("This employee is already registered.", "Cpf");
+            return NotifyError<EmployeeResponse>("Cpf", "This employee is already registered.");
 
         var company = await _companyRepository.GetByIdAsync(request.CompanyId);
-        var position = await _positionRepository.GetByIdAsync(request.PositionId);
-        
-        if (company == null) return NotifyFailure<EmployeeResponse>("Company not found.", "Company");
-        if (position == null) return NotifyFailure<EmployeeResponse>("Position not found.", "Position");
+        if (company == null) return NotifyError<EmployeeResponse>("Company", "Company not found.");
 
-        if (request.HireDate.HasValue && company.FoundationDate.HasValue)
-        {
-            if (request.HireDate.Value < company.FoundationDate.Value)
-            {
-                return NotifyFailure<EmployeeResponse>("The hiring date cannot be earlier than the company's founding date.", "HireDate");
-            }
-        }
-        
+        var position = await _positionRepository.GetByIdAsync(request.PositionId);
+        if (position == null) return NotifyError<EmployeeResponse>("Position", "Position not found.");
+
+        if (request.HireDate.HasValue && company.FoundationDate.HasValue &&
+            request.HireDate.Value < company.FoundationDate.Value)
+            return NotifyError<EmployeeResponse>("HireDate", "The hiring date cannot be earlier than the company's founding date.");
+
         var employee = new Employee(request.Name, request.Cpf, request.HireDate, request.CompanyId);
-        if (!employee.Validation())
-        {
-            return NotifyFailure<EmployeeResponse>(
-                errors: employee.ValidationResult.Errors.Select(e => (e.PropertyName, e.ErrorMessage))
-            );
-        }
-        
+        if (!employee.Validation()) return AddDomainNotifications<EmployeeResponse>(employee.ValidationResult);
+
         await _employeeRepository.AddAsync(employee);
-        
-        var startDatePosition = request.HireDate ?? DateTime.UtcNow;
-        
+
+        var startDatePosition = request.HireDate ?? _dateTimeProvider.UtcNow;
         var employeeAndPosition = new EmployeePosition(employee, position, startDatePosition);
-        if (!employeeAndPosition.Validation())
-        {
-            return NotifyFailure<EmployeeResponse>(
-                errors: employeeAndPosition.ValidationResult.Errors
-                    .Select(e => (e.PropertyName, e.ErrorMessage))
-            );
-        }
-        
+        if (!employeeAndPosition.Validation()) return AddDomainNotifications<EmployeeResponse>(employeeAndPosition.ValidationResult);
+
         await _employeePositionsRepository.AddAsync(employeeAndPosition);
-        await _unitOfWork.CommitAsync();
-        
-        var response = _mapper.Map<EmployeeResponse>(employee);
-        return Result<EmployeeResponse>.Success(response);
+        var commitOk = await _unitOfWork.CommitAsync();
+        if (!commitOk) return NotifyError<EmployeeResponse>("Commit", "Unable to save changes.");
+
+        return _mapper.Map<EmployeeResponse>(employee);
     }
-    
-    public async Task<Result<EmployeeResponse>> UpdateAsync(int id, EmployeeUpdateRequest request)
+
+    public async Task<EmployeeResponse?> UpdateAsync(int id, EmployeeUpdateRequest request)
     {
         var employee = await _employeeRepository.GetByIdAsync(id);
-        if (employee == null) return NotifyFailure<EmployeeResponse>("Employee not found.", "Employee");
-        
+        if (employee == null) return NotifyError<EmployeeResponse>("Employee", "Employee not found.");
+
         var cpfClean = StringUtils.OnlyNumbers(request.Cpf);
-        
+
         var existingWithCpf = await _employeeRepository.GetByCpfAsync(cpfClean);
         if (existingWithCpf != null && existingWithCpf.Id != id)
-            return NotifyFailure<EmployeeResponse>("CPF already in use.", "Cpf");
-        
+            return NotifyError<EmployeeResponse>("Cpf", "CPF already in use.");
+
         employee.Update(request.Name, cpfClean);
 
-        if (!employee.Validation())
-        {
-            return NotifyFailure<EmployeeResponse>(
-                errors: employee.ValidationResult.Errors.Select(e => (e.PropertyName, e.ErrorMessage))
-            );
-        }
-        
-        await _unitOfWork.CommitAsync();
+        if (!employee.Validation()) return AddDomainNotifications<EmployeeResponse>(employee.ValidationResult);
 
-        var result = await _employeeRepository.GetByIdAsync(employee.Id);
-        
-        var response = _mapper.Map<EmployeeResponse>(result);
-        return Result<EmployeeResponse>.Success(response);
+        var commitOk = await _unitOfWork.CommitAsync();
+        if (!commitOk) return NotifyError<EmployeeResponse>("Commit", "Unable to save changes.");
+
+        return _mapper.Map<EmployeeResponse>(employee);
     }
-    
-    public async Task<Result> ChangePositionAsync(int employeeId, ChangeEmployeePositionRequest request)
+
+    public async Task<bool> ChangePositionAsync(int employeeId, ChangeEmployeePositionRequest request)
     {
         var employee = await _employeeRepository.GetByIdWithCompanyAsync(employeeId);
-        if (employee == null) return NotifyFailure("Employee not found.", "Employee");
+        if (employee == null) return NotifyErrorBool("Employee", "Employee not found.");
 
         var position = await _positionRepository.GetByIdAsync(request.PositionId);
-        if (position == null) return NotifyFailure("Position not found.", "Position");
+        if (position == null) return NotifyErrorBool("Position", "Position not found.");
 
-        var dateOfChange = DateTime.UtcNow;
+        var dateOfChange = _dateTimeProvider.UtcNow;
 
-        if (employee.Company?.FoundationDate.HasValue == true &&
-            dateOfChange < employee.Company.FoundationDate)
-        {
-            return NotifyFailure(
-                $"The start date ({dateOfChange:dd/MM/yyyy}) cannot be earlier than the company foundation date ({employee.Company.FoundationDate:dd/MM/yyyy}).", 
-                "StartDate");
-        }
-        
-        var hasHeldPositionBefore = await _employeePositionsRepository.HasEmployeeEverHeldPosition(employeeId, request.PositionId);
-        if (hasHeldPositionBefore) return NotifyFailure("Employee has already held this position before.", "Position");
-        
+        if (employee.Company.FoundationDate.HasValue && dateOfChange < employee.Company.FoundationDate)
+            return NotifyErrorBool("StartDate", $"The start date ({dateOfChange:dd/MM/yyyy}) cannot be earlier than the company foundation date ({employee.Company.FoundationDate:dd/MM/yyyy}).");
+
+        if (await _employeePositionsRepository.HasEmployeeEverHeldPosition(employeeId, request.PositionId))
+            return NotifyErrorBool("Position", "Employee has already held this position before.");
+
         var activePosition = await _employeePositionsRepository.GetActivePositionAsync(employeeId);
         if (activePosition != null)
         {
             activePosition.ClosePosition(dateOfChange);
-
             if (!activePosition.Validation())
-            {
-                return NotifyFailure<bool>(
-                    errors: activePosition.ValidationResult.Errors.Select(e => (e.PropertyName, e.ErrorMessage))
-                );
-            }
+                return AddDomainNotificationsBool(activePosition.ValidationResult);
         }
-        
+
         var newPosition = new EmployeePosition(employee, position, dateOfChange);
         if (!newPosition.Validation())
-        {
-            return NotifyFailure<bool>(
-                errors: newPosition.ValidationResult.Errors.Select(e => (e.PropertyName, e.ErrorMessage))
-            );
-        }
+            return AddDomainNotificationsBool(newPosition.ValidationResult);
 
         await _employeePositionsRepository.AddAsync(newPosition);
-        await _unitOfWork.CommitAsync();
-        
-        var response = _mapper.Map<ChangePositionResponse>(newPosition);
-        return Result<ChangePositionResponse>.Success(response);
+        var commitOk = await _unitOfWork.CommitAsync();
+        if (!commitOk) return NotifyErrorBool("Commit", "Unable to save changes.");
+
+        return true;
     }
 
-    public async Task<Result> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
         var employee = await _employeeRepository.GetByIdAsync(id);
-        if (employee == null) return NotifyFailure("Employee not found.");
-        
+        if (employee == null) return NotifyErrorBool("Employee", "Employee not found.");
+
         _employeeRepository.Delete(employee);
-        var success = await _unitOfWork.CommitAsync();
         
-        return success ? Result.Success() : NotifyFailure("Database error while deleting employee.");
+        var commitOk = await _unitOfWork.CommitAsync();
+        if (!commitOk) return NotifyErrorBool("Commit", "Unable to save changes.");
+        
+        return true;
     }
 
-    public async Task<Result<EmployeeResponse>> GetByIdAsync(int id)
+    public async Task<EmployeeResponse?> GetByIdAsync(int id)
     {
         var employee = await _employeeRepository.GetByIdAsync(id);
-        if (employee == null) return NotifyFailure<EmployeeResponse>("Employee not found.");
+        if (employee == null) return NotifyError<EmployeeResponse>("Employee", "Employee not found.");
 
-        var response = _mapper.Map<EmployeeResponse>(employee);
-        return Result<EmployeeResponse>.Success(response);
+        return _mapper.Map<EmployeeResponse>(employee);
     }
 
-    public async Task<Result<EmployeeAndPositionsResponse>> GetHistoryAsync(int id)
+    public async Task<EmployeeAndPositionsResponse?> GetHistoryAsync(int id)
     {
         var employee = await _employeeRepository.GetHistoryAsync(id);
-        if (employee == null) return NotifyFailure<EmployeeAndPositionsResponse>("Employee not found.");
-        
-        var response = _mapper.Map<EmployeeAndPositionsResponse>(employee);
-        return Result<EmployeeAndPositionsResponse>.Success(response);
+        if (employee == null) return NotifyError<EmployeeAndPositionsResponse>("Employee", "Employee not found.");
+
+        return _mapper.Map<EmployeeAndPositionsResponse>(employee);
     }
-    
-    public async Task<Result<PagedResponse<EmployeeResponse>>> SearchAsync(EmployeeFilter filter)
+
+    public async Task<PagedResponse<EmployeeResponse>> SearchAsync(EmployeeFilter filter)
     {
-        var validator = new EmployeeFilterValidator();
-        var validationResult = await validator.ValidateAsync(filter);
+        var validationResult = await _employeeFilterValidator.ValidateAsync(filter);
 
         if (!validationResult.IsValid)
         {
-            return NotifyFailure<PagedResponse<EmployeeResponse>>(
-                errors: validationResult.Errors.Select(e => (e.PropertyName, e.ErrorMessage))
-            );
+            AddValidationErrors(validationResult);
+            return new PagedResponse<EmployeeResponse>(
+                Enumerable.Empty<EmployeeResponse>(),
+                0,
+                filter.PageNumber,
+                filter.PageSize);
         }
 
-        var (employee, total) = await _employeeRepository.SearchAsync(filter);
-        var mapperData = _mapper.Map<IEnumerable<EmployeeResponse>>(employee);
+        var (employees, total) = await _employeeRepository.SearchAsync(filter);
+        var mapperData = _mapper.Map<IEnumerable<EmployeeResponse>>(employees);
 
-        var pagedDataResponse = new PagedResponse<EmployeeResponse>(mapperData, total, filter.PageNumber, filter.PageSize);
-        return Result<PagedResponse<EmployeeResponse>>.Success(pagedDataResponse);
+        return new PagedResponse<EmployeeResponse>(mapperData, total, filter.PageNumber, filter.PageSize);
     }
 }

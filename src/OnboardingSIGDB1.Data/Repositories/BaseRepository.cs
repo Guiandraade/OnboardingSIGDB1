@@ -15,4 +15,5 @@ public class BaseRepository<T>(OnboardingDbContext context) : IBaseRepository<T>
     public virtual async Task AddAsync(T entity) => await DbSet.AddAsync(entity);
     
     public virtual void Delete(T entity) => DbSet.Remove(entity);
+    
 }

@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using OnboardingSIGDB1.UnitTests.Builders;
 
-namespace OnboardingSIGDB1.UnitTests.Domain.Entities.Position;
+namespace OnboardingSIGDB1.UnitTests.Domain.Entities.Positions;
 
 public class PositionBehaviorTests
 {

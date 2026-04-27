@@ -1,6 +1,6 @@
 ﻿namespace OnboardingSIGDB1.Domain.Utils;
 
-public class StringUtils
+public static class StringUtils
 {
     public static string OnlyNumbers(string value)
     {
