@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnboardingSIGDB1.Domain.Dto.Base;
 using OnboardingSIGDB1.Domain.Dto.Companies.Request;
-using OnboardingSIGDB1.Domain.Dto.Companies.Response;
 using OnboardingSIGDB1.Domain.Dto.Filters;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Services;
@@ -27,6 +25,10 @@ public class CompaniesController : ControllerBase
     public async Task<IActionResult> GetAll([FromQuery] CompanyFilter filter)
     {
         var result = await _companyService.SearchAsync(filter);
+        
+        if (_notificationContext.HasNotifications)
+            return BadRequest(_notificationContext.Notifications);
+        
         return Ok(result);
     }
     

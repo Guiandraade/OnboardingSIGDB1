@@ -48,13 +48,13 @@ public class EmployeeBehaviorTests
     public void ShouldUpdatePropertiesWhenUpdateIsCalled()
     {
         var employee = EmployeeBuilder.New()
-            .WithName("teste")
+            .WithName("test")
             .WithCpf("342.266.960-42")
             .Build();
 
-        employee.Update("Teste2", "422.309.780-63");
+        employee.Update("Test Updated", "422.309.780-63");
 
-        employee.Name.Should().Be("Teste2");
+        employee.Name.Should().Be("Test Updated");
         employee.Cpf.Should().Be("42230978063");
     }
 

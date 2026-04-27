@@ -26,6 +26,10 @@ public class PositionsController : ControllerBase
     public async Task<IActionResult> GetAll([FromQuery] PositionFilter filter)
     {
         var result = await _positionService.SearchAsync(filter);
+        
+        if (_notificationContext.HasNotifications)
+            return BadRequest(_notificationContext.Notifications);
+        
         return Ok(result);
     }
     
@@ -63,7 +67,7 @@ public class PositionsController : ControllerBase
         if (_notificationContext.HasNotifications)
             return BadRequest(_notificationContext.Notifications);
 
-        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+        return CreatedAtAction(nameof(GetById), new { id = response!.Id }, response);
     }
 
     [HttpPut("{id:int}")]

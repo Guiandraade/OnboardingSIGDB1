@@ -1,53 +1,38 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using OnboardingSIGDB1.Domain.Dto.Base;
 using OnboardingSIGDB1.Domain.Dto.Companies.Request;
 using OnboardingSIGDB1.Domain.Dto.Companies.Response;
 using OnboardingSIGDB1.Domain.Dto.Filters;
-using OnboardingSIGDB1.Domain.Dto.filters.Validators;
 using OnboardingSIGDB1.Domain.Entities.Companies;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Persistence;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
 using OnboardingSIGDB1.Domain.Interfaces.Services;
+using OnboardingSIGDB1.Domain.Services.Base;
 using OnboardingSIGDB1.Domain.Utils;
 
 namespace OnboardingSIGDB1.Domain.Services.Companies;
 
-public class CompanyService : ICompanyService
+public class CompanyService : BaseService, ICompanyService
 {
-    private readonly INotificationContext _notificationContext;
     private readonly IMapper _mapper;
     private readonly ICompanyRepository _companyRepository;
-    private readonly IUnitOfWork _unitOfWork;    
-    
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly IValidator<CompanyFilter> _companyFilterValidator;
+
     public CompanyService(
-        IMapper mapper, 
-        ICompanyRepository repository, 
-        IUnitOfWork unitOfWork,  
-        INotificationContext notificationContext)
+        IMapper mapper,
+        ICompanyRepository repository,
+        IUnitOfWork unitOfWork,
+        INotificationContext notificationContext,
+        IValidator<CompanyFilter> companyFilterValidator) 
+        : base(notificationContext)
     {
         _mapper = mapper;
         _companyRepository = repository;
         _unitOfWork = unitOfWork;
-        _notificationContext = notificationContext;
-    }
-
-    private T? NotifyError<T>(string key, string message) where T : class
-    {
-        _notificationContext.AddNotification(key, message);
-        return null;
-    }
-    
-    private T? AddDomainNotifications<T>(Company company) where T : class
-    {
-        _notificationContext.AddRange(company.ValidationResult.Errors);
-        return null;
-    }
-
-    private bool NotifyErrorBool(string key, string message)
-    {
-        _notificationContext.AddNotification(key, message);
-        return false;
+        _companyFilterValidator = companyFilterValidator;
     }
     
     public async Task<CompanyResponse?> CreateAsync(CompanyRequest request)
@@ -58,10 +43,11 @@ public class CompanyService : ICompanyService
 
         var company = new Company(request.Name, cnpjClean, request.FoundationDate);
         
-        if (!company.Validation()) return AddDomainNotifications<CompanyResponse>(company);
+        if (!company.Validation()) return AddDomainNotifications<CompanyResponse>(company.ValidationResult);
         
         await _companyRepository.AddAsync(company);
-        await _unitOfWork.CommitAsync();
+        var commitOk = await _unitOfWork.CommitAsync();
+        if (!commitOk) return NotifyError<CompanyResponse>("Commit", "Unable to save changes.");
         
         return _mapper.Map<CompanyResponse>(company);
     }
@@ -90,9 +76,10 @@ public class CompanyService : ICompanyService
         
         company.Update(request.Name, cnpjClean, request.FoundationDate);
         
-        if (!company.Validation()) return AddDomainNotifications<CompanyResponse>(company);
+        if (!company.Validation()) return AddDomainNotifications<CompanyResponse>(company.ValidationResult);
         
-        await _unitOfWork.CommitAsync();
+        var commitOk = await _unitOfWork.CommitAsync();
+        if (!commitOk) return NotifyError<CompanyResponse>("Commit", "Unable to save changes.");
         
         return _mapper.Map<CompanyResponse>(company);
     }
@@ -108,7 +95,10 @@ public class CompanyService : ICompanyService
 
         _companyRepository.Delete(company);
         
-        return await _unitOfWork.CommitAsync();
+        var commitOk = await _unitOfWork.CommitAsync();
+        if (!commitOk) return NotifyErrorBool("Commit", "Unable to save changes.");
+        
+        return true;
     }
 
     public async Task<CompanyResponse?> GetByIdAsync(int id)
@@ -129,12 +119,11 @@ public class CompanyService : ICompanyService
 
     public async Task<PagedResponse<CompanyResponse>> SearchAsync(CompanyFilter filter)
     {
-        var validator = new CompanyFilterValidator();
-        var validationResult = await validator.ValidateAsync(filter);
+        var validationResult = await _companyFilterValidator.ValidateAsync(filter);
 
         if (!validationResult.IsValid)
         {
-            _notificationContext.AddRange(validationResult.Errors);
+            AddValidationErrors(validationResult);
 
             return new PagedResponse<CompanyResponse>(
                 Enumerable.Empty<CompanyResponse>(),
