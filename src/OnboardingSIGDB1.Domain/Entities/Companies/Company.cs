@@ -19,14 +19,14 @@ public class Company : BaseEntity<Company>
     
     protected Company() { }
     
-        public Company(string name, string cnpj, DateTime? foundationDate)
+    public Company(string name, string cnpj, DateTime? foundationDate)
     {
         Name = name;
         Cnpj = StringUtils.OnlyNumbers(cnpj);
         FoundationDate = foundationDate;
     }
 
-        public void Update(string name, string cnpj, DateTime? foundationDate)
+    public void Update(string name, string cnpj, DateTime? foundationDate)
     {
         Name = name;
         Cnpj = StringUtils.OnlyNumbers(cnpj);

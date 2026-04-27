@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using OnboardingSIGDB1.UnitTests.Builders;
 
-namespace OnboardingSIGDB1.UnitTests.Domain.Entities.Position;
+namespace OnboardingSIGDB1.UnitTests.Domain.Entities.Positions;
 
 public class PositionValidationTests
 {
@@ -19,10 +19,10 @@ public class PositionValidationTests
     [Theory]
     [InlineData("te")]
     [InlineData("")]
-    public void ShouldFailWhenDescriptionIsLessThanThreeOrEmpty(string descricao)
+    public void ShouldFailWhenDescriptionIsLessThanThreeOrEmpty(string description)
     {
         var ps = PositionBuilder.New()
-            .WithDescription(descricao)
+            .WithDescription(description)
             .Build();
 
         var result = ps.Validation();

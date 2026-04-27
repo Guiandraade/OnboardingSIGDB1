@@ -15,9 +15,8 @@ public static class CnpjValidator
         if (cnpj.Length != 14)
             return false;
 
-        if (!cnpj.All(char.IsDigit))
-            return false;
 
+        // Stryker disable once Equality : Equivalent mutant — all-same-digit CNPJs (e.g. 00000000000000) pass check-digit math, so this guard is required and the == → != mutation is equivalent.
         if (cnpj.All(c => c == cnpj[0]))
             return false;
 

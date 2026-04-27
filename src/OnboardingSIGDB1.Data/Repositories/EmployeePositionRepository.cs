@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnboardingSIGDB1.Data.Context;
-using OnboardingSIGDB1.Domain.Dto.filters;
+using OnboardingSIGDB1.Domain.Dto.Filters;
 using OnboardingSIGDB1.Domain.Entities.Employees;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
 
