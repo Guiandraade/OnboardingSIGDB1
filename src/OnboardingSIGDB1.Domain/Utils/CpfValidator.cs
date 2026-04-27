@@ -12,8 +12,6 @@ public static class CpfValidator
         if (cpf.Length != 11)
             return false;
 
-        if (!cpf.All(char.IsDigit))
-            return false;
 
         if (cpf.All(c => c == cpf[0]))
             return false;

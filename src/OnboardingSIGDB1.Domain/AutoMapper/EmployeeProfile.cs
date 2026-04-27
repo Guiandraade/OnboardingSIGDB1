@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using OnboardingSIGDB1.Domain.Dto.EmployeeAndPositions.Response;
 using OnboardingSIGDB1.Domain.Dto.Employees.Request;
 using OnboardingSIGDB1.Domain.Dto.Employees.Response;
 using OnboardingSIGDB1.Domain.Entities.Employees;
@@ -45,10 +44,6 @@ public class EmployeeProfile : Profile
             .ForMember(dest => dest.PositionHistory,
                 opt => opt.MapFrom(src =>
                     src.Positions.OrderByDescending(p => p.StartDate)));
-        
-        CreateMap<EmployeePosition, ChangePositionResponse>()
-            .ForMember(dest => dest.PositionName, 
-                opt => opt.MapFrom(src => src.Position.Description));
         
         CreateMap<EmployeePosition, EmployeePositionHistoryResponse>()
             .ForMember(dest => dest.PositionName,
