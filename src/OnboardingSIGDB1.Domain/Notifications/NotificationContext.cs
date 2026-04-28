@@ -7,7 +7,6 @@ public sealed class NotificationContext : INotificationContext
 {
     private readonly List<Notification> _notifications = new();
     public IReadOnlyCollection<Notification> Notifications =>  _notifications.AsReadOnly();
-    public bool HasNotifications => _notifications.Any();
     public bool IsValid => !_notifications.Any();
     
     public void AddNotification(string key, string message)
