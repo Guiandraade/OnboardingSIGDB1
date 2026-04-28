@@ -27,7 +27,7 @@ public class PositionsController : ControllerBase
     {
         var result = await _positionService.SearchAsync(filter);
         
-        if (_notificationContext.HasNotifications)
+        if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
         
         return Ok(result);
@@ -38,7 +38,7 @@ public class PositionsController : ControllerBase
     {
         var response = await _positionService.GetByIdAsync(id);
 
-        if (_notificationContext.HasNotifications)
+        if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
         
         return Ok(response);
@@ -64,7 +64,7 @@ public class PositionsController : ControllerBase
         
         var response = await _positionService.CreateAsync(request);
         
-        if (_notificationContext.HasNotifications)
+        if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
 
         return CreatedAtAction(nameof(GetById), new { id = response!.Id }, response);
@@ -90,7 +90,7 @@ public class PositionsController : ControllerBase
         
         var response = await _positionService.UpdateAsync(id, request);
 
-        if (_notificationContext.HasNotifications)
+        if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
         
         return Ok(response); 
@@ -101,7 +101,7 @@ public class PositionsController : ControllerBase
     {
         await _positionService.DeleteAsync(id);
 
-        if (_notificationContext.HasNotifications)
+        if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
 
         return NoContent(); 

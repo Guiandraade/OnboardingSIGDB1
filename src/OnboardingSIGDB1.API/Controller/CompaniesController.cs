@@ -26,7 +26,7 @@ public class CompaniesController : ControllerBase
     {
         var result = await _companyService.SearchAsync(filter);
         
-        if (_notificationContext.HasNotifications)
+        if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
         
         return Ok(result);
@@ -37,7 +37,7 @@ public class CompaniesController : ControllerBase
     {
         var response = await _companyService.GetByIdAsync(id);
         
-        if (_notificationContext.HasNotifications)
+        if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
         
         return Ok(response);
@@ -48,7 +48,7 @@ public class CompaniesController : ControllerBase
     {
         var response = await _companyService.GetByIdCompanyAndEmployees(id);
         
-        if (_notificationContext.HasNotifications)
+        if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
         
         return Ok(response);
@@ -74,7 +74,7 @@ public class CompaniesController : ControllerBase
         
         var response = await _companyService.CreateAsync(request);
 
-        if (_notificationContext.HasNotifications)
+        if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
         
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
@@ -100,7 +100,7 @@ public class CompaniesController : ControllerBase
         
         var response = await _companyService.UpdateAsync(id, request);
         
-        if (_notificationContext.HasNotifications)
+        if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
         
         return Ok(response);
@@ -111,7 +111,7 @@ public class CompaniesController : ControllerBase
     {
         await _companyService.DeleteAsync(id);
 
-        if (_notificationContext.HasNotifications)
+        if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
         
         return NoContent(); 
