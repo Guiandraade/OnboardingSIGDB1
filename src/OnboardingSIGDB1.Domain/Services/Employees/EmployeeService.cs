@@ -48,8 +48,7 @@ public class EmployeeService : BaseService, IEmployeeService
         _employeeFilterValidator = employeeFilterValidator;
         _dateTimeProvider = dateTimeProvider;
     }
-
-
+    
     public async Task<EmployeeResponse?> CreateAsync(EmployeeRequest request)
     {
         var cleanCpf = StringUtils.OnlyNumbers(request.Cpf);
