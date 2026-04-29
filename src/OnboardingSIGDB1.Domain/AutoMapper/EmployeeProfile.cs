@@ -30,7 +30,10 @@ public class EmployeeProfile : Profile
             .ForMember(dest => dest.Company, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyId, opt => opt.Ignore())
             .ForMember(dest => dest.Positions, opt => opt.Ignore())
-            .ForMember(dest => dest.ValidationResult, opt => opt.Ignore());
+            .ForMember(dest => dest.ValidationResult, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember("ClassLevelCascadeMode", opt => opt.Ignore())
+            .ForMember("RuleLevelCascadeMode", opt => opt.Ignore());
     }
     
     
@@ -44,11 +47,6 @@ public class EmployeeProfile : Profile
             .ForMember(dest => dest.PositionHistory,
                 opt => opt.MapFrom(src =>
                     src.Positions.OrderByDescending(p => p.StartDate)));
-        
-        CreateMap<EmployeePosition, EmployeePositionHistoryResponse>()
-            .ForMember(dest => dest.PositionName,
-                opt => opt.MapFrom(src => src.Position.Description));
-        
     }
 
     private void MapEmployeeResponse()
@@ -67,6 +65,10 @@ public class EmployeeProfile : Profile
             .ForMember(dest => dest.ValidationResult, opt => opt.Ignore())
             .ForMember(dest => dest.CompanyId, opt => opt.Ignore())
             .ForMember(dest => dest.Company, opt => opt.Ignore())
-            .ForMember(dest => dest.Positions, opt => opt.Ignore());
+            .ForMember(dest => dest.Positions, opt => opt.Ignore())
+            .ForMember(dest => dest.HireDate, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember("ClassLevelCascadeMode", opt => opt.Ignore())
+            .ForMember("RuleLevelCascadeMode", opt => opt.Ignore());
     }
 }

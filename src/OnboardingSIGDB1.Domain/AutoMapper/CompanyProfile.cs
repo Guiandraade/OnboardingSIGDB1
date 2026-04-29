@@ -20,7 +20,11 @@ public class CompanyProfile : Profile
     {
         CreateMap<CompanyRequest, Company>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.ValidationResult, opt => opt.Ignore());
+            .ForMember(dest => dest.ValidationResult, opt => opt.Ignore())
+            .ForMember(dest => dest.Employees, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember("ClassLevelCascadeMode", opt => opt.Ignore())
+            .ForMember("RuleLevelCascadeMode", opt => opt.Ignore());
     }
     
     private void MapCompanyToResponse()
