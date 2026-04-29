@@ -25,9 +25,4 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\OnboardingSIGDB1.Domain\OnboardingSIGDB1.Domain.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Domain\AutoMapper\" />
-      <Folder Include="Domain\Dto\" />
-    </ItemGroup>
 </Project>
