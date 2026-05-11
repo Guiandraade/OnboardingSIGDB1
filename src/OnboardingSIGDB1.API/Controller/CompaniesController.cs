@@ -55,7 +55,7 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CompanyRequest request)
+    public async Task<IActionResult> Post([FromBody] CompanyRequest? request)
     {
         if (request == null) 
         {
@@ -76,12 +76,15 @@ public class CompaniesController : ControllerBase
 
         if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
+
+        if (response is null)
+            return StatusCode(StatusCodes.Status500InternalServerError);
         
         return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(int id, [FromBody] CompanyRequest request)
+    public async Task<IActionResult> Put(int id, [FromBody] CompanyRequest? request)
     {
         if (request == null) 
         {

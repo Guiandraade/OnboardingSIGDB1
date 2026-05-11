@@ -24,8 +24,8 @@ public class NotificationContextAddRangeTests
     public void AddRange_ReturnWhenNotificationsIsNull()
     {
         var ctx = new NotificationContext();
-        IEnumerable<Notification> failures = null;
-        ctx.AddRange(failures);
+        IEnumerable<Notification>? failures = null;
+        ctx.AddRange(failures!);
         ctx.Notifications.Should().BeEmpty();
         ctx.IsValid.Should().BeTrue();
     }
@@ -49,8 +49,8 @@ public class NotificationContextAddRangeTests
     public void AddRange_ReturnWhenNotificationsFailureIsNull()
     {
         var ctx = new NotificationContext();
-        IEnumerable<ValidationFailure> failures = null;
-        ctx.AddRange(failures);
+        IEnumerable<ValidationFailure>? failures = null;
+        ctx.AddRange(failures!);
         ctx.Notifications.Should().BeEmpty();
         ctx.IsValid.Should().BeTrue();
     }
