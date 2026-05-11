@@ -14,7 +14,8 @@ public class UnitOfWork : IUnitOfWork
     
     public async Task<bool> CommitAsync()
     {
-        return await _context.SaveChangesAsync() > 0;
+        await _context.SaveChangesAsync();
+        return true;
     }
     
     public void Dispose()
