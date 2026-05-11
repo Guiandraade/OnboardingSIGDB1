@@ -22,6 +22,18 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MinhaPolicy", policy =>
+    {
+        policy
+            .WithOrigins("http://127.0.0.1:5500")
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
+
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.DateFormatString = "dd/MM/yyyy";
@@ -46,7 +58,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors("MinhaPolicy");
 app.MapControllers();
-
 app.Run();
 

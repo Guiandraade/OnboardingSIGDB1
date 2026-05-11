@@ -43,7 +43,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] EmployeeRequest request)
+    public async Task<IActionResult> Post([FromBody] EmployeeRequest? request)
     {
         if (request == null)
         {
@@ -67,7 +67,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(int id, [FromBody] EmployeeUpdateRequest request)
+    public async Task<IActionResult> Put(int id, [FromBody] EmployeeUpdateRequest? request)
     {
         if (request == null)
         {
@@ -113,7 +113,7 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpPost("{id:int}/positions")]
-    public async Task<IActionResult> ChangePosition(int id, [FromBody] ChangeEmployeePositionRequest request)
+    public async Task<IActionResult> ChangePosition(int id, [FromBody] ChangeEmployeePositionRequest? request)
     {
         if (request == null)
         {

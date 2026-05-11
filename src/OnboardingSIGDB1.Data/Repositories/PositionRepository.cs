@@ -15,7 +15,7 @@ public class PositionRepository(OnboardingDbContext context) : BaseRepository<Po
 
     public async Task<bool> HasEmployeesAsync(int id)
     {
-        return await context
+        return await Context
             .EmployeePositions
             .AsNoTracking()
             .AnyAsync(e => e.PositionId == id);
