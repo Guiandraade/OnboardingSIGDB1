@@ -53,10 +53,10 @@ public class EmployeeRepository(OnboardingDbContext context) : BaseRepository<Em
         }
         
         if(filter.HiredFrom.HasValue)
-            query = query.Where(e => e.HireDate >= filter.HiredFrom.Value);
+            query = query.Where(e => e.HireDate.HasValue && e.HireDate.Value.Date >= filter.HiredFrom.Value.Date);
         
         if(filter.HiredUntil.HasValue)
-            query = query.Where(e => e.HireDate <= filter.HiredUntil.Value);
+            query = query.Where(e => e.HireDate.HasValue && e.HireDate.Value.Date <= filter.HiredUntil.Value.Date);
         
         var total = await query.CountAsync();
 
