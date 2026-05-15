@@ -109,11 +109,19 @@ public class CompanyService : BaseService, ICompanyService
         return _mapper.Map<CompanyResponse>(company);
     }
 
+    public async Task<CompanyAndEmployeesResponse?> GetCompanyWithEmployeesByIdAsync(int id)
+    {
+        var company = await _companyRepository.GetCompanyWithEmployeesByIdAsync(id);
+        if (company == null) return NotifyError<CompanyAndEmployeesResponse>("Company", "Company not found.");
+        
+        return _mapper.Map<CompanyAndEmployeesResponse>(company);
+    }
+
     public async Task<CompanyAndEmployeesResponse?> GetByIdCompanyAndEmployees(int id)
     {
         var company = await _companyRepository.GetByIdCompanyAndEmployees(id);
         if (company == null) return NotifyError<CompanyAndEmployeesResponse>("Company", "Company not found.");
-        
+
         return _mapper.Map<CompanyAndEmployeesResponse>(company);
     }
 

@@ -8,6 +8,7 @@ public interface ICompanyRepository : IBaseRepository<Company>
     Task<Company?> GetByCnpjAsync(string cnpj);
     Task<(IEnumerable<Company> Data, int total)> SearchAsync(CompanyFilter filter);
     Task<bool> HasEmployeesAsync(int id);
+    Task<Company?> GetCompanyWithEmployeesByIdAsync(int id);
     Task<Company?> GetByIdCompanyAndEmployees(int id);
     Task<DateTime?> GetEarliestEmployeeHireDateAsync(int companyId);
 }

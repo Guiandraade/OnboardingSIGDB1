@@ -2,12 +2,12 @@
 using OnboardingSIGDB1.Domain.Entities.Employees;
 using OnboardingSIGDB1.UnitTests.Builders;
 
-namespace OnboardingSIGDB1.UnitTests.Domain.Entities.EmployeeAndPosition;
+namespace OnboardingSIGDB1.UnitTests.Domain.Entities.EmployeePositions;
 
-public class EmployeeAndPositionBehaviorTests
+public class EmployeePositionBehaviorTests
 {
     [Fact]
-    public void Constructor_ShouldAssignEmployeeIdAndPositionIdWhenEntitiesHaveId()
+    public void Constructor_ShouldAssignEmployeeAndPositionIds_WhenEntitiesHaveIds()
     {
         var employee = EmployeeBuilder.New().Build();
         var position = PositionBuilder.New().Build();
@@ -21,7 +21,7 @@ public class EmployeeAndPositionBehaviorTests
     }
 
     [Fact]
-    public void ShouldFailWhenStartDateIsExactly19000101()
+    public void Validation_ShouldFail_WhenStartDateIsExactly19000101()
     {
         var ep = EmployeePositionBuilder.New()
             .WithEmployeeId(1)
@@ -37,7 +37,7 @@ public class EmployeeAndPositionBehaviorTests
     }
 
     [Fact]
-    public void ShouldBeValidWhenStartDateIsOneDayAfter19000101()
+    public void Validation_ShouldBeValid_WhenStartDateIsOneDayAfter19000101()
     {
         var ep = EmployeePositionBuilder.New()
             .WithEmployeeId(1)
@@ -52,7 +52,7 @@ public class EmployeeAndPositionBehaviorTests
     }
 
     [Fact]
-    public void ShouldBeValidWhenStartDateIsToday()
+    public void Validation_ShouldBeValid_WhenStartDateIsToday()
     {
         var ep = EmployeePositionBuilder.New()
             .WithEmployeeId(1)
@@ -67,7 +67,7 @@ public class EmployeeAndPositionBehaviorTests
     }
 
     [Fact]
-    public void ShouldBeValidWhenStartDateIsInThePast()
+    public void Validation_ShouldBeValid_WhenStartDateIsInThePast()
     {
         var ep = EmployeePositionBuilder.New()
             .WithEmployeeId(1)
@@ -82,7 +82,7 @@ public class EmployeeAndPositionBehaviorTests
     }
 
     [Fact]
-    public void ShouldFailWhenStartDateIsInTheFuture()
+    public void Validation_ShouldFail_WhenStartDateIsInTheFuture()
     {
         var ep = EmployeePositionBuilder.New()
             .WithEmployeeId(1)
