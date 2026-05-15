@@ -6,7 +6,7 @@ using OnboardingSIGDB1.Domain.Dto.Positions.Response;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Services;
 
-namespace OnboardingSIGDB1.API.Controller;
+namespace OnboardingSIGDB1.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
