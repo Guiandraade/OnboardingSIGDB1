@@ -43,7 +43,7 @@ public class EmployeeServiceChangePositionTests : EmployeeServiceTestBase
         var position = PositionBuilder.New().WithId(1).Build();
         _employeeRepositoryMock.Setup(r => r.GetByIdWithCompanyAsync(1)).ReturnsAsync(employee);
         _positionRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(position);
-        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPosition(1, 1)).ReturnsAsync(true);
+        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPositionAsync(1, 1)).ReturnsAsync(true);
         var service = CreateService();
         var result = await service.ChangePositionAsync(1, new ChangeEmployeePositionRequest(1));
         result.Should().BeFalse();
@@ -61,7 +61,7 @@ public class EmployeeServiceChangePositionTests : EmployeeServiceTestBase
         var activeEmployeePosition = EmployeePositionBuilder.New().WithEmployee(employee).WithPosition(oldPosition).Build();
         _employeeRepositoryMock.Setup(r => r.GetByIdWithCompanyAsync(1)).ReturnsAsync(employee);
         _positionRepositoryMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(newPosition);
-        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPosition(1, 2)).ReturnsAsync(false);
+        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPositionAsync(1, 2)).ReturnsAsync(false);
         _employeePositionsRepositoryMock.Setup(r => r.GetActivePositionAsync(1)).ReturnsAsync(activeEmployeePosition);
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(true);
         var service = CreateService();
@@ -83,7 +83,7 @@ public class EmployeeServiceChangePositionTests : EmployeeServiceTestBase
         var activeEmployeePosition = EmployeePositionBuilder.New().WithEmployee(null!).WithPosition(null!).Build();
         _employeeRepositoryMock.Setup(r => r.GetByIdWithCompanyAsync(1)).ReturnsAsync(employee);
         _positionRepositoryMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(newPosition);
-        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPosition(1, 2)).ReturnsAsync(false);
+        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPositionAsync(1, 2)).ReturnsAsync(false);
         _employeePositionsRepositoryMock.Setup(r => r.GetActivePositionAsync(1)).ReturnsAsync(activeEmployeePosition);
         var service = CreateService();
         var result = await service.ChangePositionAsync(1, new ChangeEmployeePositionRequest(2));
@@ -121,7 +121,7 @@ public class EmployeeServiceChangePositionTests : EmployeeServiceTestBase
         var position = PositionBuilder.New().WithId(2).Build();
         _employeeRepositoryMock.Setup(r => r.GetByIdWithCompanyAsync(1)).ReturnsAsync(employee);
         _positionRepositoryMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(position);
-        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPosition(1, 2)).ReturnsAsync(false);
+        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPositionAsync(1, 2)).ReturnsAsync(false);
         _employeePositionsRepositoryMock.Setup(r => r.GetActivePositionAsync(1)).ReturnsAsync((EmployeePosition?)null);
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(true);
         var service = CreateService();
@@ -141,7 +141,7 @@ public class EmployeeServiceChangePositionTests : EmployeeServiceTestBase
         var position = PositionBuilder.New().WithId(2).Build();
         _employeeRepositoryMock.Setup(r => r.GetByIdWithCompanyAsync(1)).ReturnsAsync(employee);
         _positionRepositoryMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(position);
-        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPosition(1, 2)).ReturnsAsync(false);
+        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPositionAsync(1, 2)).ReturnsAsync(false);
         _employeePositionsRepositoryMock.Setup(r => r.GetActivePositionAsync(1)).ReturnsAsync((EmployeePosition?)null);
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(true);
         var service = CreateService();
@@ -161,7 +161,7 @@ public class EmployeeServiceChangePositionTests : EmployeeServiceTestBase
         var position = PositionBuilder.New().WithId(2).Build();
         _employeeRepositoryMock.Setup(r => r.GetByIdWithCompanyAsync(1)).ReturnsAsync(employee);
         _positionRepositoryMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(position);
-        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPosition(1, 2)).ReturnsAsync(false);
+        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPositionAsync(1, 2)).ReturnsAsync(false);
         _employeePositionsRepositoryMock.Setup(r => r.GetActivePositionAsync(1)).ReturnsAsync((EmployeePosition?)null);
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(false);
         var service = CreateService();

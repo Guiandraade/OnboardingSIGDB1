@@ -45,7 +45,7 @@ public class PositionsController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] PositionRequest? request)
+    public async Task<IActionResult> Create([FromBody] PositionRequest? request)
     {
         if (request == null) 
         {
@@ -71,7 +71,7 @@ public class PositionsController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(int id, [FromBody] PositionRequest? request)
+    public async Task<IActionResult> Update(int id, [FromBody] PositionRequest? request)
     {
         if (request == null) 
         {
