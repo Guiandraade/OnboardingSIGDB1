@@ -2,26 +2,26 @@
 using OnboardingSIGDB1.Domain.Entities.Employees;
 using OnboardingSIGDB1.UnitTests.Builders;
 
-namespace OnboardingSIGDB1.UnitTests.Domain.Entities.EmployeeAndPosition;
+namespace OnboardingSIGDB1.UnitTests.Domain.Entities.EmployeePositions;
 
-public class EmployeeAndPositionTests
+public class EmployeePositionTests
 {
     [Fact]
-    public void Constructor_ShouldTreatEmployeeIdAsZeroWhenNull()
+    public void Constructor_ShouldSetEmployeeIdToZero_WhenEmployeeIsNull()
     {
         var employeeAndPosition = new EmployeePosition(null!, null!, DateTime.UtcNow);
         employeeAndPosition.EmployeeId.Should().Be(0);
     }
 
     [Fact]
-    public void Constructor_ShouldTreatPositionIdAsZeroWhenNull()
+    public void Constructor_ShouldSetPositionIdToZero_WhenPositionIsNull()
     {
         var employeeAndPosition = new EmployeePosition(null!, null!, DateTime.UtcNow);
         employeeAndPosition.PositionId.Should().Be(0);
     }
 
     [Fact]
-    public void ShouldFailWhenStartDateIsDefault()
+    public void Validation_ShouldFail_WhenStartDateIsDefault()
     {
         var ep = EmployeePositionBuilder.New()
             .WithEmployeeId(1)
@@ -38,7 +38,7 @@ public class EmployeeAndPositionTests
     }
 
     [Fact]
-    public void ShouldFillEndDateWhenClosingPosition()
+    public void ClosePosition_ShouldSetEndDate_WhenCalled()
     {
         var ep = EmployeePositionBuilder.New()
             .WithEmployeeId(1)
@@ -54,7 +54,7 @@ public class EmployeeAndPositionTests
     }
 
     [Fact]
-    public void Validation_ShouldFailWhenEmployeeIsNull()
+    public void Validation_ShouldFail_WhenEmployeeIsNull()
     {
         var position = PositionBuilder.New().Build();
         EmployeePositionBuilder.SetId(position, 1);
@@ -67,7 +67,7 @@ public class EmployeeAndPositionTests
     }
 
     [Fact]
-    public void Validation_ShouldFailWhenPositionIsNull()
+    public void Validation_ShouldFail_WhenPositionIsNull()
     {
         var employee = EmployeeBuilder.New().Build();
         EmployeePositionBuilder.SetId(employee, 1);
@@ -96,7 +96,7 @@ public class EmployeeAndPositionTests
     }
 
     [Fact]
-    public void Validation_ShouldFailWhenPositionIdIsZero()
+    public void Validation_ShouldFail_WhenPositionIdIsZero()
     {
         var employee = EmployeeBuilder.New().Build();
         EmployeePositionBuilder.SetId(employee, 1);
@@ -110,7 +110,7 @@ public class EmployeeAndPositionTests
     }
 
     [Fact]
-    public void ShouldBeValidWhenEndDateEqualsStartDate()
+    public void Validation_ShouldBeValid_WhenEndDateEqualsStartDate()
     {
         var start = DateTime.UtcNow.AddDays(-1);
         var ep = EmployeePositionBuilder.New()
@@ -127,7 +127,7 @@ public class EmployeeAndPositionTests
     }
 
     [Fact]
-    public void ShouldFailWhenEndDateIsBeforeStartDate()
+    public void Validation_ShouldFail_WhenEndDateIsBeforeStartDate()
     {
         var start = DateTime.UtcNow.AddDays(-1);
         var ep = EmployeePositionBuilder.New()
