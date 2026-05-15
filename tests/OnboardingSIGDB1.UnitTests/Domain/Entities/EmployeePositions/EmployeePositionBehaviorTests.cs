@@ -2,9 +2,9 @@
 using OnboardingSIGDB1.Domain.Entities.Employees;
 using OnboardingSIGDB1.UnitTests.Builders;
 
-namespace OnboardingSIGDB1.UnitTests.Domain.Entities.EmployeeAndPosition;
+namespace OnboardingSIGDB1.UnitTests.Domain.Entities.EmployeePositions;
 
-public class EmployeeAndPositionBehaviorTests
+public class EmployeePositionBehaviorTests
 {
     [Fact]
     public void Constructor_ShouldAssignEmployeeIdAndPositionIdWhenEntitiesHaveId()
