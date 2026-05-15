@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
-using OnboardingSIGDB1.Domain.Dto.Companies.Response;
+using OnboardingSIGDB1.Domain.Dto.Companies.Responses;
 using OnboardingSIGDB1.Domain.Entities.Companies;
 using OnboardingSIGDB1.UnitTests.Builders;
 

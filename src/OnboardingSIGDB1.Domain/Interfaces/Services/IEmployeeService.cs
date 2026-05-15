@@ -1,8 +1,7 @@
-﻿using OnboardingSIGDB1.Domain.Dto.Base;
-using OnboardingSIGDB1.Domain.Dto.EmployeeAndPositions.Request;
-using OnboardingSIGDB1.Domain.Dto.Employees.Request;
-using OnboardingSIGDB1.Domain.Dto.Employees.Response;
-using OnboardingSIGDB1.Domain.Dto.Filters;
+﻿using OnboardingSIGDB1.Domain.Dto.Common.Pagination;
+using OnboardingSIGDB1.Domain.Dto.Employees.Commands;
+using OnboardingSIGDB1.Domain.Dto.Employees.Responses;
+using OnboardingSIGDB1.Domain.Dto.Common.Filters;
 
 namespace OnboardingSIGDB1.Domain.Interfaces.Services;
 

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using OnboardingSIGDB1.Domain.AutoMapper;
-using OnboardingSIGDB1.Domain.Dto.Companies.Request;
-using OnboardingSIGDB1.Domain.Dto.Companies.Response;
+using OnboardingSIGDB1.Domain.Dto.Companies.Commands;
+using OnboardingSIGDB1.Domain.Dto.Companies.Responses;
 using OnboardingSIGDB1.Domain.Entities.Companies;
 using OnboardingSIGDB1.Domain.Entities.Employees;
 using OnboardingSIGDB1.Domain.Entities.Positions;
