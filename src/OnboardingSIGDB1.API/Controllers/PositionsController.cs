@@ -25,6 +25,13 @@ public class PositionsController : ControllerBase
     [ProducesResponseType(typeof(PagedResponse<PositionResponse>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] PositionFilter filter)
     {
+        if (!ModelState.IsValid)
+        {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                _notificationContext.AddNotification("Model", error.ErrorMessage);
+            return BadRequest(_notificationContext.Notifications);
+        }
+        
         var result = await _positionService.SearchAsync(filter);
         
         if (!_notificationContext.IsValid)

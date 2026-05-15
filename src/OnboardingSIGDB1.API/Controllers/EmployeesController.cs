@@ -22,6 +22,13 @@ public class EmployeesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] EmployeeFilter filter)
     {
+        if (!ModelState.IsValid)
+        {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                _notificationContext.AddNotification("Model", error.ErrorMessage);
+            return BadRequest(_notificationContext.Notifications);
+        }
+
         var result = await _employeeService.SearchAsync(filter);
 
         if (!_notificationContext.IsValid)

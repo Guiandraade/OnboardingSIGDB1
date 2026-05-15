@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using OnboardingSIGDB1.API.ModelBinders;
 using OnboardingSIGDB1.IOC;
 
 const string frontendLocalDevPolicy = "FrontendLocalDevPolicy";
@@ -36,7 +37,10 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddControllers().AddNewtonsoftJson(options =>
+builder.Services.AddControllers(options =>
+{
+    options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
+}).AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.DateFormatString = "dd/MM/yyyy";
 });
