@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace OnboardingSIGDB1.Domain.Dto.Filters.Validators;
+namespace OnboardingSIGDB1.Domain.Dto.Common.Filters.Validators;
 
 public class BaseFilterValidator<T> : AbstractValidator<T>
     where T : BaseFilter

@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
-using OnboardingSIGDB1.Domain.Dto.Companies.Response;
-using OnboardingSIGDB1.Domain.Dto.Employees.Response;
-using OnboardingSIGDB1.Domain.Dto.Positions.Response;
+using OnboardingSIGDB1.Domain.Dto.Companies.Responses;
+using OnboardingSIGDB1.Domain.Dto.Employees.Responses;
+using OnboardingSIGDB1.Domain.Dto.Positions.Responses;
 
 namespace OnboardingSIGDB1.UnitTests.Domain.Dto;
 

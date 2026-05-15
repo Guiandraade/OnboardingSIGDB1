@@ -1,4 +1,4 @@
-﻿namespace OnboardingSIGDB1.Domain.Dto.Base;
+﻿namespace OnboardingSIGDB1.Domain.Dto.Common.Pagination;
 
 public class PagedResponse<T> where T : class
 {

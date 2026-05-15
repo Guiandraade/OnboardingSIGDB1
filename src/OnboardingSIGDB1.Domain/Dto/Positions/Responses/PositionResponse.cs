@@ -1,4 +1,4 @@
-﻿namespace OnboardingSIGDB1.Domain.Dto.Positions.Response;
+﻿namespace OnboardingSIGDB1.Domain.Dto.Positions.Responses;
 
 public record PositionResponse
 {

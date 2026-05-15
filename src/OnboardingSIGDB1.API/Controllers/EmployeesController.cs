@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnboardingSIGDB1.Domain.Dto.EmployeeAndPositions.Request;
-using OnboardingSIGDB1.Domain.Dto.Employees.Request;
-using OnboardingSIGDB1.Domain.Dto.Filters;
+using OnboardingSIGDB1.Domain.Dto.Employees.Commands;
+using OnboardingSIGDB1.Domain.Dto.Common.Filters;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Services;
 

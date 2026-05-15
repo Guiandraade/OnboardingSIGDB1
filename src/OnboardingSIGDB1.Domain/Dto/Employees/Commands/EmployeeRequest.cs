@@ -1,4 +1,4 @@
-﻿namespace OnboardingSIGDB1.Domain.Dto.Employees.Request;
+﻿namespace OnboardingSIGDB1.Domain.Dto.Employees.Commands;
 
 public record EmployeeRequest(
     string Name,

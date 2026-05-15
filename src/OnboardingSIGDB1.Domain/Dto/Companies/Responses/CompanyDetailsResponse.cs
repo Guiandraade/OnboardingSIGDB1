@@ -1,4 +1,4 @@
-﻿namespace OnboardingSIGDB1.Domain.Dto.Companies.Response;
+﻿namespace OnboardingSIGDB1.Domain.Dto.Companies.Responses;
 
 public record CompanyDetailsResponse
 {

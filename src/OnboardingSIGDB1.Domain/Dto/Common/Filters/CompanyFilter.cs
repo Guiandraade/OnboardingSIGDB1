@@ -1,5 +1,5 @@
 ﻿
-namespace OnboardingSIGDB1.Domain.Dto.Filters;
+namespace OnboardingSIGDB1.Domain.Dto.Common.Filters;
 
 public class CompanyFilter : BaseFilter
 {
