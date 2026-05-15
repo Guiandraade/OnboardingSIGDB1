@@ -19,7 +19,6 @@ public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Com
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    [Obsolete("Use GetCompanyWithEmployeesByIdAsync instead.")]
     public Task<Company?> GetByIdCompanyAndEmployees(int id)
     {
         return GetCompanyWithEmployeesByIdAsync(id);

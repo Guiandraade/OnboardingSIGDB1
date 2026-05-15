@@ -117,7 +117,6 @@ public class CompanyService : BaseService, ICompanyService
         return _mapper.Map<CompanyAndEmployeesResponse>(company);
     }
 
-    [Obsolete("Use GetCompanyWithEmployeesByIdAsync instead.")]
     public async Task<CompanyAndEmployeesResponse?> GetByIdCompanyAndEmployees(int id)
     {
         var company = await _companyRepository.GetByIdCompanyAndEmployees(id);
