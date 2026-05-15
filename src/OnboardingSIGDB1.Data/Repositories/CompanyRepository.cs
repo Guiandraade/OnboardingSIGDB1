@@ -50,10 +50,10 @@ public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Com
         }
         
         if (filter.FoundedIn.HasValue) 
-            query = query.Where(c => c.FoundationDate >= filter.FoundedIn.Value);
+            query = query.Where(c => c.FoundationDate.HasValue && c.FoundationDate.Value.Date >= filter.FoundedIn.Value.Date);
         
         if (filter.FoundedUntil.HasValue) 
-            query = query.Where(c => c.FoundationDate <= filter.FoundedUntil.Value);
+            query = query.Where(c => c.FoundationDate.HasValue && c.FoundationDate.Value.Date <= filter.FoundedUntil.Value.Date);
         
         var total = await query.CountAsync();
         

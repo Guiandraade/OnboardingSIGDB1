@@ -24,6 +24,13 @@ public class CompaniesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] CompanyFilter filter)
     {
+        if (!ModelState.IsValid)
+        {
+            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+                _notificationContext.AddNotification("Model", error.ErrorMessage);
+            return BadRequest(_notificationContext.Notifications);
+        }
+        
         var result = await _companyService.SearchAsync(filter);
         
         if (!_notificationContext.IsValid)

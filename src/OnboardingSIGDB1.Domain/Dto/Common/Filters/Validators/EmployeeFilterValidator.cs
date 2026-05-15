@@ -17,6 +17,11 @@ public class EmployeeFilterValidator : BaseFilterValidator<EmployeeFilter>
             .When(x => x.HiredFrom.HasValue)
             .WithMessage("The start date is invalid.");
 
+        RuleFor(x => x.HiredFrom)
+            .LessThanOrEqualTo(DateTime.UtcNow)
+            .When(x => x.HiredFrom.HasValue)
+            .WithMessage("The 'Hired From' date cannot be in the future.");
+
         RuleFor(x => x.HiredUntil)
             .LessThanOrEqualTo(DateTime.UtcNow)
             .When(x => x.HiredUntil.HasValue)
