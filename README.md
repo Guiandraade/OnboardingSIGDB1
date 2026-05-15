@@ -73,7 +73,7 @@ OnboardingSIGDB1/
 - [X] **Fase 4**: Repositórios Genéricos e Unit of Work / Generic Repositories and Unit of Work
 - [X] **Fase 5**: Domain Services e Validações / Domain Services and Validations
 - [X] **Fase 6**: Controllers e Endpoints / Controllers and Endpoints
-- [ ] **Fase 7**: Testes e refinamentos / Tests and refinements
+- [X] **Fase 7**: Testes e refinamentos / Tests and refinements
 ---
 
 ## 🚀 Como Executar / How to Run
