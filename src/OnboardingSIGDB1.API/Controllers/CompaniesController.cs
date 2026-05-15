@@ -46,7 +46,7 @@ public class CompaniesController : ControllerBase
     [HttpGet("{id:int}/employees")]
     public async Task<IActionResult> GetEmployees(int id)
     {
-        var response = await _companyService.GetByIdCompanyAndEmployees(id);
+        var response = await _companyService.GetCompanyWithEmployeesByIdAsync(id);
         
         if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
