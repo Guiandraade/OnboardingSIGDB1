@@ -9,7 +9,7 @@ namespace OnboardingSIGDB1.Data.Repositories;
 
 public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Company>(context), ICompanyRepository
 {
-    public async Task<Company?> GetByIdCompanyAndEmployees(int id)
+    public async Task<Company?> GetCompanyWithEmployeesByIdAsync(int id)
     {
         return await DbSet
             .AsNoTracking()
@@ -17,6 +17,12 @@ public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Com
                 .ThenInclude(e => e.Positions)
                     .ThenInclude(e  => e.Position)
             .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    [Obsolete("Use GetCompanyWithEmployeesByIdAsync instead.")]
+    public Task<Company?> GetByIdCompanyAndEmployees(int id)
+    {
+        return GetCompanyWithEmployeesByIdAsync(id);
     }
 
     public override async Task<Company?> GetByIdAsync(int id)
