@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnboardingSIGDB1.Domain.Entities.Employees;
 
-namespace OnboardingSIGDB1.Data;
+namespace OnboardingSIGDB1.Data.Mappings;
 
-public class EmployeMap : IEntityTypeConfiguration<Employee>
+public class EmployeeMap : IEntityTypeConfiguration<Employee>
 {
     public void Configure(EntityTypeBuilder<Employee> builder)
     {
