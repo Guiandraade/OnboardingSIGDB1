@@ -4,26 +4,21 @@ This document tracks temporary `<Compile Remove=...>` entries that should be eli
 
 ## Current Inventory
 
-### `src/OnboardingSIGDB1.Domain/OnboardingSIGDB1.Domain.csproj`
+No active `<Compile Remove=...>` entries remain in:
 
-- `Entities\Positions\PositionValidator.cs`
-  - Status: file not present in current project tree.
-  - Action: remove csproj entry when no back-compat need remains.
+- `src/OnboardingSIGDB1.Domain/OnboardingSIGDB1.Domain.csproj`
+- `src/OnboardingSIGDB1.Data/OnboardingSIGDB1.Data.csproj`
 
-- `Notifications\Notifiable.cs`
-  - Status: file not present in current project tree.
-  - Action: remove csproj entry when no back-compat need remains.
+## Completed in PR2
 
-- `Dto\Employee\EmployeeResponde.cs`
-  - Status: file not present in current project tree.
-  - Action: remove csproj entry when no back-compat need remains.
-
-### `src/OnboardingSIGDB1.Data/OnboardingSIGDB1.Data.csproj`
-
-- `Repositories\EmployeePositionRepository.cs`
-  - Status: file exists but is excluded from compilation.
-  - Risk: duplicate/legacy repository path can create confusion.
-  - Action: keep one canonical repository abstraction/implementation and then remove file + csproj exclusion.
+- Removed stale Domain exclusions for non-existent files:
+  - `Entities\Positions\PositionValidator.cs`
+  - `Notifications\Notifiable.cs`
+  - `Dto\Employee\EmployeeResponde.cs`
+- Removed legacy Data exclusion:
+  - `Repositories\EmployeePositionRepository.cs`
+- Deleted obsolete file:
+  - `src/OnboardingSIGDB1.Data/Repositories/EmployeePositionRepository.cs`
 
 ## Removal Policy
 
@@ -32,4 +27,5 @@ This document tracks temporary `<Compile Remove=...>` entries that should be eli
 3. Remove `<Compile Remove=...>` entry.
 4. Build + test full solution.
 5. Document result in PR notes.
+
 
