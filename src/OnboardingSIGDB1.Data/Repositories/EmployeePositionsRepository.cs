@@ -7,7 +7,7 @@ namespace OnboardingSIGDB1.Data.Repositories;
 
 public class EmployeePositionsRepository(OnboardingDbContext context) : BaseRepository<EmployeePosition>(context), IEmployeePositionsRepository
 {
-    public async Task<bool> HasEmployeeEverHeldPosition(int employeeId, int positionId)
+    public async Task<bool> HasEmployeeEverHeldPositionAsync(int employeeId, int positionId)
     {
         return await DbSet
             .AsNoTracking()

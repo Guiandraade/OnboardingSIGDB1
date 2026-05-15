@@ -29,34 +29,34 @@ public static class Startup
         services.AddDbContext<OnboardingDbContext>(options =>
             options.UseSqlServer(connectionString));
 
-        //employee
+        // Employee
         services.AddScoped<IEmployeeService, EmployeeService>();
         services.AddScoped<IEmployeeRepository, EmployeeRepository>();
         services.AddScoped<IValidator<EmployeeFilter>, EmployeeFilterValidator>();
         
-        //position
+        // Position
         services.AddScoped<IPositionRepository, PositionRepository>();
         services.AddScoped<IPositionService, PositionService>();
         services.AddScoped<IValidator<PositionFilter>, PositionFilterValidator>();
         
-        //company
+        // Company
         services.AddScoped<ICompanyRepository, CompanyRepository>();
         services.AddScoped<ICompanyService, CompanyService>();
         services.AddScoped<IValidator<CompanyFilter>, CompanyFilterValidator>();
 
-        //EmployeeAndPosition
+        // Employee positions
         services.AddScoped<IEmployeePositionsRepository, EmployeePositionsRepository>();
         
-        //notifications
+        // Notifications
         services.AddScoped<INotificationContext, NotificationContext>();
 
-        //unitOfWork
+        // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         
-        //providers
+        // Providers
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         
-        //Automapper
+        // AutoMapper
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     }
 }

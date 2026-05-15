@@ -12,5 +12,6 @@ public interface ICompanyService
     Task<bool> DeleteAsync(int id);
     Task<CompanyResponse?> GetByIdAsync(int id);
     Task<PagedResponse<CompanyResponse>> SearchAsync(CompanyFilter filter);
+    Task<CompanyAndEmployeesResponse?> GetCompanyWithEmployeesByIdAsync(int id);
     Task<CompanyAndEmployeesResponse?> GetByIdCompanyAndEmployees(int id);
 }

@@ -46,7 +46,7 @@ public class CompaniesController : ControllerBase
     [HttpGet("{id:int}/employees")]
     public async Task<IActionResult> GetEmployees(int id)
     {
-        var response = await _companyService.GetByIdCompanyAndEmployees(id);
+        var response = await _companyService.GetCompanyWithEmployeesByIdAsync(id);
         
         if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
@@ -55,7 +55,7 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CompanyRequest? request)
+    public async Task<IActionResult> Create([FromBody] CompanyRequest? request)
     {
         if (request == null) 
         {
@@ -84,7 +84,7 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(int id, [FromBody] CompanyRequest? request)
+    public async Task<IActionResult> Update(int id, [FromBody] CompanyRequest? request)
     {
         if (request == null) 
         {

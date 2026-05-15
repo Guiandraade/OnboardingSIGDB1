@@ -19,7 +19,7 @@ public class PositionProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.ValidationResult, opt => opt.Ignore())
             .ForMember(dest => dest.EmployeePositions, opt => opt.Ignore())
-            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore()) // opcional
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore()) // optional
             // AbstractValidator<T> members inherited via BaseElement<T>
             .ForMember("ClassLevelCascadeMode", opt => opt.Ignore())
             .ForMember("RuleLevelCascadeMode", opt => opt.Ignore());
