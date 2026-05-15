@@ -17,6 +17,11 @@ public class CompanyFilterValidator : BaseFilterValidator<CompanyFilter>
             .When(x => x.FoundedIn.HasValue)
             .WithMessage("The 'Founded In' date must be after 01/01/1753.");
 
+        RuleFor(x => x.FoundedIn)
+            .LessThanOrEqualTo(DateTime.UtcNow)
+            .When(x => x.FoundedIn.HasValue)
+            .WithMessage("The 'Founded In' date cannot be in the future.");
+
         RuleFor(x => x.FoundedUntil)
             .LessThanOrEqualTo(DateTime.UtcNow)
             .When(x => x.FoundedUntil.HasValue)
