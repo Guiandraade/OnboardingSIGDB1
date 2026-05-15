@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using OnboardingSIGDB1.Domain.Dto.Base;
-using OnboardingSIGDB1.Domain.Dto.Companies.Request;
-using OnboardingSIGDB1.Domain.Dto.Companies.Response;
-using OnboardingSIGDB1.Domain.Dto.Filters;
+using OnboardingSIGDB1.Domain.Dto.Companies.Commands;
+using OnboardingSIGDB1.Domain.Dto.Companies.Responses;
+using OnboardingSIGDB1.Domain.Dto.Common.Filters;
+using OnboardingSIGDB1.Domain.Dto.Common.Pagination;
 using OnboardingSIGDB1.Domain.Entities.Companies;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Persistence;

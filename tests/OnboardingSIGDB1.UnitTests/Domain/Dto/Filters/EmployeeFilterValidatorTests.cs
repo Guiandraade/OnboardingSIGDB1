@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using FluentValidation.TestHelper;
-using OnboardingSIGDB1.Domain.Dto.Filters;
-using OnboardingSIGDB1.Domain.Dto.Filters.Validators;
+using OnboardingSIGDB1.Domain.Dto.Common.Filters;
+using OnboardingSIGDB1.Domain.Dto.Common.Filters.Validators;
 
 namespace OnboardingSIGDB1.UnitTests.Domain.Dto.Filters;
 

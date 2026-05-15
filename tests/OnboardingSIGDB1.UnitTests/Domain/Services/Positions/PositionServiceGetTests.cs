@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using Moq;
-using OnboardingSIGDB1.Domain.Dto.Positions.Response;
+using OnboardingSIGDB1.Domain.Dto.Positions.Responses;
 using OnboardingSIGDB1.Domain.Entities.Positions;
 using OnboardingSIGDB1.UnitTests.Builders;
 

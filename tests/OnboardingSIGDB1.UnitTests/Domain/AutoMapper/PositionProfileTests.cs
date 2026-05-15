@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using OnboardingSIGDB1.Domain.AutoMapper;
-using OnboardingSIGDB1.Domain.Dto.Positions.Request;
-using OnboardingSIGDB1.Domain.Dto.Positions.Response;
+using OnboardingSIGDB1.Domain.Dto.Positions.Commands;
+using OnboardingSIGDB1.Domain.Dto.Positions.Responses;
 using OnboardingSIGDB1.Domain.Entities.Positions;
 
 namespace OnboardingSIGDB1.UnitTests.Domain.AutoMapper;

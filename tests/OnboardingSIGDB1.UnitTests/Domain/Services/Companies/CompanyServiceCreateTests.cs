@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
 using FluentValidation.Results;
 using Moq;
-using OnboardingSIGDB1.Domain.Dto.Companies.Request;
-using OnboardingSIGDB1.Domain.Dto.Companies.Response;
+using OnboardingSIGDB1.Domain.Dto.Companies.Commands;
+using OnboardingSIGDB1.Domain.Dto.Companies.Responses;
 using OnboardingSIGDB1.Domain.Entities.Companies;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
 using OnboardingSIGDB1.UnitTests.Builders;

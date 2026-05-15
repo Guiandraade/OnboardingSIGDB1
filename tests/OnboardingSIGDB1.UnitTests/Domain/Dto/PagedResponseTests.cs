@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using OnboardingSIGDB1.Domain.Dto.Base;
+using OnboardingSIGDB1.Domain.Dto.Common.Pagination;
 
 namespace OnboardingSIGDB1.UnitTests.Domain.Dto;
 
