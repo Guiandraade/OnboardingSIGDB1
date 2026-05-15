@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnboardingSIGDB1.Domain.Dto.Base;
-using OnboardingSIGDB1.Domain.Dto.Filters;
-using OnboardingSIGDB1.Domain.Dto.Positions.Request;
-using OnboardingSIGDB1.Domain.Dto.Positions.Response;
+using OnboardingSIGDB1.Domain.Dto.Common.Pagination;
+using OnboardingSIGDB1.Domain.Dto.Common.Filters;
+using OnboardingSIGDB1.Domain.Dto.Positions.Commands;
+using OnboardingSIGDB1.Domain.Dto.Positions.Responses;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Services;
 

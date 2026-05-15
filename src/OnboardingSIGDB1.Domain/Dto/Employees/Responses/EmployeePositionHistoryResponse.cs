@@ -1,4 +1,4 @@
-﻿namespace OnboardingSIGDB1.Domain.Dto.Employees.Response;
+﻿namespace OnboardingSIGDB1.Domain.Dto.Employees.Responses;
 
 public class EmployeePositionHistoryResponse
 {

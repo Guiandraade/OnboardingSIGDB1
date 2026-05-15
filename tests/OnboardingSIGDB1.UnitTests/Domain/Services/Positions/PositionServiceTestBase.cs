@@ -2,7 +2,7 @@
 using FluentValidation;
 using FluentValidation.Results;
 using Moq;
-using OnboardingSIGDB1.Domain.Dto.Filters;
+using OnboardingSIGDB1.Domain.Dto.Common.Filters;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Persistence;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;

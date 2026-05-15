@@ -1,4 +1,4 @@
-﻿using OnboardingSIGDB1.Domain.Dto.Filters;
+﻿using OnboardingSIGDB1.Domain.Dto.Common.Filters;
 using OnboardingSIGDB1.Domain.Entities.Positions;
 
 namespace OnboardingSIGDB1.Domain.Interfaces.Repositories;

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnboardingSIGDB1.Domain.Dto.Companies.Request;
-using OnboardingSIGDB1.Domain.Dto.Filters;
+using OnboardingSIGDB1.Domain.Dto.Companies.Commands;
+using OnboardingSIGDB1.Domain.Dto.Common.Filters;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Services;
 
-namespace OnboardingSIGDB1.API.Controller;
+namespace OnboardingSIGDB1.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]

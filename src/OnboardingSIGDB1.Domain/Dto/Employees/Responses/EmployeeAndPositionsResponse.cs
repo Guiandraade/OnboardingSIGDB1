@@ -1,6 +1,6 @@
-﻿namespace OnboardingSIGDB1.Domain.Dto.Employees.Response;
+﻿namespace OnboardingSIGDB1.Domain.Dto.Employees.Responses;
 
-public record EmployeeResponse
+public record EmployeeAndPositionsResponse
 {
     public int Id { get; init; }
     public string Name { get; init; } = string.Empty;
@@ -8,5 +8,6 @@ public record EmployeeResponse
     public DateTime? HireDate { get; init; }
     public string CompanyName { get; init; } = string.Empty;
     public string CurrentPosition { get; init; } = string.Empty;
+    
+    public List<EmployeePositionHistoryResponse> PositionHistory { get; init; } = new();
 }
-

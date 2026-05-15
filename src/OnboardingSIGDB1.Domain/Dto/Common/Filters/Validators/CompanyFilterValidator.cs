@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
-using OnboardingSIGDB1.Domain.Dto.Filters;
+using OnboardingSIGDB1.Domain.Dto.Common.Filters;
 
-namespace OnboardingSIGDB1.Domain.Dto.Filters.Validators;
+namespace OnboardingSIGDB1.Domain.Dto.Common.Filters.Validators;
 
 public class CompanyFilterValidator : BaseFilterValidator<CompanyFilter>
 {
