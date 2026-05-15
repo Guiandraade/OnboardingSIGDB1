@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using OnboardingSIGDB1.IOC;
 
-const string FrontendLocalDevPolicy = "FrontendLocalDevPolicy";
+const string frontendLocalDevPolicy = "FrontendLocalDevPolicy";
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +26,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(FrontendLocalDevPolicy, policy =>
+    options.AddPolicy(frontendLocalDevPolicy, policy =>
     {
         policy
             .WithOrigins("http://127.0.0.1:5500")
@@ -60,7 +60,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseCors(FrontendLocalDevPolicy);
+app.UseCors(frontendLocalDevPolicy);
 app.MapControllers();
 app.Run();
 
