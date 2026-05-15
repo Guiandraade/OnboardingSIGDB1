@@ -115,7 +115,7 @@ public class EmployeeService : BaseService, IEmployeeService
         if (employee.Company.FoundationDate.HasValue && dateOfChange < employee.Company.FoundationDate)
             return NotifyErrorBool("StartDate", $"The start date ({dateOfChange:dd/MM/yyyy}) cannot be earlier than the company foundation date ({employee.Company.FoundationDate:dd/MM/yyyy}).");
 
-        if (await _employeePositionsRepository.HasEmployeeEverHeldPosition(employeeId, request.PositionId))
+        if (await _employeePositionsRepository.HasEmployeeEverHeldPositionAsync(employeeId, request.PositionId))
             return NotifyErrorBool("Position", "Employee has already held this position before.");
 
         var activePosition = await _employeePositionsRepository.GetActivePositionAsync(employeeId);

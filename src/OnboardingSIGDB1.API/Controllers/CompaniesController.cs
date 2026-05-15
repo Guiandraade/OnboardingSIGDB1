@@ -55,7 +55,7 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] CompanyRequest? request)
+    public async Task<IActionResult> Create([FromBody] CompanyRequest? request)
     {
         if (request == null) 
         {
@@ -84,7 +84,7 @@ public class CompaniesController : ControllerBase
     }
 
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(int id, [FromBody] CompanyRequest? request)
+    public async Task<IActionResult> Update(int id, [FromBody] CompanyRequest? request)
     {
         if (request == null) 
         {
