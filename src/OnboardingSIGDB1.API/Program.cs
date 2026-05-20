@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 using OnboardingSIGDB1.API.ModelBinders;
 using OnboardingSIGDB1.IOC;
+using OnboardingSIGDB1.Domain.Dto.Companies.Commands;
+using System.Reflection;
 
 const string frontendLocalDevPolicy = "FrontendLocalDevPolicy";
 
@@ -16,6 +19,28 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 builder.Services.AddSwaggerGen(c =>
 {
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "OnboardingSIGDB1 API",
+        Version = "v1",
+        Description = "API documentation for company and employee onboarding operations."
+    });
+
+    var xmlDocumentationFiles = new[]
+    {
+        $"{Assembly.GetExecutingAssembly().GetName().Name}.xml",
+        $"{typeof(CompanyRequest).Assembly.GetName().Name}.xml"
+    };
+
+    foreach (var xmlFile in xmlDocumentationFiles.Distinct())
+    {
+        var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+        if (File.Exists(xmlPath))
+        {
+            c.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+        }
+    }
+
     c.MapType<DateTime>(() => new Microsoft.OpenApi.Models.OpenApiSchema
     {
         Type = "string", 
