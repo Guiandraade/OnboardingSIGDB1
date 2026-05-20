@@ -10,13 +10,11 @@ using OnboardingSIGDB1.Domain.Dto.Common.Filters.Validators;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Persistence;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
-using OnboardingSIGDB1.Domain.Interfaces.Providers;
 using OnboardingSIGDB1.Domain.Interfaces.Services;
 using OnboardingSIGDB1.Domain.Notifications;
 using OnboardingSIGDB1.Domain.Services.Companies;
 using OnboardingSIGDB1.Domain.Services.Employees;
 using OnboardingSIGDB1.Domain.Services.Positions;
-using OnboardingSIGDB1.Domain.Services.Providers;
 
 namespace OnboardingSIGDB1.IOC;
 
@@ -52,9 +50,6 @@ public static class Startup
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        
-        // Providers
-        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
         
         // AutoMapper
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
