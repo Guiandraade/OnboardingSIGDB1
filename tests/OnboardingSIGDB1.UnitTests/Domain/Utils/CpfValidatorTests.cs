@@ -65,4 +65,10 @@ public class CpfValidatorTests
     {
         CpfValidator.IsValid(cpf).Should().BeFalse();
     }
+
+    [Fact]
+    public void ShouldReturnTrueWhenSecondDigitNormalizesFromTenToZero()
+    {
+        CpfValidator.IsValid("00000001830").Should().BeTrue();
+    }
 }
