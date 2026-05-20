@@ -7,7 +7,6 @@ using OnboardingSIGDB1.Domain.Dto.Common.Filters;
 using OnboardingSIGDB1.Domain.Entities.Employees;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Persistence;
-using OnboardingSIGDB1.Domain.Interfaces.Providers;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
 using OnboardingSIGDB1.Domain.Interfaces.Services;
 using OnboardingSIGDB1.Domain.Services.Base;
@@ -24,7 +23,6 @@ public class EmployeeService : BaseService, IEmployeeService
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
     private readonly IValidator<EmployeeFilter> _employeeFilterValidator;
-    private readonly IDateTimeProvider _dateTimeProvider;
 
     public EmployeeService(
         ICompanyRepository companyRepository,
@@ -34,8 +32,7 @@ public class EmployeeService : BaseService, IEmployeeService
         IUnitOfWork unitOfWork,
         IMapper mapper,
         INotificationContext notificationContext,
-        IValidator<EmployeeFilter> employeeFilterValidator,
-        IDateTimeProvider dateTimeProvider)
+        IValidator<EmployeeFilter> employeeFilterValidator)
         : base(notificationContext)
     {
         _companyRepository = companyRepository;
@@ -45,7 +42,6 @@ public class EmployeeService : BaseService, IEmployeeService
         _unitOfWork = unitOfWork;
         _mapper = mapper;
         _employeeFilterValidator = employeeFilterValidator;
-        _dateTimeProvider = dateTimeProvider;
     }
     
     public async Task<EmployeeResponse?> CreateAsync(EmployeeRequest request)
@@ -70,7 +66,7 @@ public class EmployeeService : BaseService, IEmployeeService
 
         await _employeeRepository.AddAsync(employee);
 
-        var startDatePosition = request.HireDate ?? _dateTimeProvider.UtcNow;
+        var startDatePosition = request.HireDate ?? DateTime.UtcNow;
         var employeeAndPosition = new EmployeePosition(employee, position, startDatePosition);
         if (!employeeAndPosition.Validation()) return AddDomainNotifications<EmployeeResponse>(employeeAndPosition.ValidationResult);
 
@@ -110,7 +106,7 @@ public class EmployeeService : BaseService, IEmployeeService
         var position = await _positionRepository.GetByIdAsync(request.PositionId);
         if (position == null) return NotifyErrorBool("Position", "Position not found.");
 
-        var dateOfChange = _dateTimeProvider.UtcNow;
+        var dateOfChange = DateTime.UtcNow;
 
         if (employee.Company.FoundationDate.HasValue && dateOfChange < employee.Company.FoundationDate)
             return NotifyErrorBool("StartDate", $"The start date ({dateOfChange:dd/MM/yyyy}) cannot be earlier than the company foundation date ({employee.Company.FoundationDate:dd/MM/yyyy}).");
