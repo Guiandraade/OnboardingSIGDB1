@@ -3,7 +3,10 @@
 ![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
 ![Entity Framework](https://img.shields.io/badge/EF%20Core-512BD4?style=for-the-badge&logo=nuget&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow?style=for-the-badge)
+![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Status Backend](https://img.shields.io/badge/Backend-Aprovado-brightgreen?style=for-the-badge)
+![Status Frontend](https://img.shields.io/badge/Frontend-Em%20Desenvolvimento-yellow?style=for-the-badge)
 
 ## 🚀 OnboardingSIGDB1
 
@@ -13,14 +16,23 @@ EN-US: This project is part of the technical onboarding process, focused on demo
 
 ## 📋 Sobre o Projeto / About the Project
 
+### Backend
+
 | Tecnologias / Technologies | Versão / Version | Finalidade / Purpose |
 |------------|--------|------------|
 | .NET | 8 | Framework principal / Main framework |
 | Entity Framework Core | 8 | ORM para acesso a dados / ORM for data access |
 | SQL Server | 2019+ | Banco de dados relacional / Relational database |
 | AutoMapper | 13+ | Mapeamento entre entidades e DTOs / Mapping between entities and DTOs |
-| FluentValidation | 11+ |Validação de dados de entrada / Input data validation |
+| FluentValidation | 11+ | Validação de dados de entrada / Input data validation |
 | Swagger | 6.6+ | Documentação interativa da API / Interactive API documentation |
+
+### Frontend
+
+| Tecnologias / Technologies | Versão / Version | Finalidade / Purpose |
+|------------|--------|------------|
+| Angular | 21 | Framework SPA / SPA Framework |
+| TypeScript | 5+ | Linguagem principal / Main language |
 
 ---
 
@@ -54,26 +66,38 @@ EN-US: This project is part of the technical onboarding process, focused on demo
 ---
 
 ```text
-OnboardingSIGDB1/
-├── src/
-│   ├── OnboardingSIGDB1.API/          # Controllers, Middleware, DTOs
-│   ├── OnboardingSIGDB1.Domain/       # Entities, Interfaces, Notifications, Domain Service
-│   ├── OnboardingSIGDB1.Data/         # Dbcontext, mappings, migrations, repositories
-│   └── OnboardingSIGDB1.IOC/          # DI configuration and services
-├── OnboardingSIGDB1.sln               # Solution
+OnboardingSIGDB1/                         # Monorepo
+├── backend/                              # API .NET 8
+│   ├── src/
+│   │   ├── OnboardingSIGDB1.API/         # Controllers, Middleware, DTOs
+│   │   ├── OnboardingSIGDB1.Domain/      # Entities, Interfaces, Notifications, Domain Service
+│   │   ├── OnboardingSIGDB1.Data/        # DbContext, mappings, migrations, repositories
+│   │   └── OnboardingSIGDB1.IOC/         # DI configuration and services
+│   ├── tests/
+│   │   └── OnboardingSIGDB1.UnitTests/   # Unit tests (100% mutation coverage via Stryker)
+│   └── OnboardingSIGDB1.slnx             # Solution
+├── frontend/                             # Angular 21 (Em desenvolvimento)
+│   ├── src/
+│   │   └── app/
+│   └── angular.json
 ├── README.md
-└── .gitignore                          
+└── .gitignore
 ```
 
 ## 🗺️ Roadmap de Desenvolvimento / Development Roadmap
 
-- [x] **Fase 1**: Configuração inicial / Initial Setup:**
+**Backend**
+- [x] **Fase 1**: Configuração inicial / Initial Setup
 - [x] **Fase 2**: DbContext e Mappings para Empresa / DbContext and Mappings for Company
 - [x] **Fase 3**: Configuração de DI no IOC / Dependency Injection in IOC
-- [X] **Fase 4**: Repositórios Genéricos e Unit of Work / Generic Repositories and Unit of Work
-- [X] **Fase 5**: Domain Services e Validações / Domain Services and Validations
-- [X] **Fase 6**: Controllers e Endpoints / Controllers and Endpoints
-- [X] **Fase 7**: Testes e refinamentos / Tests and refinements
+- [x] **Fase 4**: Repositórios Genéricos e Unit of Work / Generic Repositories and Unit of Work
+- [x] **Fase 5**: Domain Services e Validações / Domain Services and Validations
+- [x] **Fase 6**: Controllers e Endpoints / Controllers and Endpoints
+- [x] **Fase 7**: Testes e refinamentos (100% cobertura de mutação) / Tests and refinements (100% mutation coverage)
+
+**Frontend**
+- [x] **Fase 8**: Setup do projeto Angular / Angular project setup
+- [ ] **Fase 9**: Implementação das telas / Screen implementation
 ---
 
 ## 🚀 Como Executar / How to Run
@@ -81,15 +105,16 @@ OnboardingSIGDB1/
 ### Pré-requisitos / Prerequisites
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [SQL Server](https://www.microsoft.com/pt-br/sql-server/sql-server-downloads) (Express, Developer ou superior)
+- [Node.js LTS](https://nodejs.org/) + [Angular CLI](https://angular.io/cli)
 - [Git](https://git-scm.com/)
 
-### Passos / Steps:
+### Backend
 
 1. **Clone o repositório / Clone the repo**
 
    ```bash
    git clone https://github.com/Guiandraade/OnboardingSIGDB1.git
-   cd OnboardingSIGDB1
+   cd OnboardingSIGDB1/backend
 
 2. **Configure a string de conexão / Configure connection string**
 
@@ -103,14 +128,34 @@ OnboardingSIGDB1/
    dotnet ef database update
 
 4. **Execute a API / Run the API**
-   
-   ```bash
-   dotnet run
 
-5. Acesse o Swagger / Access Swagger UI**
-  
-    ```bash
-    https://localhost:{porta}/swagger
+   ```bash
+   dotnet run --project src/OnboardingSIGDB1.API
+
+5. **Acesse o Swagger / Access Swagger UI**
+
+   ```
+   https://localhost:5001/swagger
+
+---
+
+### Frontend
+
+1. **Instale as dependências / Install dependencies**
+
+   ```bash
+   cd OnboardingSIGDB1/frontend
+   npm install
+
+2. **Execute o servidor de desenvolvimento / Run dev server**
+
+   ```bash
+   ng serve
+
+3. **Acesse a aplicação / Access the app**
+
+   ```
+   http://localhost:4200
 
 ## 📌 Boas Práticas / Best Practices
 
