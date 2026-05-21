@@ -491,3 +491,10 @@ appsettings.Development.json
 StrykerOutput/
 
 *.csproj.DotSettings
+
+# Configurações locais de ferramentas de IA (não versionar)
+.claude/
+.cursor/
+.continue/
+.aider/
+.github/copilot/
