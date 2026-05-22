@@ -55,7 +55,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(frontendLocalDevPolicy, policy =>
     {
         policy
-            .WithOrigins("http://127.0.0.1:5500")
+            .WithOrigins("http://localhost:4200")
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
