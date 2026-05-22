@@ -31,8 +31,11 @@ EN-US: This project is part of the technical onboarding process, focused on demo
 
 | Tecnologias / Technologies | Versão / Version | Finalidade / Purpose |
 |------------|--------|------------|
-| Angular | 21 | Framework SPA / SPA Framework |
-| TypeScript | 5+ | Linguagem principal / Main language |
+| Angular | 10.2.4 | Framework SPA / SPA Framework |
+| Angular CLI | 10.2.4 | Ferramenta de build e scaffolding / Build and scaffolding tool |
+| TypeScript | 4.0.8 | Linguagem principal / Main language |
+| RxJS | 6.6.7 | Programacao reativa / Reactive programming |
+| Node.js | 14.15.x | Runtime JavaScript / JavaScript runtime |
 
 ---
 
@@ -76,7 +79,7 @@ OnboardingSIGDB1/                         # Monorepo
 │   ├── tests/
 │   │   └── OnboardingSIGDB1.UnitTests/   # Unit tests (100% mutation coverage via Stryker)
 │   └── OnboardingSIGDB1.slnx             # Solution
-├── frontend/                             # Angular 21 (Em desenvolvimento)
+├── frontend/                             # Angular 10.2.4 (Em desenvolvimento)
 │   ├── src/
 │   │   └── app/
 │   └── angular.json
@@ -105,7 +108,8 @@ OnboardingSIGDB1/                         # Monorepo
 ### Pré-requisitos / Prerequisites
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [SQL Server](https://www.microsoft.com/pt-br/sql-server/sql-server-downloads) (Express, Developer ou superior)
-- [Node.js LTS](https://nodejs.org/) + [Angular CLI](https://angular.io/cli)
+- [Node.js 14.15.x](https://nodejs.org/)
+- [Angular CLI 10.2.4](https://github.com/angular/angular-cli)
 - [Git](https://git-scm.com/)
 
 ### Backend
