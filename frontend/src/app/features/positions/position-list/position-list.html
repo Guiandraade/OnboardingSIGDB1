@@ -1,1 +1,38 @@
-<p>position-list works!</p>
+<h1>Position List</h1>
+
+<div>
+  <input type="text" [(ngModel)]="filter.description" placeholder="Search by description">
+  <button type="button" (click)="search()">Search</button>
+
+  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+  <p *ngIf="isLoading">Loading...</p>
+
+  <button type="button" [routerLink]="'/positions/new'">Create New Position</button>
+</div>
+<table *ngIf="!isLoading">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Description</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngIf="positions.length === 0">
+      <td colspan="3">No positions found.</td>
+    </tr>
+    <tr *ngFor="let position of positions">
+      <td>{{ position.id }}</td>
+      <td>{{ position.description }}</td>
+      <td>
+        <button type="button" [routerLink]="['/positions', 'edit', position.id]">Edit</button>
+        <button type="button" (click)="deletePosition(position.id)">Delete</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div *ngIf="totalPages > 1">
+  <button type="button" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+  <span>Page {{ currentPage }} of {{ totalPages }}</span>
+  <button type="button" (click)="changePage(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
+</div>
