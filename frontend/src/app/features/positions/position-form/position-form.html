@@ -1,1 +1,20 @@
-<p>position-form works!</p>
+<h1>{{ isEditMode ? 'Edit Position' : 'New Position' }}</h1>
+<p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+<p *ngIf="isLoading">Loading...</p>
+<form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="description">Description:</label>
+    <input type="text" id="description" formControlName="description"/>
+    <span *ngIf="form.get('description')?.errors?.required && form.get('description')?.touched" class="error">
+      Description is required.
+    </span>
+    <span *ngIf="form.get('description')?.errors?.maxlength && form.get('description')?.touched" class="error">
+      Description cannot exceed 100 characters.
+    </span>
+    <span *ngIf="form.get('description')?.errors?.minlength && form.get('description')?.touched" class="error">
+      Description must be at least 3 characters.
+    </span>
+    <button type="submit">Save</button>
+    <button type="button" [routerLink]="['/positions']">Cancel</button>
+  </div>
+</form>
