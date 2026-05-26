@@ -1,85 +1,66 @@
 # OnboardingSIGDB1
 
-![.NET](https://img.shields.io/badge/.NET-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+<div align="center">
+
+![.NET](https://img.shields.io/badge/.NET%208-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
 ![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
-![Entity Framework](https://img.shields.io/badge/EF%20Core-512BD4?style=for-the-badge&logo=nuget&logoColor=white)
-![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![Entity Framework](https://img.shields.io/badge/EF%20Core%208-512BD4?style=for-the-badge&logo=nuget&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular%2010-DD0031?style=for-the-badge&logo=angular&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Status Backend](https://img.shields.io/badge/Backend-Aprovado-brightgreen?style=for-the-badge)
-![Status Frontend](https://img.shields.io/badge/Frontend-Em%20Desenvolvimento-yellow?style=for-the-badge)
 
-## 🚀 OnboardingSIGDB1
+![Backend](https://img.shields.io/badge/Backend-Approved-brightgreen?style=for-the-badge)
+![Frontend](https://img.shields.io/badge/Frontend-In%20Progress-yellow?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
-PT-BR: Este projeto faz parte do processo de Onboarding técnico, focado em demonstrar domínio de arquitetura de software utilizando o ecossistema .NET 8. O objetivo é construir uma Web API robusta seguindo os padrões exigidos pelo time de desenvolvimento.
+</div>
 
-EN-US: This project is part of the technical onboarding process, focused on demonstrating software architecture expertise using the .NET 8 ecosystem. The goal is to build a robust Web API following the standards required by the development team.
+---
 
-## 📋 Sobre o Projeto / About the Project
+## About the Project
+
+This project is part of the technical onboarding process, focused on demonstrating software architecture expertise using the .NET 8 ecosystem. The goal is to build a robust Web API following the standards required by the development team, paired with an Angular frontend.
+
+---
+
+## Tech Stack
 
 ### Backend
 
-| Tecnologias / Technologies | Versão / Version | Finalidade / Purpose |
-|------------|--------|------------|
-| .NET | 8 | Framework principal / Main framework |
-| Entity Framework Core | 8 | ORM para acesso a dados / ORM for data access |
-| SQL Server | 2019+ | Banco de dados relacional / Relational database |
-| AutoMapper | 13+ | Mapeamento entre entidades e DTOs / Mapping between entities and DTOs |
-| FluentValidation | 11+ | Validação de dados de entrada / Input data validation |
-| Swagger | 6.6+ | Documentação interativa da API / Interactive API documentation |
+| Technology | Version | Purpose |
+|---|---|---|
+| .NET | 8 | Main framework |
+| Entity Framework Core | 8 | ORM for data access |
+| SQL Server | 2019+ | Relational database |
+| AutoMapper | 13+ | Entity/DTO mapping |
+| FluentValidation | 11+ | Input data validation |
+| Swagger / Swashbuckle | 6.6+ | Interactive API documentation |
 
 ### Frontend
 
-| Tecnologias / Technologies | Versão / Version | Finalidade / Purpose |
-|------------|--------|------------|
-| Angular | 10.2.4 | Framework SPA / SPA Framework |
-| Angular CLI | 10.2.4 | Ferramenta de build e scaffolding / Build and scaffolding tool |
-| TypeScript | 4.0.8 | Linguagem principal / Main language |
-| RxJS | 6.6.7 | Programacao reativa / Reactive programming |
-| Node.js | 14.15.x | Runtime JavaScript / JavaScript runtime |
+| Technology | Version | Purpose |
+|---|---|---|
+| Angular | 10.2.4 | SPA framework |
+| Angular CLI | 10.2.4 | Build and scaffolding tool |
+| TypeScript | 4.0.8 | Main language |
+| RxJS | 6.6.7 | Reactive programming |
+| Node.js | 14.15.x | JavaScript runtime |
 
 ---
 
-
-## 🏗️ Estrutura da Solução / Solution Structure
-
-## **OnboardingSIGDB1.API**
-
-**PT-BR**: Porta de entrada da aplicação. Contém Controllers, Middleware e DTOs.
-
-**EN-US**: Application entry point. Contains Controllers, Middleware configurations, and DTOs.
-
-## **OnboardingSIGDB1.Domain**
-
-**PT-BR**: O coração do sistema. Contém Entidades, Interfaces, Notifications e Domain Services.
-
-**EN-US**: The core of the system. Contains Business Entities, Interfaces, Notifications, and Domain Services.
-
-## **OnboardingSIGDB1.Data**
-
-**PT-BR**: Camada de persistência. Contém DbContext, Mappings (Fluent API), Migrations, Repositórios e Unit of Work.
-
-**EN-US**: Persistence layer. Contains DbContext, Mappings, Migrations, and implementation of Repositories and Unit of Work.
-
-## **OnboardingSIGDB1.IOC**
-
-**PT-BR**: Centraliza toda a configuração de DI (Dependency Injection), desacoplando a API das implementações concretas.
-
-**EN-US**: Centralizes all Dependency Injection configuration, decoupling the API from concrete implementations.
-
----
+## Solution Structure
 
 ```text
-OnboardingSIGDB1/                         # Monorepo
-├── backend/                              # API .NET 8
+OnboardingSIGDB1/                         # Monorepo root
+├── backend/                              # .NET 8 Web API
 │   ├── src/
-│   │   ├── OnboardingSIGDB1.API/         # Controllers, Middleware, DTOs
-│   │   ├── OnboardingSIGDB1.Domain/      # Entities, Interfaces, Notifications, Domain Service
-│   │   ├── OnboardingSIGDB1.Data/        # DbContext, mappings, migrations, repositories
-│   │   └── OnboardingSIGDB1.IOC/         # DI configuration and services
+│   │   ├── OnboardingSIGDB1.API/         # Controllers, middleware, model binders
+│   │   ├── OnboardingSIGDB1.Domain/      # Entities, interfaces, notifications, domain services
+│   │   ├── OnboardingSIGDB1.Data/        # DbContext, Fluent API mappings, migrations, repositories
+│   │   └── OnboardingSIGDB1.IOC/         # Dependency injection configuration
 │   ├── tests/
 │   │   └── OnboardingSIGDB1.UnitTests/   # Unit tests (100% mutation coverage via Stryker)
-│   └── OnboardingSIGDB1.slnx             # Solution
-├── frontend/                             # Angular 10.2.4 (Em desenvolvimento)
+│   └── OnboardingSIGDB1.slnx             # Solution file
+├── frontend/                             # Angular 10 SPA
 │   ├── src/
 │   │   └── app/
 │   └── angular.json
@@ -87,148 +68,182 @@ OnboardingSIGDB1/                         # Monorepo
 └── .gitignore
 ```
 
-## 🗺️ Roadmap de Desenvolvimento / Development Roadmap
+### Layer Responsibilities
+
+| Layer | Responsibility |
+|---|---|
+| **API** | Application entry point — controllers, middleware, model binders |
+| **Domain** | Business core — entities, interfaces, notifications, domain services |
+| **Data** | Persistence — DbContext, Fluent API mappings, migrations, repositories, Unit of Work |
+| **IOC** | Dependency injection — decouples the API from concrete implementations |
+
+---
+
+## Development Roadmap
 
 **Backend**
-- [x] **Fase 1**: Configuração inicial / Initial Setup
-- [x] **Fase 2**: DbContext e Mappings para Empresa / DbContext and Mappings for Company
-- [x] **Fase 3**: Configuração de DI no IOC / Dependency Injection in IOC
-- [x] **Fase 4**: Repositórios Genéricos e Unit of Work / Generic Repositories and Unit of Work
-- [x] **Fase 5**: Domain Services e Validações / Domain Services and Validations
-- [x] **Fase 6**: Controllers e Endpoints / Controllers and Endpoints
-- [x] **Fase 7**: Testes e refinamentos (100% cobertura de mutação) / Tests and refinements (100% mutation coverage)
+- [x] Phase 1 — Initial project setup
+- [x] Phase 2 — DbContext and entity mappings
+- [x] Phase 3 — Dependency injection (IOC layer)
+- [x] Phase 4 — Generic repositories and Unit of Work
+- [x] Phase 5 — Domain services and validations
+- [x] Phase 6 — Controllers and API endpoints
+- [x] Phase 7 — Unit tests with 100% mutation coverage (Stryker)
 
 **Frontend**
-- [x] **Fase 8**: Setup do projeto Angular / Angular project setup
-- [ ] **Fase 9**: Implementação das telas / Screen implementation
----
-
-## 🚀 Como Executar / How to Run
-
-### Pré-requisitos / Prerequisites
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [SQL Server](https://www.microsoft.com/pt-br/sql-server/sql-server-downloads) (Express, Developer ou superior)
-- [Node.js 14.15.x](https://nodejs.org/)
-- [Angular CLI 10.2.4](https://github.com/angular/angular-cli)
-- [Git](https://git-scm.com/)
-
-### Backend
-
-1. **Clone o repositório / Clone the repo**
-
-   ```bash
-   git clone https://github.com/Guiandraade/OnboardingSIGDB1.git
-   cd OnboardingSIGDB1/backend
-
-2. **Configure a string de conexão / Configure connection string**
-
-   ```bash
-   dotnet user-secrets init
-   dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=OnboardingSIGDB1;Trusted_Connection=True;TrustServerCertificate=True;"
-
-3. **Aplique as migrações / Apply migrations**
-
-   ```bash
-   dotnet ef database update
-
-4. **Execute a API / Run the API**
-
-   ```bash
-   dotnet run --project src/OnboardingSIGDB1.API
-
-5. **Acesse o Swagger / Access Swagger UI**
-
-   ```
-   https://localhost:5001/swagger
+- [x] Phase 8 — Angular project setup
+- [ ] Phase 9 — Screen implementation
 
 ---
 
-### Frontend
+## Getting Started
 
-1. **Instale as dependências / Install dependencies**
+### Prerequisites
 
-   ```bash
-   cd OnboardingSIGDB1/frontend
-   npm install
+Make sure you have the following tools installed before proceeding:
 
-2. **Execute o servidor de desenvolvimento / Run dev server**
-
-   ```bash
-   ng serve
-
-3. **Acesse a aplicação / Access the app**
-
-   ```
-   http://localhost:4200
-
-## 📌 Boas Práticas / Best Practices
-
-### ✅ Validação / Validation
-
-- **FluentValidation**
-  
-  **PT-BR**: Regras de validação desacopladas das entidades, garantindo um domínio mais limpo e reutilizável.
-
-  **EN-US**: Validation rules decoupled from entities, ensuring a cleaner and more reusable domain.
+| Tool | Version | Download / Install |
+|---|---|---|
+| .NET SDK | 8 | [dotnet.microsoft.com](https://dotnet.microsoft.com/download/dotnet/8.0) |
+| SQL Server | 2019+ | [microsoft.com](https://www.microsoft.com/sql-server/sql-server-downloads) |
+| Node.js | 14.15.x | [nodejs.org](https://nodejs.org/) |
+| Angular CLI | 10.2.4 | `npm install -g @angular/cli@10.2.4` |
+| Git | latest | [git-scm.com](https://git-scm.com/) |
+| dotnet-ef | latest | `dotnet tool install --global dotnet-ef` |
 
 ---
 
-### 🔄 Persistência e Transações / Persistence and Transactions
+### Backend Setup
 
-- **Unit of Work**
-  
-  **PT-BR**: Gerenciamento centralizado de transações envolvendo múltiplos repositórios.
+**1. Clone the repository**
 
-  **EN-US**: Centralized transaction management involving multiple repositories.
+```bash
+git clone https://github.com/Guiandraade/OnboardingSIGDB1.git
+cd OnboardingSIGDB1
+```
 
-- **EntityTypeConfiguration (Fluent API)**
- 
-  **PT-BR**: Configuração das entidades de forma explícita e organizada, evitando poluição nas classes de domínio.
+**2. Configure the connection string via User Secrets**
 
-  **EN-US**: Configuring entities explicitly and in an organized manner, avoiding pollution in the domain classes.
+> Run from inside `backend/src/OnboardingSIGDB1.API`
+
+```bash
+cd backend/src/OnboardingSIGDB1.API
+dotnet user-secrets init
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=localhost;Database=OnboardingSIGDB1;Trusted_Connection=True;TrustServerCertificate=True;"
+```
+
+> **SQL Authentication** — if using username/password instead of Windows Auth:
+> ```
+> Server=localhost;Database=OnboardingSIGDB1;User Id=your_user;Password=your_password;TrustServerCertificate=True;
+> ```
+
+**3. Apply database migrations**
+
+> Run from the `backend/` folder
+
+```bash
+cd ../../..
+dotnet ef database update --project src/OnboardingSIGDB1.Data --startup-project src/OnboardingSIGDB1.API
+```
+
+**4. Run the API**
+
+```bash
+dotnet run --project src/OnboardingSIGDB1.API
+```
+
+**5. Access Swagger UI**
+
+```
+https://localhost:5001/swagger
+```
+
+---
+
+### Frontend Setup
+
+**1. Install dependencies**
+
+> Run from the `frontend/` folder
+
+```bash
+cd frontend
+npm install
+```
+
+**2. Run the development server**
+
+```bash
+ng serve
+```
+
+**3. Access the app**
+
+```
+http://localhost:4200
+```
+
+> The frontend communicates with the backend at `https://localhost:5001`. Make sure the API is running before starting the frontend.
 
 ---
 
-### ⚙️ Padrões e Produtividade / Standards and Productivity
+## Architecture & Design Patterns
 
-- **AutoMapper**
-  
-  **PT-BR**: Redução de código boilerplate no mapeamento entre entidades e DTOs.
+### Validation — FluentValidation
+Validation rules are fully decoupled from domain entities, keeping the domain layer clean and reusable. Each input model has its own dedicated validator class.
 
-  **EN-US**: Reducing boilerplate code in the mapping between entities and DTOs.
+### Persistence — Unit of Work
+Centralized transaction management coordinating multiple repositories within a single atomic operation, ensuring data consistency.
 
-- **Notifications Pattern**
-  
-  **PT-BR**: Acúmulo de erros de validação e regras de negócio sem uso excessivo de exceções.
+### Persistence — Fluent API (EntityTypeConfiguration)
+All entity-to-table mapping is done explicitly through dedicated configuration classes, avoiding data annotation pollution in the domain layer.
 
-  **EN-US**: Accumulation of validation errors and business rules without excessive use of exceptions.
+### Mapping — AutoMapper
+Reduces boilerplate code when converting between domain entities and DTOs, keeping controllers and services focused on business logic.
 
----
+### Error Handling — Notifications Pattern
+Validation and business rule violations are accumulated through a notification context rather than thrown as exceptions, enabling multiple errors to be returned in a single response.
 
-### 🔐 Segurança / Security
-
-- **User Secrets**
-   
- **PT-BR**: Armazenamento seguro de credenciais e configurações sensíveis durante o desenvolvimento.
-
- **EN-US**: Secure storage of sensitive credentials and settings during development.
+### Security — User Secrets
+Sensitive configuration (e.g., connection strings) is stored using .NET User Secrets during development, keeping credentials out of source control.
 
 ---
 
-## 🤝 Contribuição / Contribution
+## Contributing
 
-1. Faça um fork do repositório / Fork the repositor
-2. Crie uma branch para sua feature / Create a branch for your feature:
-   
-   ```bash
-   git checkout -b feature/minha-feature
+1. Fork the repository
+2. Create a feature branch:
 
-## 📄 Licença / License
+```bash
+git checkout -b feature/your-feature-name
+```
 
-Este projeto está sob a licença MIT / This project is under the MIT license.
+3. Commit your changes following [Conventional Commits](https://www.conventionalcommits.org/):
 
-**PT-BR**: Isso significa que você pode usar, modificar e distribuir este código livremente, desde que mantenha os devidos créditos.Para mais detalhes, consulte o arquivo [LICENSE](LICENSE).
+```bash
+git commit -m "feat(scope): short description of the change"
+```
 
-**EN-US**: This means you can use, modify, and distribute this code freely, as long as you give proper credit. For more details, see the [LICENSE](LICENSE) file.
+**Common commit types:**
+
+| Type | When to use |
+|---|---|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation changes only |
+| `refactor` | Code restructuring without behavior change |
+| `chore` | Build, tooling, or dependency updates |
+| `test` | Adding or updating tests |
+
+4. Push the branch and open a Pull Request:
+
+```bash
+git push origin feature/your-feature-name
+```
 
 ---
+
+## License
+
+This project is licensed under the MIT License — you are free to use, modify, and distribute this code as long as you give proper credit. See the [LICENSE](LICENSE) file for details.
+
