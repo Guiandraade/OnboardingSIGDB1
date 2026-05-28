@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using OnboardingSIGDB1.API.Middleware;
+using OnboardingSIGDB1.API.Swagger;
 using OnboardingSIGDB1.IOC;
 using OnboardingSIGDB1.Domain.Dto.Companies.Commands;
 using System.Reflection;
@@ -42,11 +43,15 @@ builder.Services.AddSwaggerGen(c =>
 
     c.MapType<DateTime>(() => new Microsoft.OpenApi.Models.OpenApiSchema
     {
-        Type = "string", 
+        Type = "string",
         Format = "date-time",
         Nullable = true,
-        Example = new Microsoft.OpenApi.Any.OpenApiString("2024-01-15T10:30:00Z")
+        Example = new Microsoft.OpenApi.Any.OpenApiString(
+            DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ"))
     });
+
+    // Query string date fields (filters) should appear empty in Swagger UI.
+    c.OperationFilter<ClearQueryDateExamplesFilter>();
 });
 
 builder.Services.AddCors(options =>
