@@ -6,5 +6,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.css']
 })
 export class App {
-  title = 'frontend';
+  sidebarOpen = false;
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeSidebar(): void {
+    this.sidebarOpen = false;
+  }
 }

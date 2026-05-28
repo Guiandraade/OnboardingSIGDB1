@@ -1,0 +1,146 @@
+<header class="page-header">
+  <h1>{{ isEditMode ? 'Edit Company' : 'New Company' }}</h1>
+</header>
+
+<div class="page-content">
+
+  <section class="feedback-container">
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+    <p *ngIf="isLoading" class="loading-status">Loading...</p>
+  </section>
+
+  <div class="form-layout" [hidden]="isLoading">
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="main-form">
+
+      <div class="input-block">
+        <div class="label-row">
+          <label for="name">Name</label>
+          <span class="char-count" [class.near-limit]="nameNearLimit">
+            {{ nameLength }}/150
+          </span>
+        </div>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          placeholder="E.g.: Acme Corporation, Tech Solutions..."
+          [attr.aria-invalid]="form.get('name')?.invalid && form.get('name')?.touched"
+          aria-describedby="name-errors"
+        />
+        <div id="name-errors" class="field-errors">
+          <span *ngIf="form.get('name')?.errors?.required && form.get('name')?.touched">
+            Name is required.
+          </span>
+          <span *ngIf="form.get('name')?.errors?.maxlength && form.get('name')?.touched">
+            Name cannot exceed 150 characters.
+          </span>
+          <span *ngIf="form.get('name')?.errors?.minlength && form.get('name')?.touched">
+            Name must be at least 3 characters.
+          </span>
+          <span *ngIf="form.get('name')?.errors?.serverError">
+            {{ form.get('name')?.errors?.serverError }}
+          </span>
+        </div>
+      </div>
+
+      <div class="input-block">
+        <label for="cnpj">CNPJ</label>
+        <input
+          type="text"
+          id="cnpj"
+          formControlName="cnpj"
+          placeholder="E.g.: 12.345.678/0001-95 or 12345678000195"
+          [attr.aria-invalid]="form.get('cnpj')?.invalid && form.get('cnpj')?.touched"
+          aria-describedby="cnpj-errors"
+        />
+        <div id="cnpj-errors" class="field-errors">
+          <span *ngIf="form.get('cnpj')?.errors?.required && form.get('cnpj')?.touched">
+            CNPJ is required.
+          </span>
+          <span *ngIf="form.get('cnpj')?.errors?.cnpjLength && form.get('cnpj')?.touched">
+            CNPJ must contain exactly 14 digits.
+          </span>
+          <span *ngIf="form.get('cnpj')?.errors?.serverError">
+            {{ form.get('cnpj')?.errors?.serverError }}
+          </span>
+        </div>
+      </div>
+
+      <div class="input-block">
+        <label for="foundationDate">
+          Foundation Date <span class="optional">(optional)</span>
+        </label>
+        <input
+          type="date"
+          id="foundationDate"
+          formControlName="foundationDate"
+          [attr.aria-invalid]="form.get('foundationDate')?.invalid && form.get('foundationDate')?.touched"
+          aria-describedby="foundationDate-errors"
+        />
+        <div id="foundationDate-errors" class="field-errors">
+          <span *ngIf="form.get('foundationDate')?.errors?.serverError">
+            {{ form.get('foundationDate')?.errors?.serverError }}
+          </span>
+        </div>
+      </div>
+
+      <footer class="form-actions">
+        <button type="button" class="btn-secondary" [routerLink]="['/companies']">Cancel</button>
+        <button type="submit" class="btn-primary" [disabled]="form.invalid">
+          {{ isEditMode ? 'Save Changes' : 'Create Company' }}
+        </button>
+      </footer>
+
+    </form>
+
+    <aside class="info-panel">
+
+      <div class="info-section">
+        <h3 class="info-title">
+          <svg class="info-title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          About this form
+        </h3>
+        <p class="info-description">
+          A <strong>company</strong> represents an organization registered in the system.
+          Employees will be linked to companies upon registration.
+        </p>
+      </div>
+
+      <div class="info-section">
+        <h3 class="info-title">
+          <svg class="info-title-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          Validation rules
+        </h3>
+        <ul class="rules-list">
+          <li class="rule-item" [class.rule-ok]="nameLength >= 3">
+            <span class="rule-dot"></span>
+            Name: at least 3 characters
+          </li>
+          <li class="rule-item" [class.rule-ok]="nameLength > 0 && nameLength <= 150">
+            <span class="rule-dot"></span>
+            Name: maximum 150 characters
+          </li>
+          <li class="rule-item" [class.rule-ok]="cnpjDigitCount === 14">
+            <span class="rule-dot"></span>
+            CNPJ: exactly 14 digits
+          </li>
+        </ul>
+      </div>
+
+    </aside>
+
+  </div>
+
+</div>

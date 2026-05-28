@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
-using OnboardingSIGDB1.API.ModelBinders;
 using OnboardingSIGDB1.IOC;
 using OnboardingSIGDB1.Domain.Dto.Companies.Commands;
 using System.Reflection;
@@ -44,9 +42,9 @@ builder.Services.AddSwaggerGen(c =>
     c.MapType<DateTime>(() => new Microsoft.OpenApi.Models.OpenApiSchema
     {
         Type = "string", 
-        Format = "date",
+        Format = "date-time",
         Nullable = true,
-        Example = new Microsoft.OpenApi.Any.OpenApiString(DateTime.Now.ToString("dd/MM/yyyy"))
+        Example = new Microsoft.OpenApi.Any.OpenApiString("2024-01-15T10:30:00Z")
     });
 });
 
@@ -62,24 +60,14 @@ builder.Services.AddCors(options =>
 });
 
 
-builder.Services.AddControllers(options =>
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
-    options.ModelBinderProviders.Insert(0, new DateTimeModelBinderProvider());
-}).AddNewtonsoftJson(options =>
-{
-    options.SerializerSettings.DateFormatString = "dd/MM/yyyy";
+    options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Utc;
+    options.SerializerSettings.DateFormatString = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'Z'";
 });
 Startup.ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
-
-var supportedCultures = new[] { new System.Globalization.CultureInfo("pt-BR") };
-app.UseRequestLocalization(new RequestLocalizationOptions
-{
-    DefaultRequestCulture = new RequestCulture("pt-BR"),
-    SupportedCultures = supportedCultures,
-    SupportedUICultures = supportedCultures
-});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
