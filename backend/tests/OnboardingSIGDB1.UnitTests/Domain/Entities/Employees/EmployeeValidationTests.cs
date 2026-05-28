@@ -97,7 +97,7 @@ public class EmployeeValidationTests
             .Should()
             .ContainSingle(e =>
                 e.PropertyName == nameof(Employee.HireDate)
-                && e.ErrorMessage.Contains("01/01/1900"));
+                && e.ErrorMessage.Contains("January 1, 1900"));
     }
     
     [Fact]
@@ -112,7 +112,7 @@ public class EmployeeValidationTests
         result.Should().BeFalse();
         employee.ValidationResult.Errors
             .Should()
-            .ContainSingle(e => e.PropertyName == nameof(Employee.HireDate) && e.ErrorMessage.Contains("01/01/1900"));
+            .ContainSingle(e => e.PropertyName == nameof(Employee.HireDate) && e.ErrorMessage.Contains("January 1, 1900"));
     }
 
     [Fact]

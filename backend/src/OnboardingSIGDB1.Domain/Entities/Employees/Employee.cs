@@ -59,7 +59,7 @@ public class Employee : BaseEntity<Employee>
                 .Must(d => !d.HasValue || d.Value.Date <= DateTime.UtcNow.Date)
                 .WithMessage("Hire date cannot be in the future.")
                 .Must(d => !d.HasValue || d.Value > new DateTime(1900, 1, 1))
-                .WithMessage("The hire date must be after 01/01/1900.");
+                .WithMessage("The hire date must be after January 1, 1900.");
 
             RuleFor(e => e.CompanyId)
                 .GreaterThan(0)

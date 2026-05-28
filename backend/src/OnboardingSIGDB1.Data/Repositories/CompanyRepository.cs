@@ -58,7 +58,7 @@ public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Com
         var total = await query.CountAsync();
         
         var data = await query
-            .OrderBy(c => c.Name)
+            .OrderByDescending(c => c.Id)
             .Skip((filter.PageNumber - 1) * filter.PageSize)
             .Take(filter.PageSize)
             .ToListAsync();

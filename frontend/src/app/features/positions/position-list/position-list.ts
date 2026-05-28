@@ -1,83 +1,56 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
+import { BaseListComponent } from 'src/app/core/base/base-list.component';
 import { PositionFilter, PositionResponse } from 'src/app/core/models/position.model';
 import { PositionService } from 'src/app/core/services/position.service';
-import { Notification } from 'src/app/core/models/pagination.model';
 
 @Component({
   selector: 'app-position-list',
   templateUrl: './position-list.html',
   styleUrls: ['./position-list.css']
 })
-export class PositionList implements OnInit {
+export class PositionList extends BaseListComponent<PositionResponse, PositionFilter> {
 
-  positions: PositionResponse[] = [];
-  isLoading = false;
-  errorMessage = '';
-  filter: PositionFilter = {
-    pageNumber: 1,
-    pageSize: 10,
-  };
-  totalItems = 0;
-  totalPages = 0;
+  filter: PositionFilter = { pageNumber: 1, pageSize: 10 };
 
-  constructor(private positionService: PositionService) { }
-
-  ngOnInit(): void {
-    this.getPositions();
+  constructor(private positionService: PositionService) {
+    super();
   }
 
-  getPositions(): void {
+  getItems(): void {
     this.isLoading = true;
-    this.positionService.getPositions(this.filter).subscribe({
-      next: (response) => {
-        this.totalItems = response.total;
-        this.totalPages = Math.ceil(response.total / this.filter.pageSize!);
-        this.positions = response.data;
+    this.errorMessage = '';
+    this.positionService.getPositions(this.filter).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.totalItems = res.total;
+        this.totalPages = Math.ceil(res.total / this.filter.pageSize!);
+        this.items = res.data;
         this.isLoading = false;
       },
       error: (err) => {
-        console.error('Error fetching positions:', err);
-        if (Array.isArray(err.error)) {
-          this.errorMessage = err.error.map((n: Notification) => n.message).join(', ');
-        } else {
-          this.errorMessage = 'Error fetching positions';
-        }
+        this.handleServerErrors(err, 'Error fetching positions');
         this.isLoading = false;
       }
-  });
+    });
   }
 
-  deletePosition(id: number): void {
-    if (confirm('Are you sure you want to delete this position?')) {
-      this.isLoading = true;
-      this.positionService.deletePosition(id).subscribe({
-        next: () => {
-          this.getPositions();
-        },
-        error: (err) => {
-          console.error('Error deleting position:', err);
-          if (Array.isArray(err.error)) {
-            this.errorMessage = err.error.map((n: Notification) => n.message).join(', ');
-          } else {
-            this.errorMessage = 'Error deleting position';
-          }
-          this.isLoading = false;
-        }
-      });
-    }
+  deleteItem(id: number): void {
+    if (!confirm('Are you sure you want to delete this position?')) return;
+    this.isLoading = true;
+    this.positionService.delete(id).pipe(takeUntil(this.destroy$)).subscribe({
+      next: () => this.getItems(),
+      error: (err) => {
+        this.handleServerErrors(err, 'Error deleting position');
+        this.isLoading = false;
+      }
+    });
   }
 
-  get currentPage(): number {
-  return this.filter.pageNumber ?? 1;
-}
-
-  search(): void {
-    this.filter.pageNumber = 1;
-    this.getPositions();
+  get hasActiveFilter(): boolean {
+    return !!this.filter.description?.trim();
   }
 
-  changePage(page: number): void {
-    this.filter.pageNumber = page;
-    this.getPositions();
+  clearSearchFilter(): void {
+    this.filter.description = undefined;
   }
 }
