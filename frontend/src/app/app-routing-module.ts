@@ -10,7 +10,16 @@ const routes: Routes = [{
 {
   path: 'positions/edit/:id', component: PositionForm},
 {
-  path: '', redirectTo: '/positions', pathMatch: 'full'}
+  path: '', redirectTo: '/positions', pathMatch: 'full'},
+{
+  path: 'companies', component: CompanyList},
+{
+  path: 'companies/new', component: CompanyForm},
+{
+  path: 'companies/edit/:id',  component: CompanyForm},
+{
+  path: 'companies/:id/employees',  component: EmployeeList},
+}
 ];
 
 @NgModule({
