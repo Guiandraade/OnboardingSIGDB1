@@ -196,6 +196,6 @@ public class CompanyValidationTests
             .Should()
             .ContainSingle(e =>
                 e.PropertyName == nameof(Company.FoundationDate)
-                && e.ErrorMessage.Contains("01/01/1900"));
+                && e.ErrorMessage.Contains("January 1, 1900"));
     }
 }

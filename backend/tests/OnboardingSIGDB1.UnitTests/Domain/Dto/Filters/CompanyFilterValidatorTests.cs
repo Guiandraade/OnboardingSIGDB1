@@ -97,7 +97,7 @@ public class CompanyFilterValidatorTests
         var filter = new CompanyFilter { FoundedIn = new DateTime(1752, 12, 31) };
         var result = _validator.TestValidate(filter);
         result.ShouldHaveValidationErrorFor(x => x.FoundedIn)
-            .WithErrorMessage("The 'Founded In' date must be after 01/01/1753.");
+            .WithErrorMessage("The 'Founded In' date must be after January 1, 1753.");
     }
 
     [Fact]

@@ -33,7 +33,7 @@ public class EmployeePositionBehaviorTests
 
         result.Should().BeFalse();
         ep.ValidationResult.Errors.Should().ContainSingle(e => e.PropertyName == nameof(EmployeePosition.StartDate)
-                                                               && e.ErrorMessage.Contains("01/01/1900"));
+                                                               && e.ErrorMessage.Contains("January 1, 1900"));
     }
 
     [Fact]

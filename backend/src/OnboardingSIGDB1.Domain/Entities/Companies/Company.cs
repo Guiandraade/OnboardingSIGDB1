@@ -47,7 +47,7 @@ public class Company : BaseEntity<Company>
                 .Must(d => !d.HasValue || d.Value.Date <= DateTime.UtcNow.Date)
                 .WithMessage("The founding date cannot be in the future.")
                 .Must(d => !d.HasValue || d.Value > new DateTime(1900, 1, 1))
-                .WithMessage("The foundation date must be after 01/01/1900.");
+                .WithMessage("The foundation date must be after January 1, 1900.");
 
             RuleFor(c => c.Cnpj)
                 .Cascade(CascadeMode.Stop)

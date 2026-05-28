@@ -36,7 +36,7 @@ public class EmployeeBehaviorTests
     {
         var employee = EmployeeBuilder.New()
             .WithCpf("342.266.960-42")
-            .WithHireDate(DateTime.Now.AddDays(-1))
+            .WithHireDate(DateTime.UtcNow.AddDays(-1))
             .Build();
 
         employee.Validation();

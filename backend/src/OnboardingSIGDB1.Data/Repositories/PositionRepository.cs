@@ -31,7 +31,7 @@ public class PositionRepository(OnboardingDbContext context) : BaseRepository<Po
         var total = await query.CountAsync();
         
         var data = await query
-            .OrderBy(p => p.Description)
+            .OrderByDescending(p => p.Id)
             .Skip((filter.PageNumber - 1) * filter.PageSize)
             .Take(filter.PageSize)
             .ToListAsync();
