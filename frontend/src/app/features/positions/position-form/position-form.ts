@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { BaseFormComponent } from 'src/app/core/base/base-form.component';
 import { PositionRequest, PositionResponse } from 'src/app/core/models/position.model';
 import { PositionService } from 'src/app/core/services/position.service';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-position-form',
@@ -20,9 +21,10 @@ export class PositionForm extends BaseFormComponent<PositionResponse> {
     private fb: FormBuilder,
     private positionService: PositionService,
     route: ActivatedRoute,
-    router: Router
+    router: Router,
+    toastService: ToastService
   ) {
-    super(route, router);
+    super(route, router, toastService);
   }
 
   protected initForm(): void {
