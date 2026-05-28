@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
+using OnboardingSIGDB1.API.Middleware;
 using OnboardingSIGDB1.IOC;
 using OnboardingSIGDB1.Domain.Dto.Companies.Commands;
 using System.Reflection;
@@ -68,6 +69,10 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 Startup.ConfigureServices(builder.Services, builder.Configuration);
 
 var app = builder.Build();
+
+// Global exception handling — must be the outermost middleware so it catches
+// any unhandled infrastructure exception from the entire request pipeline.
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
