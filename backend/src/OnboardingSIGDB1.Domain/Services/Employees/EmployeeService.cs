@@ -156,7 +156,7 @@ public class EmployeeService : BaseService, IEmployeeService
 
     public async Task<EmployeeAndPositionsResponse?> GetHistoryAsync(int id)
     {
-        var employee = await _employeeRepository.GetHistoryAsync(id);
+        var employee = await _employeeRepository.GetByIdAsync(id);
         if (employee == null) return NotifyError<EmployeeAndPositionsResponse>("Employee", "Employee not found.");
 
         return _mapper.Map<EmployeeAndPositionsResponse>(employee);
