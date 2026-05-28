@@ -19,11 +19,6 @@ public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Com
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public Task<Company?> GetByIdCompanyAndEmployees(int id)
-    {
-        return GetCompanyWithEmployeesByIdAsync(id);
-    }
-
     public override async Task<Company?> GetByIdAsync(int id)
     {
         return await DbSet
