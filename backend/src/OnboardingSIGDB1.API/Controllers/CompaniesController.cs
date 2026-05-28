@@ -120,10 +120,7 @@ public class CompaniesController : ControllerBase
         if (!_notificationContext.IsValid)
             return BadRequest(_notificationContext.Notifications);
 
-        if (response is null)
-            return StatusCode(StatusCodes.Status500InternalServerError);
-        
-        return CreatedAtAction(nameof(GetById), new { id = response.Id }, response);
+        return CreatedAtAction(nameof(GetById), new { id = response!.Id }, response);
     }
 
     /// <summary>
