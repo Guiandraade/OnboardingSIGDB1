@@ -64,7 +64,7 @@ public class CompanyService : BaseService, ICompanyService
             if (earliestHireDate.HasValue && request.FoundationDate > earliestHireDate.Value)
             {
                 return NotifyError<CompanyResponse>("FoundationDate", 
-                    $"The founding dates cannot be later than the hiring of the longest-serving employee. ({earliestHireDate.Value:dd/MM/yyyy}).");
+                    "The founding date cannot be later than the hiring of the longest-serving employee.");
             }
         }
         

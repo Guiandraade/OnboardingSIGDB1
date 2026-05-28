@@ -58,7 +58,7 @@ public class EmployeePosition : BaseElement<EmployeePosition>
                 .Must(d => d.Date <= DateTime.UtcNow.Date)
                 .WithMessage("Start date cannot be in the future.")
                 .Must(d => d > new DateTime(1900, 1, 1))
-                .WithMessage("The start date must be after 01/01/1900.");
+                .WithMessage("The start date must be after January 1, 1900.");
 
             RuleFor(ep => ep.EndDate)
                 .Must((ep, endDate) => !endDate.HasValue || endDate >= ep.StartDate)

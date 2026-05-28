@@ -1,4 +1,4 @@
-import { BaseFilter } from "./pagination.model";
+import { BaseFilter } from './pagination.model';
 
 export interface PositionRequest{
   description: string;

@@ -1,111 +1,63 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { BaseFormComponent } from 'src/app/core/base/base-form.component';
+import { PositionRequest, PositionResponse } from 'src/app/core/models/position.model';
 import { PositionService } from 'src/app/core/services/position.service';
-import { Notification } from 'src/app/core/models/pagination.model';
+import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
   selector: 'app-position-form',
   templateUrl: './position-form.html',
   styleUrls: ['./position-form.css']
 })
-export class PositionForm implements OnInit {
+export class PositionForm extends BaseFormComponent<PositionResponse> {
 
   form!: FormGroup;
-  isEditMode = false;
-  positionId: number | null = null;
-  isLoading = false;
-  errorMessage = '';
+  listRoute = '/positions';
 
   constructor(
     private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private router: Router,
-    private positionService: PositionService
-  ) { }
-
-  ngOnInit(): void {
-    this.initializeForm();
-
-    this.verifyEditMode();
+    private positionService: PositionService,
+    route: ActivatedRoute,
+    router: Router,
+    toastService: ToastService
+  ) {
+    super(route, router, toastService);
   }
 
-  private initializeForm(): void {
+  protected initForm(): void {
     this.form = this.fb.group({
-      description: ['', [Validators.minLength(3), Validators.maxLength(100), Validators.required]]
+      description: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]]
     });
   }
 
-  private verifyEditMode(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-
-    if (idParam) {
-      this.isEditMode = true;
-      this.positionId = Number(idParam);
-
-      this.isLoading = true;
-      this.positionService.getPositionById(this.positionId).subscribe({
-        next: (position) => {
-          this.form.patchValue(position);
-          this.isLoading = false;
-        },
-        error: (err) => {
-          this.isLoading = false;
-          if (Array.isArray(err.error)) {
-            this.errorMessage = err.error.map((n: Notification) => n.message).join(', ');
-          } else {
-            this.errorMessage = 'Error fetching position';
-          }
-          console.error('Error fetching position:', err);
-        }
-      });
-    }
+  protected getById(id: number): Observable<PositionResponse> {
+    return this.positionService.getById(id);
   }
 
-  onSubmit(): void {
-    if (this.form.invalid) {
-      return;
-    }
-    this.isLoading = true;
-
-    const positionData = this.form.value;
-
-    if (this.isEditMode && this.positionId !== null) {
-      this.positionService.updatePosition(this.positionId, positionData).subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.backToList();
-        },
-        error: (err) => {
-          this.isLoading = false;
-          if (Array.isArray(err.error)) {
-            this.errorMessage = err.error.map((n: Notification) => n.message).join(', ');
-          } else {
-            this.errorMessage = 'Error updating position';
-          }
-          console.error('Error updating position:', err);
-        }
-      });
-    } else {
-      this.positionService.createPosition(positionData).subscribe({
-        next: () => {
-          this.isLoading = false;
-          this.backToList();
-        },
-        error: (err) => {
-          this.isLoading = false;
-          if (Array.isArray(err.error)) {
-            this.errorMessage = err.error.map((n: Notification) => n.message).join(', ');
-          } else {
-            this.errorMessage = 'Error creating position';
-          }
-          console.error('Error creating position:', err);
-        }
-      });
-    }
+  protected create(data: PositionRequest): Observable<PositionResponse> {
+    return this.positionService.create(data);
   }
 
-  private backToList(): void {
-    this.router.navigate(['/positions']);
+  protected update(id: number, data: PositionRequest): Observable<PositionResponse> {
+    return this.positionService.update(id, data);
+  }
+
+  protected buildPayload(): PositionRequest {
+    return this.form.value;
+  }
+
+  protected patchForm(entity: PositionResponse): void {
+    this.form.patchValue(entity);
+  }
+
+  get descriptionLength(): number {
+    return this.form.get('description')?.value?.length ?? 0;
+  }
+
+  get nearLimit(): boolean {
+    return this.descriptionLength > 80;
   }
 }
