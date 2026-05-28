@@ -36,7 +36,7 @@ public class EmployeeServiceGetTests : EmployeeServiceTestBase
     [Fact]
     public async Task GetHistoryAsync_ShouldReturnNullAndNotify_WhenNotFound()
     {
-        _employeeRepositoryMock.Setup(r => r.GetHistoryAsync(1)).ReturnsAsync((Employee?)null);
+        _employeeRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync((Employee?)null);
         var service = CreateService();
         var result = await service.GetHistoryAsync(1);
         result.Should().BeNull();
@@ -48,7 +48,7 @@ public class EmployeeServiceGetTests : EmployeeServiceTestBase
     public async Task GetHistoryAsync_ShouldReturnResponse_WhenFound()
     {
         var employee = EmployeeBuilder.New().WithId(1).Build();
-        _employeeRepositoryMock.Setup(r => r.GetHistoryAsync(1)).ReturnsAsync(employee);
+        _employeeRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(employee);
         _mapperMock.Setup(m => m.Map<EmployeeAndPositionsResponse>(employee)).Returns(new EmployeeAndPositionsResponse { Id = 1 });
         var service = CreateService();
         var result = await service.GetHistoryAsync(1);

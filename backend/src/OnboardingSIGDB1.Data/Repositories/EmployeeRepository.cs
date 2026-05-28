@@ -17,15 +17,6 @@ public class EmployeeRepository(OnboardingDbContext context) : BaseRepository<Em
                 .ThenInclude(p => p.Position)
             .FirstOrDefaultAsync(e => e.Id == id);
     }
-    public async Task<Employee?> GetHistoryAsync(int id)
-    {
-        return await DbSet
-            .Include(e => e.Company)
-            .Include(e => e.Positions)
-                .ThenInclude(p => p.Position)
-            .FirstOrDefaultAsync(e => e.Id == id);
-    }
-
     public async Task<Employee?> GetByIdWithCompanyAsync(int id)
     {
         return await DbSet
