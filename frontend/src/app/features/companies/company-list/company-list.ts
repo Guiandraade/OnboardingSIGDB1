@@ -1,28 +1,28 @@
 import { Component } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { BaseListComponent } from 'src/app/core/base/base-list.component';
-import { PositionFilter, PositionResponse } from 'src/app/core/models/position.model';
-import { PositionService } from 'src/app/core/services/position.service';
+import { CompanyFilter, CompanyResponse } from 'src/app/core/models/company.model';
+import { CompanyService } from 'src/app/core/services/company.service';
 import { ToastService } from 'src/app/core/services/toast.service';
 
 @Component({
-  selector: 'app-position-list',
-  templateUrl: './position-list.html',
-  styleUrls: ['./position-list.css']
+  selector: 'app-company-list',
+  templateUrl: './company-list.html',
+  styleUrls: ['./company-list.css']
 })
-export class PositionList extends BaseListComponent<PositionResponse, PositionFilter> {
+export class CompanyList extends BaseListComponent<CompanyResponse, CompanyFilter> {
 
-  filter: PositionFilter = { pageNumber: 1, pageSize: 10 };
+  filter: CompanyFilter = { pageNumber: 1, pageSize: 10 };
   pendingDeleteId: number | null = null;
 
-  constructor(private positionService: PositionService, toastService: ToastService) {
+  constructor(private companyService: CompanyService, toastService: ToastService) {
     super(toastService);
   }
 
   getItems(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    this.positionService.getPositions(this.filter).pipe(takeUntil(this.destroy$)).subscribe({
+    this.companyService.getCompanies(this.filter).pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
         const pageSize = this.filter.pageSize || 10;
         this.totalItems = res.total;
@@ -31,7 +31,7 @@ export class PositionList extends BaseListComponent<PositionResponse, PositionFi
         this.isLoading = false;
       },
       error: (err) => {
-        this.handleServerErrors(err, 'Error fetching positions');
+        this.handleServerErrors(err, 'Error fetching companies');
         this.isLoading = false;
       }
     });
@@ -49,13 +49,13 @@ export class PositionList extends BaseListComponent<PositionResponse, PositionFi
     const id = this.pendingDeleteId;
     this.pendingDeleteId = null;
     this.isLoading = true;
-    this.positionService.delete(id).pipe(takeUntil(this.destroy$)).subscribe({
+    this.companyService.delete(id).pipe(takeUntil(this.destroy$)).subscribe({
       next: () => {
         this.toastService.show('Record deleted successfully!');
         this.getItems();
       },
       error: (err) => {
-        this.handleServerErrors(err, 'Error deleting position');
+        this.handleServerErrors(err, 'Error deleting company');
         this.isLoading = false;
       }
     });
@@ -66,10 +66,10 @@ export class PositionList extends BaseListComponent<PositionResponse, PositionFi
   }
 
   get hasActiveFilter(): boolean {
-    return !!this.filter.description?.trim();
+    return !!this.filter.name?.trim();
   }
 
   clearSearchFilter(): void {
-    this.filter.description = undefined;
+    this.filter.name = undefined;
   }
 }

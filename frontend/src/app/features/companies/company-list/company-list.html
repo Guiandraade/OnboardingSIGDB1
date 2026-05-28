@@ -1,13 +1,13 @@
 <app-confirm-modal
   [visible]="pendingDeleteId !== null"
-  entityName="position"
+  entityName="company"
   (confirmed)="confirmDelete()"
   (cancelled)="cancelDelete()">
 </app-confirm-modal>
 
 <header class="page-header">
-  <h1>Positions</h1>
-  <p class="page-subtitle">Browse Positions</p>
+  <h1>Companies</h1>
+  <p class="page-subtitle">Browse Companies</p>
 </header>
 
 <div class="page-content">
@@ -19,8 +19,8 @@
       <div class="search-controls">
         <input
           type="text"
-          [(ngModel)]="filter.description"
-          placeholder="Search by description"
+          [(ngModel)]="filter.name"
+          placeholder="Search by name"
           (keydown.enter)="search()"
         />
         <button type="button" (click)="search()">Search</button>
@@ -37,8 +37,8 @@
           </select>
         </div>
 
-        <button type="button" [routerLink]="'/positions/new'" class="btn-create">
-          + New Position
+        <button type="button" [routerLink]="'/companies/new'" class="btn-create">
+          + New Company
         </button>
       </div>
 
@@ -49,20 +49,21 @@
       <p *ngIf="isLoading" class="loading-status">Loading...</p>
     </section>
 
-    <!-- table-wrapper isolates horizontal scroll: only the table scrolls, toolbar and footer stay fixed -->
     <div class="table-wrapper">
       <table *ngIf="!isLoading">
         <thead>
           <tr>
             <th class="col-id-head">ID</th>
-            <th>Description</th>
+            <th>Name</th>
+            <th>CNPJ</th>
+            <th>Foundation Date</th>
             <th class="col-actions-head">Actions</th>
           </tr>
         </thead>
         <tbody>
 
           <tr *ngIf="items.length === 0">
-            <td colspan="3" class="empty-row">
+            <td colspan="5" class="empty-row">
               <div class="empty-content">
                 <svg class="empty-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                      fill="none" stroke="currentColor" stroke-width="1.5"
@@ -70,24 +71,26 @@
                   <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
                   <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                 </svg>
-                <p class="empty-title">No positions found.</p>
+                <p class="empty-title">No companies found.</p>
                 <p class="empty-hint" *ngIf="!hasActiveFilter">
-                  Use "+ New Position" to register the first one.
+                  Use "+ New Company" to register the first one.
                 </p>
                 <p class="empty-hint" *ngIf="hasActiveFilter">
-                  No results for "{{ filter.description }}". <button type="button" class="link-btn" (click)="clearSearch()">Clear filter</button>
+                  No results for "{{ filter.name }}". <button type="button" class="link-btn" (click)="clearSearch()">Clear filter</button>
                 </p>
               </div>
             </td>
           </tr>
 
-          <tr *ngFor="let position of items">
-            <td class="col-id">{{ position.id }}</td>
-            <td>{{ position.description }}</td>
+          <tr *ngFor="let company of items">
+            <td class="col-id">{{ company.id }}</td>
+            <td>{{ company.name }}</td>
+            <td>{{ company.cnpj | cnpj }}</td>
+            <td>{{ company.foundationDate | dateBr }}</td>
             <td>
               <div class="row-actions">
-                <button type="button" [routerLink]="['/positions', 'edit', position.id]" class="btn-edit">Edit</button>
-                <button type="button" (click)="deleteItem(position.id)" class="btn-delete">Delete</button>
+                <button type="button" [routerLink]="['/companies', 'edit', company.id]" class="btn-edit">Edit</button>
+                <button type="button" (click)="deleteItem(company.id)" class="btn-delete">Delete</button>
               </div>
             </td>
           </tr>
