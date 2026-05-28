@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+<<<<<<< HEAD
 const routes: Routes = [
   { path: '', redirectTo: '/positions', pathMatch: 'full' },
   {
@@ -12,6 +13,25 @@ const routes: Routes = [
     loadChildren: () => import('./features/companies/companies.module').then(m => m.CompaniesModule)
   },
   { path: '**', redirectTo: '/positions' }
+=======
+const routes: Routes = [{
+  path: 'positions', component: PositionList},
+{
+  path: 'positions/new', component: PositionForm},
+{
+  path: 'positions/edit/:id', component: PositionForm},
+{
+  path: '', redirectTo: '/positions', pathMatch: 'full'},
+{
+  path: 'companies', component: CompanyList},
+{
+  path: 'companies/new', component: CompanyForm},
+{
+  path: 'companies/edit/:id',  component: CompanyForm},
+{
+  path: 'companies/:id/employees',  component: EmployeeList},
+}
+>>>>>>> origin/main
 ];
 
 @NgModule({
