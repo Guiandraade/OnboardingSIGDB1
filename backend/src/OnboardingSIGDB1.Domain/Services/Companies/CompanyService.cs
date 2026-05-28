@@ -117,14 +117,6 @@ public class CompanyService : BaseService, ICompanyService
         return _mapper.Map<CompanyAndEmployeesResponse>(company);
     }
 
-    public async Task<CompanyAndEmployeesResponse?> GetByIdCompanyAndEmployees(int id)
-    {
-        var company = await _companyRepository.GetByIdCompanyAndEmployees(id);
-        if (company == null) return NotifyError<CompanyAndEmployeesResponse>("Company", "Company not found.");
-
-        return _mapper.Map<CompanyAndEmployeesResponse>(company);
-    }
-
     public async Task<PagedResponse<CompanyResponse>> SearchAsync(CompanyFilter filter)
     {
         var validationResult = await _companyFilterValidator.ValidateAsync(filter);
