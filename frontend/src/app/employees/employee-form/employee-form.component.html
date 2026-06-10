@@ -1,0 +1,238 @@
+<div class="page-container">
+  <div class="page-body-wrapper">
+    <div class="page-content">
+
+      <div class="form-card">
+
+        <div class="form-card-header">
+          <button type="button" class="btn-back" (click)="cancel()" title="Back to list">
+            <span class="material-icons">arrow_back</span>
+          </button>
+          <div class="form-card-header-info">
+            <h2 class="form-card-title">{{ isEdit ? 'Edit employee' : 'New employee' }}</h2>
+            <span class="form-card-subtitle">
+              {{ isEdit ? 'Update name and CPF for this employee.' : 'Fill in the details to register a new employee.' }}
+            </span>
+          </div>
+          <span class="material-icons form-card-header-icon">person</span>
+        </div>
+
+        <div class="form-error-banner" *ngIf="errorMessage">
+          <span class="material-icons form-error-banner-icon">error_outline</span>
+          <div class="form-error-banner-body">
+            <strong class="form-error-banner-title">An error occurred</strong>
+            <span class="form-error-banner-text">{{ errorMessage }}</span>
+          </div>
+          <button type="button" class="form-error-banner-close" (click)="errorMessage = ''" title="Dismiss">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+
+        <div *ngIf="isLoading" class="form-card-body">
+          <div class="form-skeleton form-skeleton--spaced" *ngFor="let i of [1,2,3]">
+            <div class="skeleton form-skeleton-label"></div>
+            <div class="skeleton form-skeleton-input"></div>
+          </div>
+        </div>
+
+        <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="save()" novalidate>
+
+          <div class="form-card-body">
+
+            <div class="form-group">
+              <label class="form-label" for="name">
+                Name <span class="form-required">*</span>
+              </label>
+              <input
+                id="name" type="text" formControlName="name"
+                class="form-control"
+                [class.is-invalid]="nameControl?.invalid && nameControl?.touched"
+                placeholder="e.g. John Smith"
+                autocomplete="off"
+              >
+              <span class="form-error" *ngIf="nameControl?.touched && nameControl?.hasError('required')">Name is required.</span>
+              <span class="form-error" *ngIf="nameControl?.hasError('serverError')">{{ nameControl?.getError('serverError') }}</span>
+              <div class="validation-rules" *ngIf="nameControl?.dirty || nameControl?.touched">
+                <p class="validation-rules-title">
+                  <span class="material-icons">task_alt</span> Validation rules
+                </p>
+                <ul class="validation-rules-list">
+                  <li [class.rule--passed]="nameLength >= 3"
+                      [class.rule--failed]="nameControl?.touched && nameLength < 3">
+                    <span class="material-icons rule-icon">
+                      {{ nameLength >= 3 ? 'check_circle' : (nameControl?.touched && nameLength < 3 ? 'cancel' : 'radio_button_unchecked') }}
+                    </span>
+                    At least 3 characters
+                  </li>
+                  <li [class.rule--passed]="nameLength <= 100 && nameLength > 0"
+                      [class.rule--failed]="nameControl?.touched && nameLength > 100">
+                    <span class="material-icons rule-icon">
+                      {{ nameLength <= 100 && nameLength > 0 ? 'check_circle' : (nameControl?.touched && nameLength > 100 ? 'cancel' : 'radio_button_unchecked') }}
+                    </span>
+                    Maximum 100 characters
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="cpf">
+                CPF <span class="form-required">*</span>
+              </label>
+              <input
+                id="cpf" type="text" formControlName="cpf"
+                class="form-control"
+                [class.is-invalid]="cpfControl?.invalid && cpfControl?.touched"
+                placeholder="000.000.000-00"
+                autocomplete="off"
+                (input)="formatCpf($event)"
+              >
+              <span class="form-error" *ngIf="cpfControl?.touched && cpfControl?.hasError('required')">CPF is required.</span>
+              <span class="form-error" *ngIf="cpfControl?.hasError('serverError')">{{ cpfControl?.getError('serverError') }}</span>
+              <div class="validation-rules" *ngIf="cpfControl?.dirty || cpfControl?.touched">
+                <p class="validation-rules-title">
+                  <span class="material-icons">task_alt</span> Validation rules
+                </p>
+                <ul class="validation-rules-list">
+                  <li [class.rule--passed]="cpfDigits.length === 11"
+                      [class.rule--failed]="cpfControl?.touched && cpfDigits.length !== 11">
+                    <span class="material-icons rule-icon">
+                      {{ cpfDigits.length === 11 ? 'check_circle' : (cpfControl?.touched ? 'cancel' : 'radio_button_unchecked') }}
+                    </span>
+                    Must contain 11 digits
+                  </li>
+                  <li [class.rule--passed]="cpfDigits.length === 11 && !cpfControl?.hasError('cpfInvalid')"
+                      [class.rule--failed]="cpfControl?.touched && cpfDigits.length === 11 && cpfControl?.hasError('cpfInvalid')">
+                    <span class="material-icons rule-icon">
+                      {{ cpfDigits.length === 11 && !cpfControl?.hasError('cpfInvalid') ? 'check_circle' : (cpfControl?.touched && cpfDigits.length === 11 && cpfControl?.hasError('cpfInvalid') ? 'cancel' : 'radio_button_unchecked') }}
+                    </span>
+                    Valid CPF check digits
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="form-group" *ngIf="!isEdit">
+              <label class="form-label" for="hireDate">
+                Hire Date <span class="form-required">*</span>
+              </label>
+              <input
+                id="hireDate" type="date" formControlName="hireDate"
+                class="form-control"
+                [class.is-invalid]="form.get('hireDate')?.invalid && form.get('hireDate')?.touched"
+              >
+              <span class="form-error" *ngIf="form.get('hireDate')?.touched && form.get('hireDate')?.hasError('required')">Hire date is required.</span>
+              <span class="form-error" *ngIf="form.get('hireDate')?.hasError('serverError')">{{ form.get('hireDate')?.getError('serverError') }}</span>
+            </div>
+
+            <div class="form-group" *ngIf="!isEdit">
+              <label class="form-label" for="companySearch">
+                Company <span class="form-required">*</span>
+              </label>
+              <div class="select-search-wrapper">
+                <input
+                  id="companySearch"
+                  type="text"
+                  class="form-control"
+                  [class.is-invalid]="form.get('companyId')?.invalid && form.get('companyId')?.touched"
+                  [(ngModel)]="companySearch"
+                  [ngModelOptions]="{standalone: true}"
+                  placeholder="Search company..."
+                  autocomplete="off"
+                  (focus)="showCompanyDropdown = true"
+                  (input)="showCompanyDropdown = true"
+                  (blur)="onCompanyBlur()"
+                >
+                <span class="material-icons select-search-caret">expand_more</span>
+                <div class="select-search-list" *ngIf="showCompanyDropdown">
+                  <div class="select-search-item"
+                    *ngFor="let c of filteredCompanies"
+                    (mousedown)="$event.preventDefault(); selectCompany(c)">
+                    {{ c.name }}
+                  </div>
+                  <div class="select-search-empty" *ngIf="filteredCompanies.length === 0">
+                    No companies found
+                  </div>
+                </div>
+              </div>
+              <span class="form-error" *ngIf="form.get('companyId')?.touched && form.get('companyId')?.hasError('required')">Company is required.</span>
+              <span class="form-error" *ngIf="form.get('companyId')?.hasError('serverError')">{{ form.get('companyId')?.getError('serverError') }}</span>
+            </div>
+
+            <div class="form-group" *ngIf="!isEdit">
+              <label class="form-label" for="positionSearch">
+                Position <span class="form-required">*</span>
+              </label>
+              <div class="select-search-wrapper">
+                <input
+                  id="positionSearch"
+                  type="text"
+                  class="form-control"
+                  [class.is-invalid]="form.get('positionId')?.invalid && form.get('positionId')?.touched"
+                  [(ngModel)]="positionSearch"
+                  [ngModelOptions]="{standalone: true}"
+                  placeholder="Search position..."
+                  autocomplete="off"
+                  (focus)="showPositionDropdown = true"
+                  (input)="showPositionDropdown = true"
+                  (blur)="onPositionBlur()"
+                >
+                <span class="material-icons select-search-caret">expand_more</span>
+                <div class="select-search-list" *ngIf="showPositionDropdown">
+                  <div class="select-search-item"
+                    *ngFor="let p of filteredPositions"
+                    (mousedown)="$event.preventDefault(); selectPosition(p)">
+                    {{ p.description }}
+                  </div>
+                  <div class="select-search-empty" *ngIf="filteredPositions.length === 0">
+                    No positions found
+                  </div>
+                </div>
+              </div>
+              <span class="form-error" *ngIf="form.get('positionId')?.touched && form.get('positionId')?.hasError('required')">Position is required.</span>
+              <span class="form-error" *ngIf="form.get('positionId')?.hasError('serverError')">{{ form.get('positionId')?.getError('serverError') }}</span>
+            </div>
+
+            <div class="form-readonly-section" *ngIf="isEdit && editEmployee">
+              <p class="form-readonly-title">
+                <span class="material-icons">info</span>
+                Additional information
+              </p>
+              <div class="form-readonly-grid">
+                <div class="form-readonly-item">
+                  <span class="form-readonly-label">Hire Date</span>
+                  <span class="form-readonly-value">{{ editEmployee.hireDate | dateBr }}</span>
+                </div>
+                <div class="form-readonly-item">
+                  <span class="form-readonly-label">Company</span>
+                  <span class="form-readonly-value">{{ editEmployee.companyName }}</span>
+                </div>
+                <div class="form-readonly-item">
+                  <span class="form-readonly-label">Current Position</span>
+                  <span class="form-readonly-value">{{ editEmployee.currentPosition }}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-card-footer">
+            <button type="button" class="btn-secondary" (click)="cancel()">
+              <span class="material-icons btn-icon-sm">close</span>
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="isSaving || cooldownSeconds > 0">
+              <span class="material-icons btn-icon-sm">
+                {{ isSaving ? 'hourglass_top' : (cooldownSeconds > 0 ? 'timer' : 'save') }}
+              </span>
+              {{ isSaving ? 'Saving...' : (cooldownSeconds > 0 ? 'Try again in ' + cooldownSeconds + 's...' : (isEdit ? 'Save changes' : 'Create employee')) }}
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,111 @@
+<div class="page-container">
+  <div class="page-body-wrapper">
+    <div class="page-content">
+
+      <div class="form-card">
+
+        <!-- Header -->
+        <div class="form-card-header">
+          <button type="button" class="btn-back" (click)="cancel()" title="Back to list">
+            <span class="material-icons">arrow_back</span>
+          </button>
+          <div class="form-card-header-info">
+            <h2 class="form-card-title">{{ isEdit ? 'Edit position' : 'New position' }}</h2>
+            <span class="form-card-subtitle">
+              {{ isEdit ? 'Update the details for this position.' : 'Fill in the details to create a new position.' }}
+            </span>
+          </div>
+          <span class="material-icons form-card-header-icon">badge</span>
+        </div>
+
+        <!-- Server error banner -->
+        <div class="form-error-banner" *ngIf="errorMessage">
+          <span class="material-icons form-error-banner-icon">error_outline</span>
+          <div class="form-error-banner-body">
+            <strong class="form-error-banner-title">An error occurred</strong>
+            <span class="form-error-banner-text">{{ errorMessage }}</span>
+          </div>
+          <button type="button" class="form-error-banner-close" (click)="errorMessage = ''" title="Dismiss">
+            <span class="material-icons">close</span>
+          </button>
+        </div>
+
+        <!-- Loading skeleton -->
+        <div *ngIf="isLoading" class="form-card-body">
+          <div class="form-skeleton">
+            <div class="skeleton form-skeleton-label"></div>
+            <div class="skeleton form-skeleton-input"></div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="save()" novalidate>
+
+          <div class="form-card-body">
+
+            <div class="form-group">
+              <label class="form-label" for="description">
+                Description <span class="form-required">*</span>
+              </label>
+              <input
+                id="description"
+                type="text"
+                formControlName="description"
+                class="form-control"
+                [class.is-invalid]="(descriptionControl?.invalid && descriptionControl?.touched) || hasServerError"
+                placeholder="e.g. Software Engineer, Project Manager..."
+                autocomplete="off"
+              >
+              <span class="form-error"
+                *ngIf="descriptionControl?.touched && descriptionControl?.hasError('required')">
+                Description is required.
+              </span>
+
+              <div class="validation-rules" *ngIf="descriptionControl?.dirty || descriptionControl?.touched">
+                <p class="validation-rules-title">
+                  <span class="material-icons">task_alt</span>
+                  Validation rules
+                </p>
+                <ul class="validation-rules-list">
+                  <li
+                    [class.rule--passed]="descriptionLength >= 3"
+                    [class.rule--failed]="descriptionControl?.touched && descriptionLength > 0 && descriptionLength < 3">
+                    <span class="material-icons rule-icon">
+                      {{ descriptionLength >= 3 ? 'check_circle' : (descriptionControl?.touched && descriptionLength > 0 && descriptionLength < 3 ? 'cancel' : 'radio_button_unchecked') }}
+                    </span>
+                    At least 3 characters
+                  </li>
+                  <li
+                    [class.rule--passed]="descriptionLength <= 100 && descriptionLength > 0"
+                    [class.rule--failed]="descriptionControl?.touched && descriptionLength > 100">
+                    <span class="material-icons rule-icon">
+                      {{ descriptionLength <= 100 && descriptionLength > 0 ? 'check_circle' : (descriptionControl?.touched && descriptionLength > 100 ? 'cancel' : 'radio_button_unchecked') }}
+                    </span>
+                    Maximum 100 characters
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="form-card-footer">
+            <button type="button" class="btn-secondary" (click)="cancel()">
+              <span class="material-icons" style="font-size:16px;">close</span>
+              Cancel
+            </button>
+            <button type="submit" class="btn-primary" [disabled]="isSaving || cooldownSeconds > 0">
+              <span class="material-icons" style="font-size:16px;">
+                {{ isSaving ? 'hourglass_top' : (cooldownSeconds > 0 ? 'timer' : 'save') }}
+              </span>
+              {{ isSaving ? 'Saving...' : (cooldownSeconds > 0 ? 'Try again in ' + cooldownSeconds + 's...' : (isEdit ? 'Save changes' : 'Create position')) }}
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>
