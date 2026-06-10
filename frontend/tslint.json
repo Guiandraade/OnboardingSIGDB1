@@ -1,5 +1,8 @@
 {
   "extends": "tslint:recommended",
+  "rulesDirectory": [
+    "codelyzer"
+  ],
   "rules": {
     "align": {
       "options": [
@@ -29,7 +32,6 @@
       true,
       140
     ],
-    "member-access": false,
     "member-ordering": [
       true,
       {
@@ -41,7 +43,6 @@
         ]
       }
     ],
-    "no-consecutive-blank-lines": false,
     "no-console": [
       true,
       "debug",
@@ -50,35 +51,19 @@
       "timeEnd",
       "trace"
     ],
-    "no-construct": true,
-    "no-debugger": true,
-    "no-duplicate-super": true,
     "no-empty": false,
-    "no-empty-interface": true,
-    "no-eval": true,
     "no-inferrable-types": [
       true,
       "ignore-params"
     ],
-    "no-misused-new": true,
     "no-non-null-assertion": true,
     "no-redundant-jsdoc": true,
-    "no-shadowed-variable": true,
-    "no-string-literal": false,
-    "no-string-throw": true,
     "no-switch-case-fall-through": true,
-    "no-unnecessary-initializer": true,
-    "no-unused-expression": true,
-    "no-use-before-declare": true,
-    "no-var-keyword": true,
+    "no-var-requires": false,
     "object-literal-key-quotes": [
       true,
       "as-needed"
     ],
-    "object-literal-sort-keys": false,
-    "ordered-imports": false,
-    "prefer-const": true,
-    "prefer-object-spread": true,
     "quotemark": [
       true,
       "single"
@@ -97,10 +82,9 @@
         "named": "never"
       }
     },
-    "trailing-comma": false,
-    "triple-equals": [
+    "typedef": [
       true,
-      "allow-null-check"
+      "call-signature"
     ],
     "typedef-whitespace": {
       "options": [
@@ -120,8 +104,13 @@
         }
       ]
     },
-    "unified-signatures": true,
-    "variable-name": false,
+    "variable-name": {
+      "options": [
+        "ban-keywords",
+        "check-format",
+        "allow-pascal-case"
+      ]
+    },
     "whitespace": {
       "options": [
         "check-branch",
@@ -132,6 +121,21 @@
         "check-typecast"
       ]
     },
+    "component-class-suffix": true,
+    "contextual-lifecycle": true,
+    "directive-class-suffix": true,
+    "no-conflicting-lifecycle": true,
+    "no-host-metadata-property": true,
+    "no-input-rename": true,
+    "no-inputs-metadata-property": true,
+    "no-output-native": true,
+    "no-output-on-prefix": true,
+    "no-output-rename": true,
+    "no-outputs-metadata-property": true,
+    "template-banana-in-box": true,
+    "template-no-negated-async": true,
+    "use-lifecycle-interface": true,
+    "use-pipe-transform-interface": true,
     "directive-selector": [
       true,
       "attribute",
@@ -143,25 +147,6 @@
       "element",
       "app",
       "kebab-case"
-    ],
-    "contextual-lifecycle": true,
-    "no-conflicting-lifecycle": true,
-    "no-host-metadata-property": true,
-    "no-input-rename": true,
-    "no-inputs-metadata-property": true,
-    "no-output-native": true,
-    "no-output-on-prefix": true,
-    "no-output-rename": true,
-    "no-outputs-metadata-property": true,
-    "no-queries-metadata-property": true,
-    "template-banana-in-box": true,
-    "template-no-negated-async": true,
-    "use-injectable-provided-in": true,
-    "use-lifecycle-interface": true,
-    "use-pipe-decorator": true,
-    "use-pipe-transform-interface": true
-  },
-  "rulesDirectory": [
-    "node_modules/codelyzer"
-  ]
+    ]
+  }
 }

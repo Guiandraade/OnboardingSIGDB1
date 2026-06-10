@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "frontend": {
+    "OnboardingSIGDB1-Front": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/frontend",
+            "outputPath": "dist/OnboardingSIGDB1-Front",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -24,7 +24,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/app/_shared/styles/list-screen.css",
+              "src/app/_shared/styles/details-screen.css",
+              "src/app/_shared/styles/form-screen.css"
             ],
             "scripts": []
           },
@@ -47,13 +50,13 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
                 }
               ]
             }
@@ -62,18 +65,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "frontend:build"
+            "browserTarget": "OnboardingSIGDB1-Front:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "frontend:build:production"
+              "browserTarget": "OnboardingSIGDB1-Front:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "frontend:build"
+            "browserTarget": "OnboardingSIGDB1-Front:build"
           }
         },
         "test": {
@@ -88,7 +91,10 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "src/app/_shared/styles/list-screen.css",
+              "src/app/_shared/styles/details-screen.css",
+              "src/app/_shared/styles/form-screen.css"
             ],
             "scripts": []
           }
@@ -98,18 +104,31 @@
           "options": {
             "tsConfig": [
               "tsconfig.app.json",
-              "tsconfig.spec.json"
+              "tsconfig.spec.json",
+              "e2e/tsconfig.json"
             ],
             "exclude": [
               "**/node_modules/**"
             ]
           }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "e2e/protractor.conf.js",
+            "devServerTarget": "OnboardingSIGDB1-Front:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "OnboardingSIGDB1-Front:serve:production"
+            }
+          }
         }
       }
     }
   },
-  "defaultProject": "frontend",
+  "defaultProject": "OnboardingSIGDB1-Front",
   "cli": {
-    "analytics": "e708f177-87da-42e6-a432-b88455de129a"
+    "analytics": "fa6ff7ec-41d8-45e0-bf4b-b5a1f5be7506"
   }
 }

@@ -1,0 +1,11 @@
+<div class="toast-container" aria-live="polite">
+  <div *ngFor="let t of toasts" class="toast" [ngClass]="'toast--' + t.type">
+    <span class="material-icons toast-icon">
+      {{ t.type === 'success' ? 'check_circle' : 'error' }}
+    </span>
+    <span class="toast-message">{{ t.message }}</span>
+    <button type="button" class="toast-dismiss" (click)="dismiss(t.id)" aria-label="Dismiss">
+      <span class="material-icons">close</span>
+    </button>
+  </div>
+</div>
