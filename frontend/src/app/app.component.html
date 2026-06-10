@@ -7,20 +7,18 @@
 
 <div class="app-shell" [class.blurred]="isLoading">
 
-  <!-- Mobile top bar -->
   <header class="mobile-topbar">
     <button class="hamburger" (click)="toggleSidebar()" aria-label="Toggle menu">
       <span class="material-icons">{{ sidebarOpen ? 'close' : 'menu' }}</span>
     </button>
-    <img src="assets/logo-gestão-pessoas.0e4fd531.svg" alt="Gestão de Pessoas" class="mobile-topbar-logo">
+    <img src="assets/people-management-logo.svg" alt="People Management" class="mobile-topbar-logo">
   </header>
 
-  <!-- Backdrop -->
   <div class="sidebar-backdrop" *ngIf="sidebarOpen" (click)="closeSidebar()"></div>
 
   <aside class="sidebar" [class.sidebar--open]="sidebarOpen">
     <div class="sidebar-brand">
-      <img src="assets/logo-gestão-pessoas.0e4fd531.svg" alt="Gestão de Pessoas logo" class="sidebar-brand-logo">
+      <img src="assets/people-management-logo.svg" alt="People Management logo" class="sidebar-brand-logo">
     </div>
 
     <nav class="sidebar-nav" aria-label="Main navigation">
@@ -81,7 +79,7 @@
           <span class="user-role">Administrator</span>
         </div>
         <div class="user-avatar-wrapper">
-          <img class="user-avatar" src="../assets/1777576099585.jpg" alt="Profile">
+          <img class="user-avatar" src="assets/1777576099585.jpg" alt="Profile">
           <span class="user-avatar-status"></span>
         </div>
       </div>
