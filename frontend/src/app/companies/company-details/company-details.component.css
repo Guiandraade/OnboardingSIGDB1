@@ -1,0 +1,9 @@
+.details-card--spaced      { margin-bottom: 20px; }
+
+.skeleton--header-title    { height: 16px; width: 200px; border-radius: 4px; }
+.skeleton--header-subtitle { height: 11px; width: 110px; border-radius: 4px; margin-top: 5px; }
+
+.skeleton--meta-label      { height: 11px; width: 80px;  border-radius: 4px; margin-bottom: 6px; }
+.skeleton--meta-value      { height: 15px; width: 130px; border-radius: 4px; }
+
+.section-label-icon        { font-size: 16px; vertical-align: middle; margin-right: 6px; }

@@ -1,0 +1,56 @@
+<div class="home-container">
+  <div class="home-greeting">
+    <h1 class="home-title">Hello, Guilherme</h1>
+    <p class="home-date">{{ today | date:'EEEE, MMMM d, yyyy' }}</p>
+  </div>
+
+  <div class="home-cards" *ngIf="!loading; else skeletons">
+    <a routerLink="/employees" class="home-card">
+      <div class="home-card-icon">
+        <span class="material-icons">people</span>
+      </div>
+      <div class="home-card-info">
+        <span class="home-card-total">{{ totalEmployees }}</span>
+        <span class="home-card-label">Employees</span>
+      </div>
+      <div class="home-card-footer">
+        View all
+        <span class="material-icons">arrow_forward</span>
+      </div>
+    </a>
+
+    <a routerLink="/companies" class="home-card">
+      <div class="home-card-icon">
+        <span class="material-icons">business</span>
+      </div>
+      <div class="home-card-info">
+        <span class="home-card-total">{{ totalCompanies }}</span>
+        <span class="home-card-label">Companies</span>
+      </div>
+      <div class="home-card-footer">
+        View all
+        <span class="material-icons">arrow_forward</span>
+      </div>
+    </a>
+
+    <a routerLink="/positions" class="home-card">
+      <div class="home-card-icon">
+        <span class="material-icons">badge</span>
+      </div>
+      <div class="home-card-info">
+        <span class="home-card-total">{{ totalPositions }}</span>
+        <span class="home-card-label">Positions</span>
+      </div>
+      <div class="home-card-footer">
+        View all
+        <span class="material-icons">arrow_forward</span>
+      </div>
+    </a>
+  </div>
+
+  <ng-template #skeletons>
+    <div class="home-cards">
+      <div class="home-card skeleton" *ngFor="let i of [1,2,3]"></div>
+    </div>
+  </ng-template>
+</div>

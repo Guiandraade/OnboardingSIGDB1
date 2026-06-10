@@ -1,0 +1,25 @@
+.details-card--spaced      { margin-bottom: 20px; }
+
+.details-header-actions    { display: flex; align-items: center; gap: 10px; }
+
+.btn-icon--edit-outlined   { border: 1px solid var(--clr-border-main); border-radius: 8px; }
+
+.skeleton--header-title    { height: 16px; width: 200px; border-radius: 4px; }
+.skeleton--header-subtitle { height: 11px; width: 110px; border-radius: 4px; margin-top: 5px; }
+
+.skeleton--meta-label      { height: 11px; width: 80px;  border-radius: 4px; margin-bottom: 6px; }
+.skeleton--meta-value      { height: 15px; width: 120px; border-radius: 4px; }
+
+.section-label-icon        { font-size: 16px; }
+
+.btn-create--accent        { background-color: var(--clr-brand-accent); }
+.btn-icon-with-text        { font-size: 16px; margin-right: 4px; }
+
+.modal-card--narrow        { max-width: 440px; }
+.modal-icon--accent        { font-size: 48px; color: var(--clr-brand-accent); }
+.modal-body--spaced        { margin-bottom: 16px; }
+.modal-positions-loading   { padding: 12px 0; }
+.skeleton--select-height   { height: 38px; border-radius: 6px; }
+.modal-select-wrapper      { margin-bottom: 24px; text-align: left; }
+.modal-select              { width: 100%; padding: 9px 12px; font-size: 14px; border: 1px solid var(--clr-border-main); border-radius: 6px; background: #fff; color: var(--clr-text-main); }
+.btn-modal-confirm--accent { background-color: var(--clr-brand-accent); }
