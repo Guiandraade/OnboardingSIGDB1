@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { CompanyFilter, CompanyResponse } from 'src/app/_common/_models/company.model';
 import { Notification } from 'src/app/_common/_models/pagination.model';
+import { generatePageNumbers } from 'src/app/_common/utils/pagination.util';
 import { CompanyService } from 'src/app/_common/_services/company.service';
 import { ToastService } from 'src/app/_shared/toast.service';
 
@@ -11,7 +12,6 @@ import { ToastService } from 'src/app/_shared/toast.service';
   styleUrls: ['./company-list.component.css']
 })
 export class CompanyListComponent implements OnInit {
-
   items: CompanyResponse[] = [];
   isLoading = false;
   totalItems = 0;
@@ -22,16 +22,7 @@ export class CompanyListComponent implements OnInit {
   pendingDeleteName = '';
 
   get pageNumbers(): (number | string)[] {
-    const total = this.totalPages;
-    const current = this.filter.pageNumber!;
-    if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
-    const pinned = Array.from(new Set([1, 2, current, total])).sort((a, b) => a - b);
-    const result: (number | string)[] = [];
-    for (let i = 0; i < pinned.length; i++) {
-      if (i > 0 && pinned[i] - pinned[i - 1] > 1) result.push('...');
-      result.push(pinned[i]);
-    }
-    return result;
+    return generatePageNumbers(this.totalPages, this.filter.pageNumber || 1);
   }
 
   constructor(

@@ -1,8 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { PositionFilter, PositionResponse } from '../../_common/_models/position.model';
 import { Component, OnInit } from '@angular/core';
-import { PositionService } from 'src/app/_common/_services/position.service';
 import { Notification } from 'src/app/_common/_models/pagination.model';
+import { PositionFilter, PositionResponse } from '../../_common/_models/position.model';
+import { PositionService } from 'src/app/_common/_services/position.service';
+import { generatePageNumbers } from 'src/app/_common/utils/pagination.util';
 import { ToastService } from 'src/app/_shared/toast.service';
 
 @Component({
@@ -11,10 +12,8 @@ import { ToastService } from 'src/app/_shared/toast.service';
   styleUrls: ['./position-list.component.css']
 })
 export class PositionListComponent implements OnInit {
-
   items: PositionResponse[] = [];
   isLoading = false;
-  errorMessage: string = '';
   pendingDeleteId: number | null = null;
   pendingDeleteName: string = '';
   filter: PositionFilter = { pageNumber: 1, pageSize: 5 };
@@ -23,16 +22,7 @@ export class PositionListComponent implements OnInit {
   totalPages = 0;
 
   get pageNumbers(): (number | string)[] {
-    const total = this.totalPages;
-    const current = this.filter.pageNumber!;
-    if (total <= 5) return Array.from({ length: total }, (_, i) => i + 1);
-    const pinned = Array.from(new Set([1, 2, current, total])).sort((a, b) => a - b);
-    const result: (number | string)[] = [];
-    for (let i = 0; i < pinned.length; i++) {
-      if (i > 0 && pinned[i] - pinned[i - 1] > 1) result.push('...');
-      result.push(pinned[i]);
-    }
-    return result;
+    return generatePageNumbers(this.totalPages, this.filter.pageNumber || 1);
   }
 
   constructor(
@@ -46,7 +36,6 @@ export class PositionListComponent implements OnInit {
 
   getItems(): void {
     this.isLoading = true;
-    this.errorMessage = '';
     this.positionService.getAll(this.filter).subscribe({
       next: (resp) => {
         this.items = resp.data;
@@ -55,7 +44,7 @@ export class PositionListComponent implements OnInit {
         this.isLoading = false;
       },
       error: (err) => {
-        this.handleServerErrors(err, 'Error loading positions');
+        this.handleError(err, 'Error loading positions.');
         this.isLoading = false;
       }
     });
@@ -81,7 +70,7 @@ export class PositionListComponent implements OnInit {
         this.getItems();
       },
       error: (err) => {
-        this.handleServerErrors(err, 'Error deleting position.');
+        this.handleError(err, 'Error deleting position.');
         this.isLoading = false;
       }
     });
@@ -102,12 +91,10 @@ export class PositionListComponent implements OnInit {
     this.getItems();
   }
 
-  handleServerErrors(err: HttpErrorResponse, fallback: string): void {
-    if (Array.isArray(err.error)) {
-      this.errorMessage = err.error.map((n: Notification) => n.message).join(', ');
-    } else {
-      this.errorMessage = fallback;
-    }
-    this.toastService.error(this.errorMessage);
+  handleError(err: HttpErrorResponse, fallback: string): void {
+    const message = Array.isArray(err.error)
+      ? err.error.map((n: Notification) => n.message).join(', ')
+      : fallback;
+    this.toastService.error(message);
   }
 }
