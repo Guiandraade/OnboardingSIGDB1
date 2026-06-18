@@ -25,7 +25,7 @@ public class EmployeeMap : IEntityTypeConfiguration<Employee>
         builder.HasIndex(e => e.Cpf)
             .IsUnique();
 
-        builder.Property(e => e.HireDate).IsRequired(false);
+        builder.Property(e => e.HireDate).IsRequired();
         builder.Property(e => e.CreatedAt).IsRequired();
 
         // Ignored properties
