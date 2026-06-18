@@ -12,7 +12,7 @@ namespace OnboardingSIGDB1.API.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
-public class PositionsController : ControllerBase
+public class PositionsController : ApiBaseController
 {
     private readonly IPositionService  _positionService;
     private readonly INotificationContext _notificationContext;
@@ -36,15 +36,14 @@ public class PositionsController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                _notificationContext.AddNotification("Model", error.ErrorMessage);
-            return BadRequest(_notificationContext.Notifications);
+            AddModelStateNotifications(_notificationContext);
+            return NotificationError(_notificationContext);
         }
         
         var result = await _positionService.SearchAsync(filter);
         
         if (!_notificationContext.IsValid)
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         
         return Ok(result);
     }
@@ -63,7 +62,7 @@ public class PositionsController : ControllerBase
         var response = await _positionService.GetByIdAsync(id);
 
         if (!_notificationContext.IsValid)
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         
         return Ok(response);
     }
@@ -82,22 +81,19 @@ public class PositionsController : ControllerBase
         if (request == null) 
         {
             _notificationContext.AddNotification("Request", "Invalid data or empty request body.");
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         }
     
         if (!ModelState.IsValid)
         {
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                _notificationContext.AddNotification("Model", error.ErrorMessage);
-            }
-            return BadRequest(_notificationContext.Notifications);
+            AddModelStateNotifications(_notificationContext);
+            return NotificationError(_notificationContext);
         }
         
         var response = await _positionService.CreateAsync(request);
         
         if (!_notificationContext.IsValid)
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
 
         return CreatedAtAction(nameof(GetById), new { id = response!.Id }, response);
     }
@@ -117,22 +113,19 @@ public class PositionsController : ControllerBase
         if (request == null) 
         {
             _notificationContext.AddNotification("Request", "Invalid data or empty request body.");
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         }
     
         if (!ModelState.IsValid)
         {
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                _notificationContext.AddNotification("Model", error.ErrorMessage);
-            }
-            return BadRequest(_notificationContext.Notifications);
+            AddModelStateNotifications(_notificationContext);
+            return NotificationError(_notificationContext);
         }
         
         var response = await _positionService.UpdateAsync(id, request);
 
         if (!_notificationContext.IsValid)
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         
         return Ok(response); 
     }
@@ -150,8 +143,7 @@ public class PositionsController : ControllerBase
     {
         await _positionService.DeleteAsync(id);
 
-        if (!_notificationContext.IsValid)
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
 
         return NoContent(); 
     }
