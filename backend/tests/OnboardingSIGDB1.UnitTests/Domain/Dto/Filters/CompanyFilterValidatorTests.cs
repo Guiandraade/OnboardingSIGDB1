@@ -117,6 +117,15 @@ public class CompanyFilterValidatorTests
     }
 
     [Fact]
+    public void FoundedIn_InTheFuture_ShouldHaveError()
+    {
+        var filter = new CompanyFilter { FoundedIn = DateTime.UtcNow.AddDays(1) };
+        var result = _validator.TestValidate(filter);
+        result.ShouldHaveValidationErrorFor(x => x.FoundedIn)
+            .WithErrorMessage("The 'Founded In' date cannot be in the future.");
+    }
+
+    [Fact]
     public void FoundedUntil_InTheFuture_ShouldHaveError()
     {
         var filter = new CompanyFilter { FoundedUntil = DateTime.UtcNow.AddDays(1) };
