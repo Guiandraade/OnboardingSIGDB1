@@ -1,0 +1,15 @@
+{
+  "stryker-config": {
+    "project": "OnboardingSIGDB1.Domain.csproj",
+    "test-projects": [
+      "../../tests/OnboardingSIGDB1.UnitTests/OnboardingSIGDB1.UnitTests.csproj"
+    ],
+    "reporters": [ "html", "progress" ],
+    "mutation-level": "Standard",
+    "thresholds": {
+      "high": 80,
+      "low": 60,
+      "break": 0
+    }
+  }
+}
