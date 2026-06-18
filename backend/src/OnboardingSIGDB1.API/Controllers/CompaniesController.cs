@@ -12,7 +12,7 @@ namespace OnboardingSIGDB1.API.Controllers;
 [ApiController]
 [Route("[controller]")]
 [Produces("application/json")]
-public class CompaniesController : ControllerBase
+public class CompaniesController : ApiBaseController
 {
     private readonly ICompanyService _companyService;
     private readonly INotificationContext _notificationContext;
@@ -38,15 +38,14 @@ public class CompaniesController : ControllerBase
     {
         if (!ModelState.IsValid)
         {
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-                _notificationContext.AddNotification("Model", error.ErrorMessage);
-            return BadRequest(_notificationContext.Notifications);
+            AddModelStateNotifications(_notificationContext);
+            return NotificationError(_notificationContext);
         }
         
         var result = await _companyService.SearchAsync(filter);
         
         if (!_notificationContext.IsValid)
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         
         return Ok(result);
     }
@@ -65,7 +64,7 @@ public class CompaniesController : ControllerBase
         var response = await _companyService.GetByIdAsync(id);
         
         if (!_notificationContext.IsValid)
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         
         return Ok(response);
     }
@@ -84,7 +83,7 @@ public class CompaniesController : ControllerBase
         var response = await _companyService.GetCompanyWithEmployeesByIdAsync(id);
         
         if (!_notificationContext.IsValid)
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         
         return Ok(response);
     }
@@ -103,22 +102,19 @@ public class CompaniesController : ControllerBase
         if (request == null) 
         {
             _notificationContext.AddNotification("Request", "Invalid data or empty request body.");
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         }
     
         if (!ModelState.IsValid)
         {
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                _notificationContext.AddNotification("Model", error.ErrorMessage);
-            }
-            return BadRequest(_notificationContext.Notifications);
+            AddModelStateNotifications(_notificationContext);
+            return NotificationError(_notificationContext);
         }
         
         var response = await _companyService.CreateAsync(request);
 
         if (!_notificationContext.IsValid)
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
 
         return CreatedAtAction(nameof(GetById), new { id = response!.Id }, response);
     }
@@ -138,22 +134,19 @@ public class CompaniesController : ControllerBase
         if (request == null) 
         {
             _notificationContext.AddNotification("Request", "Invalid data or empty request body.");
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         }
     
         if (!ModelState.IsValid)
         {
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-                _notificationContext.AddNotification("Model", error.ErrorMessage);
-            }
-            return BadRequest(_notificationContext.Notifications);
+            AddModelStateNotifications(_notificationContext);
+            return NotificationError(_notificationContext);
         }
         
         var response = await _companyService.UpdateAsync(id, request);
         
         if (!_notificationContext.IsValid)
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         
         return Ok(response);
     }
@@ -172,7 +165,7 @@ public class CompaniesController : ControllerBase
         await _companyService.DeleteAsync(id);
 
         if (!_notificationContext.IsValid)
-            return BadRequest(_notificationContext.Notifications);
+            return NotificationError(_notificationContext);
         
         return NoContent(); 
     }
