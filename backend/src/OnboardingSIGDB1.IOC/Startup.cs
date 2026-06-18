@@ -7,6 +7,7 @@ using OnboardingSIGDB1.Data.Persistence;
 using OnboardingSIGDB1.Data.Repositories;
 using OnboardingSIGDB1.Domain.Dto.Common.Filters;
 using OnboardingSIGDB1.Domain.Dto.Common.Filters.Validators;
+using OnboardingSIGDB1.Domain.Interfaces;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Persistence;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
@@ -47,6 +48,9 @@ public static class Startup
         
         // Notifications
         services.AddScoped<INotificationContext, NotificationContext>();
+
+        // DateTime
+        services.AddSingleton<IDateTimeProvider, SystemDateTimeProvider>();
 
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
