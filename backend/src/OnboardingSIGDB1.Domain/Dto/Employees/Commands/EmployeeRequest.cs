@@ -11,7 +11,7 @@
 public record EmployeeRequest(
     string Name,
     string Cpf,
-    DateTime? HireDate,
+    DateTime HireDate,
     int CompanyId,
     int PositionId
     );
