@@ -25,14 +25,24 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/app/_shared/styles/list-screen.css",
-              "src/app/_shared/styles/details-screen.css",
-              "src/app/_shared/styles/form-screen.css"
+              "src/app/shared/styles/list/list-layout.css",
+              "src/app/shared/styles/list/list-table.css",
+              "src/app/shared/styles/list/list-modal.css",
+              "src/app/shared/styles/list/list-pagination.css",
+              "src/app/shared/styles/list/list-skeleton.css",
+              "src/app/shared/styles/details-screen.css",
+              "src/app/shared/styles/form/form-layout.css",
+              "src/app/shared/styles/form/form-controls.css",
+              "src/app/shared/styles/form/form-validation.css",
+              "src/app/shared/styles/form/form-readonly.css",
+              "src/app/shared/styles/form/form-select.css",
+              "src/app/shared/styles/form/form-skeleton.css"
             ],
             "scripts": []
           },
           "configurations": {
             "production": {
+
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -92,9 +102,18 @@
             ],
             "styles": [
               "src/styles.css",
-              "src/app/_shared/styles/list-screen.css",
-              "src/app/_shared/styles/details-screen.css",
-              "src/app/_shared/styles/form-screen.css"
+              "src/app/shared/styles/list/list-layout.css",
+              "src/app/shared/styles/list/list-table.css",
+              "src/app/shared/styles/list/list-modal.css",
+              "src/app/shared/styles/list/list-pagination.css",
+              "src/app/shared/styles/list/list-skeleton.css",
+              "src/app/shared/styles/details-screen.css",
+              "src/app/shared/styles/form/form-layout.css",
+              "src/app/shared/styles/form/form-controls.css",
+              "src/app/shared/styles/form/form-validation.css",
+              "src/app/shared/styles/form/form-readonly.css",
+              "src/app/shared/styles/form/form-select.css",
+              "src/app/shared/styles/form/form-skeleton.css"
             ],
             "scripts": []
           }
