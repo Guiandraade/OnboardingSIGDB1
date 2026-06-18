@@ -1,0 +1,10 @@
+<div class="form-error-banner" role="alert" *ngIf="message">
+  <span class="material-icons form-error-banner-icon" aria-hidden="true">error_outline</span>
+  <div class="form-error-banner-body">
+    <strong class="form-error-banner-title">An error occurred</strong>
+    <span class="form-error-banner-text">{{ message }}</span>
+  </div>
+  <button type="button" class="form-error-banner-close" (click)="closed.emit()" title="Dismiss" aria-label="Dismiss">
+    <span class="material-icons" aria-hidden="true">close</span>
+  </button>
+</div>

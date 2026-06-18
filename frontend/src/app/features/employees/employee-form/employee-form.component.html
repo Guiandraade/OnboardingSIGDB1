@@ -1,0 +1,153 @@
+<div class="page-container">
+  <div class="page-body-wrapper">
+    <div class="page-content">
+
+      <div class="form-card">
+
+        <div class="form-card-header">
+          <button type="button" class="btn-back" (click)="cancel()" title="Back to list" aria-label="Back to list">
+            <span class="material-icons" aria-hidden="true">arrow_back</span>
+          </button>
+          <div class="form-card-header-info">
+            <h2 class="form-card-title">{{ isEdit ? 'Edit employee' : 'New employee' }}</h2>
+            <span class="form-card-subtitle">
+              {{ isEdit ? 'Update name and CPF for this employee.' : 'Fill in the details to register a new employee.' }}
+            </span>
+          </div>
+          <span class="material-icons form-card-header-icon">person</span>
+        </div>
+
+        <app-form-error-banner [message]="errorMessage" (closed)="errorMessage = ''"></app-form-error-banner>
+
+        <div *ngIf="isLoading" class="form-card-body">
+          <div class="form-skeleton form-skeleton--spaced" *ngFor="let i of [1,2,3]; trackBy: trackByIndex">
+            <div class="skeleton form-skeleton-label"></div>
+            <div class="skeleton form-skeleton-input"></div>
+          </div>
+        </div>
+
+        <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="save()" novalidate>
+
+          <div class="form-card-body">
+
+            <div class="form-group">
+              <label class="form-label" for="name">
+                Name <span class="form-required">*</span>
+              </label>
+              <input
+                id="name" type="text" formControlName="name"
+                class="form-control"
+                [class.is-invalid]="nameControl?.invalid && nameControl?.touched"
+                [attr.autofocus]="!isEdit ? true : null"
+                placeholder="e.g. John Smith"
+                autocomplete="off"
+              >
+              <span class="form-error" role="alert" *ngIf="nameControl?.touched && nameControl?.hasError('required')">Name is required.</span>
+              <span class="form-error" role="alert" *ngIf="nameControl?.touched && nameControl?.hasError('maxlength')">Name must be at most 100 characters.</span>
+              <span class="form-error" role="alert" *ngIf="nameControl?.hasError('serverError')">{{ nameControl?.getError('serverError') }}</span>
+              <app-validation-rules
+                [visible]="!!nameControl?.dirty || !!nameControl?.touched"
+                [rules]="nameRules">
+              </app-validation-rules>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="cpf">
+                CPF <span class="form-required">*</span>
+              </label>
+              <input
+                id="cpf" type="text" formControlName="cpf"
+                class="form-control"
+                [class.is-invalid]="cpfControl?.invalid && cpfControl?.touched"
+                placeholder="000.000.000-00"
+                autocomplete="off"
+                (input)="formatCpf($event)"
+              >
+              <span class="form-error" role="alert" *ngIf="cpfControl?.touched && cpfControl?.hasError('required')">CPF is required.</span>
+              <span class="form-error" role="alert" *ngIf="cpfControl?.hasError('serverError')">{{ cpfControl?.getError('serverError') }}</span>
+              <app-validation-rules
+                [visible]="!!cpfControl?.dirty || !!cpfControl?.touched"
+                [rules]="cpfRules">
+              </app-validation-rules>
+            </div>
+
+            <div class="form-group" *ngIf="!isEdit">
+              <label class="form-label" for="hireDate">
+                Hire Date <span class="form-required">*</span>
+              </label>
+              <div class="date-input-wrapper">
+                <input
+                  id="hireDate" type="text"
+                  class="form-control date-display-input"
+                  readonly
+                  [value]="formatDate(form.get('hireDate')?.value)"
+                  [class.is-invalid]="form.get('hireDate')?.invalid && form.get('hireDate')?.touched"
+                  placeholder="dd/mm/aaaa"
+                >
+                <input type="date" class="date-hidden-input" formControlName="hireDate" (click)="openDatePicker($event)">
+              </div>
+              <span class="form-error" role="alert" *ngIf="form.get('hireDate')?.touched && form.get('hireDate')?.hasError('required')">Hire date is required.</span>
+              <span class="form-error" role="alert" *ngIf="form.get('hireDate')?.touched && form.get('hireDate')?.hasError('futureDate')">Hire date cannot be in the future.</span>
+              <span class="form-error" role="alert" *ngIf="form.get('hireDate')?.hasError('serverError')">{{ form.get('hireDate')?.getError('serverError') }}</span>
+            </div>
+
+            <div class="form-group" *ngIf="!isEdit">
+              <app-search-select
+                inputId="companySearch"
+                label="Company"
+                placeholder="Search company..."
+                emptyMessage="No companies found"
+                requiredMessage="Company is required."
+                [items]="companyItems"
+                [control]="companyIdControl">
+              </app-search-select>
+            </div>
+
+            <div class="form-group" *ngIf="!isEdit">
+              <app-search-select
+                inputId="positionSearch"
+                label="Position"
+                placeholder="Search position..."
+                emptyMessage="No positions found"
+                requiredMessage="Position is required."
+                [items]="positionItems"
+                [control]="positionIdControl">
+              </app-search-select>
+            </div>
+
+            <div class="form-readonly-section" *ngIf="isEdit && editEmployee">
+              <p class="form-readonly-title">
+                <span class="material-icons">info</span>
+                Additional information
+              </p>
+              <div class="form-readonly-grid">
+                <div class="form-readonly-item">
+                  <span class="form-readonly-label">Hire Date</span>
+                  <span class="form-readonly-value">{{ editEmployee.hireDate | dateBr }}</span>
+                </div>
+                <div class="form-readonly-item">
+                  <span class="form-readonly-label">Company</span>
+                  <span class="form-readonly-value">{{ editEmployee.companyName }}</span>
+                </div>
+                <div class="form-readonly-item">
+                  <span class="form-readonly-label">Current Position</span>
+                  <span class="form-readonly-value">{{ editEmployee.currentPosition }}</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <app-form-submit-actions
+            [isSaving]="isSaving"
+            [submitLabel]="isEdit ? 'Save changes' : 'Create employee'"
+            (cancelled)="cancel()">
+          </app-form-submit-actions>
+
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>

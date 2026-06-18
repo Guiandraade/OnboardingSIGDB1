@@ -1,0 +1,54 @@
+.not-found-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 48px;
+  text-align: center;
+}
+
+.not-found-code {
+  font-size: 8rem;
+  font-weight: 800;
+  color: var(--clr-brand-primary);
+  line-height: 1;
+  opacity: 0.15;
+  margin-bottom: 16px;
+  letter-spacing: -4px;
+}
+
+.not-found-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--clr-brand-primary);
+  margin: 0 0 12px 0;
+}
+
+.not-found-description {
+  font-size: 1rem;
+  color: #64748b;
+  margin: 0 0 40px 0;
+}
+
+.not-found-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  background: var(--clr-brand-primary);
+  color: #ffffff;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: opacity 0.2s;
+}
+
+.not-found-action:hover {
+  opacity: 0.88;
+}
+
+.not-found-action .material-icons {
+  font-size: 20px;
+}

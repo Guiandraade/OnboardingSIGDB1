@@ -1,0 +1,90 @@
+<div class="page-container">
+  <div class="page-body-wrapper">
+    <div class="page-content page-content--list">
+
+      <div class="list-card">
+
+        <div class="filter-section">
+          <div class="filter-grid">
+            <div class="filter-field filter-field--wide">
+              <label>Description</label>
+              <input type="text" [(ngModel)]="filter.description" placeholder="Search by description..." (keyup.enter)="isLoading ? null : searchItems()">
+            </div>
+          </div>
+          <div class="filter-actions">
+            <button type="button" class="btn-clear-filters" *ngIf="hasActiveFilters()" (click)="clearFilters()">Clear</button>
+            <button type="button" class="btn-search" [disabled]="isLoading" (click)="searchItems()">Search</button>
+            <a [routerLink]="isLoading ? null : ['/positions/new']" class="btn-create" [class.disabled]="isLoading" role="button">+ New position</a>
+          </div>
+        </div>
+
+        <div class="table-wrapper table-wrapper--scrollable">
+
+          <div *ngIf="isLoading" class="skeleton-rows">
+            <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]; trackBy: trackByIndex">
+              <span class="skeleton skeleton-col--text"></span>
+              <span class="skeleton skeleton-col--actions"></span>
+            </div>
+          </div>
+
+          <table *ngIf="!isLoading">
+            <thead>
+              <tr>
+                <th>Description</th>
+                <th class="col-actions-head">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngIf="items.length === 0">
+                <td colspan="2" class="empty-row">
+                  <div class="empty-content">
+                    <span class="material-icons empty-icon">search_off</span>
+                    <span class="empty-title">No positions found</span>
+                    <span class="empty-hint">Try adjusting your search terms</span>
+                  </div>
+                </td>
+              </tr>
+
+              <tr *ngFor="let item of items; trackBy: trackById" [class.row-pending-delete]="item.id === pendingDeleteId">
+                <td data-label="Description"><span class="text-truncate" [title]="item.description">{{ item.description }}</span></td>
+                <td class="td-actions">
+                  <div class="row-actions">
+                    <a [routerLink]="['/positions/edit', item.id]" class="btn-icon btn-icon--edit" title="Edit" aria-label="Edit position">
+                      <span class="material-icons" aria-hidden="true">edit</span>
+                    </a>
+                    <button type="button" class="btn-icon btn-icon--delete" title="Delete" aria-label="Delete position"
+                      [disabled]="isLoading"
+                      (click)="confirmDelete(item.id, item.description)">
+                      <span class="material-icons" aria-hidden="true">delete</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+
+        <app-pagination
+          [currentPage]="filter.pageNumber || 1"
+          [totalPages]="totalPages"
+          [totalItems]="totalItems"
+          [pageSize]="filter.pageSize || 5"
+          [isLoading]="isLoading"
+          (pageChange)="goToPage($event)"
+          (pageSizeChange)="changePageSize($event)">
+        </app-pagination>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<app-confirm-delete
+  [visible]="pendingDeleteId !== null"
+  title="Delete position"
+  [name]="pendingDeleteName"
+  (confirmed)="deleteItem(pendingDeleteId!)"
+  (cancelled)="cancelDelete()">
+</app-confirm-delete>

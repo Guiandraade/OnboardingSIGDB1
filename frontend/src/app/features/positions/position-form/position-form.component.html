@@ -1,0 +1,84 @@
+<div class="page-container">
+  <div class="page-body-wrapper">
+    <div class="page-content">
+
+      <div class="form-card">
+
+        <div class="form-card-header">
+          <button type="button" class="btn-back" (click)="cancel()" title="Back to list" aria-label="Back to list">
+            <span class="material-icons" aria-hidden="true">arrow_back</span>
+          </button>
+          <div class="form-card-header-info">
+            <h2 class="form-card-title">{{ isEdit ? 'Edit position' : 'New position' }}</h2>
+            <span class="form-card-subtitle">
+              {{ isEdit ? 'Update the details for this position.' : 'Fill in the details to create a new position.' }}
+            </span>
+          </div>
+          <span class="material-icons form-card-header-icon">badge</span>
+        </div>
+
+        <app-form-error-banner [message]="errorMessage" (closed)="errorMessage = ''"></app-form-error-banner>
+
+        <div *ngIf="isLoading" class="form-card-body">
+          <div class="form-skeleton">
+            <div class="skeleton form-skeleton-label"></div>
+            <div class="skeleton form-skeleton-input"></div>
+          </div>
+        </div>
+
+        <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="save()" novalidate>
+
+          <div class="form-card-body">
+
+            <div class="form-group">
+              <label class="form-label" for="description">
+                Description <span class="form-required">*</span>
+              </label>
+              <input
+                id="description"
+                type="text"
+                formControlName="description"
+                class="form-control"
+                [class.is-invalid]="(descriptionControl?.invalid && descriptionControl?.touched) || !!errorMessage"
+                [attr.autofocus]="!isEdit ? true : null"
+                placeholder="e.g. Software Engineer, Project Manager..."
+                autocomplete="off"
+              >
+              <span class="form-error" role="alert"
+                *ngIf="descriptionControl?.touched && descriptionControl?.hasError('required')">
+                Description is required.
+              </span>
+              <span class="form-error" role="alert"
+                *ngIf="descriptionControl?.touched && descriptionControl?.hasError('minlength')">
+                Description must be at least 3 characters.
+              </span>
+              <span class="form-error" role="alert"
+                *ngIf="descriptionControl?.touched && descriptionControl?.hasError('maxlength')">
+                Description must be at most 100 characters.
+              </span>
+              <span class="form-error" role="alert"
+                *ngIf="descriptionControl?.hasError('serverError')">
+                {{ descriptionControl?.getError('serverError') }}
+              </span>
+
+              <app-validation-rules
+                [visible]="!!descriptionControl?.dirty || !!descriptionControl?.touched"
+                [rules]="descriptionRules">
+              </app-validation-rules>
+            </div>
+
+          </div>
+
+          <app-form-submit-actions
+            [isSaving]="isSaving"
+            [submitLabel]="isEdit ? 'Save changes' : 'Create position'"
+            (cancelled)="cancel()">
+          </app-form-submit-actions>
+
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>

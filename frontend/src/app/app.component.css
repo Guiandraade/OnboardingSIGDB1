@@ -1,4 +1,19 @@
-/* ── Loading overlay ─────────────────────────── */
+.skip-nav {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  padding: 8px 16px;
+  background: var(--clr-brand-primary);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 0 0 6px 6px;
+  z-index: 9999;
+  text-decoration: none;
+  transition: top 0.15s;
+}
+.skip-nav:focus { top: 0; }
+
 .loading-overlay {
   position: fixed;
   inset: 0;
@@ -33,32 +48,28 @@
 }
 
 .app-shell.blurred {
-  filter: blur(3px);
+  filter: blur(6px);
   pointer-events: none;
   user-select: none;
 }
 
-/* ── Shell ───────────────────────────────────── */
 .app-shell {
   display: flex;
   height: 100vh;
   overflow: hidden;
 }
 
-/* ── Mobile top bar ──────────────────────────── */
 .mobile-topbar {
   display: none;
 }
 
-/* ── Sidebar backdrop ────────────────────────── */
 .sidebar-backdrop {
   display: none;
 }
 
-/* ── Sidebar ─────────────────────────────────── */
 .sidebar {
-  width: 223px;
-  min-width: 223px;
+  width: 248px;
+  min-width: 248px;
   background-color: var(--clr-brand-primary);
   display: flex;
   flex-direction: column;
@@ -67,7 +78,7 @@
 }
 
 .sidebar-brand {
-  padding: 24px 20px;
+  padding: 28px 24px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   justify-content: center;
@@ -89,52 +100,63 @@
 }
 
 .sidebar-nav-list li {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .sidebar-nav-list li:first-child {
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .sidebar-nav-icon {
   font-size: 22px;
-  opacity: 0.85;
+  opacity: 0.7;
   flex-shrink: 0;
+  transition: opacity 0.15s, color 0.15s;
 }
 
 .sidebar-nav-content {
   display: inline-flex;
   align-items: center;
   gap: 14px;
-  width: 130px;
+  width: 152px;
 }
 
 .sidebar-nav-link {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 22px 12px 22px 9px;
-  border-left: 3px solid transparent;
-  color: #c8d6e8;
+  padding: 18px 20px 18px 16px;
+  border-left: 4px solid transparent;
+  color: rgba(255, 255, 255, 0.92);
   text-decoration: none;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background-color 0.15s, color 0.15s;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  transition: background-color 0.15s, color 0.15s, border-left-color 0.15s;
 }
 
 .sidebar-nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sidebar-nav-link:hover .sidebar-nav-icon {
+  opacity: 0.75;
 }
 
 .sidebar-nav-link.active {
-  background-color: rgba(0, 199, 186, 0.22);
-  color: #ffffff;
-  border-left-color: var(--clr-brand-accent);
+  background-color: rgba(0, 199, 186, 0.2);
+  color: #00c7ba;
+  border-left-color: #00c7ba;
+}
+
+.sidebar-nav-link.active .sidebar-nav-icon {
+  opacity: 1;
+  color: #00c7ba;
 }
 
 .sidebar-footer {
-  padding: 28px 0;
+  padding: 18px 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -146,7 +168,6 @@
   margin: 0 auto;
 }
 
-/* ── Main wrapper ────────────────────────────── */
 .main-wrapper {
   flex: 1;
   min-width: 0;
@@ -157,18 +178,17 @@
 
 .main-content {
   flex: 1;
+  height: 100%;
   background-color: var(--clr-bg-app);
   overflow-y: auto;
 }
 
-/* ── Responsive: mobile ──────────────────────── */
 @media (max-width: 768px) {
 
   .app-shell {
     flex-direction: column;
   }
 
-  /* Mobile top bar */
   .mobile-topbar {
     display: flex;
     align-items: center;
@@ -208,7 +228,6 @@
     margin-left: 12px;
   }
 
-  /* Sidebar as slide-in overlay */
   .sidebar {
     position: fixed;
     top: 56px;
@@ -230,11 +249,7 @@
     padding: 20px 16px;
   }
 
-  .sidebar-nav-list li:first-child {
-    margin-top: 8px;
-  }
 
-  /* Backdrop */
   .sidebar-backdrop {
     display: block;
     position: fixed;
@@ -249,10 +264,6 @@
     to   { opacity: 1; }
   }
 
-  /* Page header adjustments */
-  .page-header {
-    padding: 12px 16px !important;
-  }
 
   .user-info {
     display: none;

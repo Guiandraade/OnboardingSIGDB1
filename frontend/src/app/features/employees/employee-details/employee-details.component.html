@@ -1,0 +1,196 @@
+<div class="page-container">
+  <div class="page-body-wrapper">
+    <div class="page-content page-content--list">
+
+      <div class="list-card details-card--spaced">
+
+        <div class="details-company-header">
+          <button type="button" class="btn-back" (click)="goBack()" title="Back to employees" aria-label="Back to employees">
+            <span class="material-icons" aria-hidden="true">arrow_back</span>
+          </button>
+          <div class="details-company-header-info">
+            <ng-container *ngIf="!isLoading && employee">
+              <h2 class="details-company-name">{{ employee.name }}</h2>
+              <span class="details-company-subtitle">Employee details</span>
+            </ng-container>
+            <ng-container *ngIf="isLoading">
+              <div class="skeleton skeleton--header-title"></div>
+              <div class="skeleton skeleton--header-subtitle"></div>
+            </ng-container>
+            <ng-container *ngIf="loadError && !isLoading">
+              <h2 class="details-company-name">Employee not found</h2>
+              <span class="details-company-subtitle">Could not load employee data</span>
+            </ng-container>
+          </div>
+          <div class="details-header-actions">
+            <a *ngIf="!isLoading && employee"
+               [routerLink]="['/employees/edit', employeeId]"
+               class="btn-icon btn-icon--edit btn-icon--edit-outlined"
+               title="Edit employee"
+               aria-label="Edit employee">
+              <span class="material-icons" aria-hidden="true">edit</span>
+            </a>
+            <span class="material-icons details-company-icon">person</span>
+          </div>
+        </div>
+
+        <div class="details-meta" *ngIf="!isLoading && employee">
+          <div class="meta-item">
+            <span class="meta-label">CPF</span>
+            <span class="meta-value">{{ employee.cpf | cpf }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Hire Date</span>
+            <span class="meta-value">{{ employee.hireDate | dateBr }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Company</span>
+            <span class="meta-value">{{ employee.companyName }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Current Position</span>
+            <span class="meta-value">{{ employee.currentPosition }}</span>
+          </div>
+        </div>
+
+        <div class="details-meta" *ngIf="isLoading">
+          <div class="meta-item" *ngFor="let i of [1,2,3,4]; trackBy: trackByIndex">
+            <div class="skeleton skeleton--meta-label"></div>
+            <div class="skeleton skeleton--meta-value"></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="list-card">
+
+        <div class="toolbar">
+          <span class="section-divider-label">
+            <span class="material-icons section-label-icon">history</span>
+            Position History
+          </span>
+          <div class="toolbar-right">
+            <button *ngIf="!isLoading && employee"
+              type="button"
+              class="btn-create btn-create--accent"
+              (click)="openChangePositionModal()">
+              <span class="material-icons btn-icon-with-text">swap_horiz</span>
+              Change Position
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="isLoading" class="skeleton-rows">
+          <div class="skeleton-row" *ngFor="let i of [1,2,3]; trackBy: trackByIndex">
+            <span class="skeleton skeleton-col--text"></span>
+            <span class="skeleton skeleton-col--text"></span>
+          </div>
+        </div>
+
+        <div *ngIf="loadError && !isLoading" class="empty-row">
+          <div class="empty-content">
+            <span class="material-icons empty-icon">cloud_off</span>
+            <span class="empty-title">Failed to load history</span>
+            <span class="empty-hint">Check your connection and try again</span>
+          </div>
+        </div>
+
+        <div *ngIf="!isLoading && employee" class="table-wrapper">
+          <div *ngIf="employee.positionHistory.length === 0" class="empty-row">
+            <div class="empty-content">
+              <span class="material-icons empty-icon">work_off</span>
+              <span class="empty-title">No position history</span>
+              <span class="empty-hint">Use "Change Position" to assign a position</span>
+            </div>
+          </div>
+
+          <table *ngIf="employee.positionHistory.length > 0">
+            <thead>
+              <tr>
+                <th>Position</th>
+                <th>Start Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let hist of pagedHistory; let i = index; trackBy: trackByHistory">
+                <td data-label="Position">
+                  <span class="text-truncate" [title]="hist.positionName">{{ hist.positionName }}</span>
+                  <span class="badge-current" *ngIf="i === 0 && historyPage === 1">Current</span>
+                </td>
+                <td data-label="Start Date">{{ hist.startDate | dateBr }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="list-footer" *ngIf="!isLoading && employee && positionCount > 0">
+          <span class="total-label">{{ positionCount }} position{{ positionCount !== 1 ? 's' : '' }} in history</span>
+          <nav class="pagination" *ngIf="historyTotalPages > 1" aria-label="History pagination">
+            <button type="button" class="btn-page-nav"
+              [disabled]="historyPage === 1"
+              (click)="goToHistoryPage(historyPage - 1)">
+              <span class="material-icons">chevron_left</span>
+            </button>
+            <span class="page-indicator">{{ historyPage }} / {{ historyTotalPages }}</span>
+            <ng-container *ngFor="let page of historyPageNumbers; trackBy: trackByPage">
+              <button *ngIf="page !== '...'" type="button" class="btn-page-num"
+                [class.btn-page-num--active]="page === historyPage"
+                [disabled]="page === historyPage"
+                (click)="goToHistoryPage(+page)">{{ page }}</button>
+              <span *ngIf="page === '...'" class="page-ellipsis">...</span>
+            </ng-container>
+            <button type="button" class="btn-page-nav"
+              [disabled]="historyPage === historyTotalPages"
+              (click)="goToHistoryPage(historyPage + 1)">
+              <span class="material-icons">chevron_right</span>
+            </button>
+          </nav>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showChangePositionModal" (click)="closeChangePositionModal()">
+  <div class="modal-card modal-card--narrow" (click)="$event.stopPropagation()">
+
+    <div class="modal-icon-wrap">
+      <span class="material-icons modal-icon--accent">swap_horiz</span>
+    </div>
+    <h3 class="modal-title">Change Position</h3>
+    <p class="modal-body modal-body--spaced">
+      Select the new position for <strong>{{ employee?.name }}</strong>.
+    </p>
+
+    <div *ngIf="positionsLoading" class="modal-positions-loading">
+      <div class="skeleton skeleton--select-height"></div>
+    </div>
+
+    <div *ngIf="!positionsLoading" class="modal-select-wrapper">
+      <app-search-select
+        [control]="positionSelectControl"
+        label="Position"
+        placeholder="Select a position..."
+        inputId="modal-position"
+        [items]="positionItems"
+        emptyMessage="No positions found"
+        requiredMessage="Position is required.">
+      </app-search-select>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-modal-cancel" (click)="closeChangePositionModal()" [disabled]="isChangingPosition">
+        Cancel
+      </button>
+      <button type="button"
+        class="btn-modal-confirm btn-modal-confirm--accent"
+        [disabled]="!positionSelectControl.value || isChangingPosition"
+        (click)="confirmChangePosition()">
+        {{ isChangingPosition ? 'Saving...' : 'Confirm' }}
+      </button>
+    </div>
+
+  </div>
+</div>

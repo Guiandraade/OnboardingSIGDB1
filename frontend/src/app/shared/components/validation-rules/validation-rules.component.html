@@ -1,0 +1,12 @@
+<div class="validation-rules" *ngIf="visible">
+  <p class="validation-rules-title">
+    <span class="material-icons">task_alt</span>
+    Validation rules
+  </p>
+  <ul class="validation-rules-list">
+    <li *ngFor="let rule of rules" [class.rule--passed]="rule.passed" [class.rule--failed]="rule.failed">
+      <span class="material-icons rule-icon">{{ getIcon(rule) }}</span>
+      {{ rule.text }}
+    </li>
+  </ul>
+</div>
