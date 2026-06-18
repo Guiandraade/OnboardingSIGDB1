@@ -3,6 +3,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Moq;
 using OnboardingSIGDB1.Domain.Dto.Common.Filters;
+using OnboardingSIGDB1.Domain.Interfaces;
 using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Persistence;
 using OnboardingSIGDB1.Domain.Interfaces.Repositories;
@@ -20,6 +21,7 @@ public abstract class EmployeeServiceTestBase
     protected readonly Mock<IMapper> _mapperMock;
     protected readonly Mock<INotificationContext> _notificationContextMock;
     protected readonly Mock<IValidator<EmployeeFilter>> _employeeFilterValidatorMock;
+    protected readonly Mock<IDateTimeProvider> _dateTimeProviderMock;
 
     protected EmployeeServiceTestBase()
     {
@@ -31,10 +33,15 @@ public abstract class EmployeeServiceTestBase
         _mapperMock = new Mock<IMapper>();
         _notificationContextMock = new Mock<INotificationContext>();
         _employeeFilterValidatorMock = new Mock<IValidator<EmployeeFilter>>();
+        _dateTimeProviderMock = new Mock<IDateTimeProvider>();
 
         _employeeFilterValidatorMock
             .Setup(x => x.ValidateAsync(It.IsAny<EmployeeFilter>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
+
+        _dateTimeProviderMock
+            .Setup(x => x.UtcNow)
+            .Returns(() => DateTime.UtcNow);
     }
 
     protected EmployeeService CreateService()
@@ -46,7 +53,8 @@ public abstract class EmployeeServiceTestBase
             _unitOfWorkMock.Object,
             _mapperMock.Object,
             _notificationContextMock.Object,
-            _employeeFilterValidatorMock.Object
+            _employeeFilterValidatorMock.Object,
+            _dateTimeProviderMock.Object
         );
 }
 
