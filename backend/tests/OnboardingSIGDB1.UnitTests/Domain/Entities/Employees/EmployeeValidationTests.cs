@@ -43,16 +43,16 @@ public class EmployeeValidationTests
     }
 
     [Fact]
-    public void ShouldBeValidWhenHireDateIsNull()
+    public void ShouldBeInvalidWhenHireDateIsDefault()
     {
         var employee = EmployeeBuilder.New()
-            .WithHireDate(null)
+            .WithHireDate(default)
             .Build();
 
         var result = employee.Validation();
 
-        result.Should().BeTrue();
-        employee.ValidationResult.Errors.Should().BeEmpty();
+        result.Should().BeFalse();
+        employee.ValidationResult.Errors.Should().ContainSingle(e => e.PropertyName == nameof(Employee.HireDate));
     }
 
     [Fact]
@@ -311,7 +311,7 @@ public class EmployeeValidationTests
     {
         var employee = EmployeeBuilder.New()
             .WithCpf("707.207.220-98")
-            .WithHireDate(null)
+            .WithHireDate(DateTime.UtcNow.AddDays(-1))
             .Build();
 
         employee.CurrentPositionDescription.Should().Be("No link");

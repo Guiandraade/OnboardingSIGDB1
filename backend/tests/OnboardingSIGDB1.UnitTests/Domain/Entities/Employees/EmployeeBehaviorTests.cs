@@ -13,7 +13,7 @@ public class EmployeeBehaviorTests
     {
         var employee = EmployeeBuilder.New()
             .WithCpf(null!)
-            .WithHireDate(null)
+            .WithHireDate(DateTime.UtcNow.AddDays(-1))
             .Build();
         
         employee.Cpf.Should().BeEmpty();
@@ -63,7 +63,7 @@ public class EmployeeBehaviorTests
     {
         var employee = EmployeeBuilder.New()
             .WithCpf("707.207.220-98")
-            .WithHireDate(null)
+            .WithHireDate(DateTime.UtcNow.AddDays(-1))
             .Build();
 
         var pos1 = PositionBuilder.New().WithDescription("Developer").Build();
@@ -86,7 +86,7 @@ public class EmployeeBehaviorTests
     {
         var employee = EmployeeBuilder.New()
             .WithCpf("707.207.220-98")
-            .WithHireDate(null)
+            .WithHireDate(DateTime.UtcNow.AddDays(-1))
             .Build();
 
         var positions = employee.Positions;
