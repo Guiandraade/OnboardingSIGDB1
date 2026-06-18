@@ -1,0 +1,29 @@
+<div class="list-footer" *ngIf="!isLoading && totalItems > 0">
+  <div class="page-size-control">
+    <label>Show:</label>
+    <select (change)="onPageSizeChange($event)" [disabled]="isLoading">
+      <option *ngFor="let opt of pageSizeOptions" [value]="opt" [selected]="opt === pageSize">{{ opt }} per page</option>
+    </select>
+  </div>
+
+  <nav class="pagination" *ngIf="totalPages > 1" aria-label="Pagination">
+    <button type="button" class="btn-page-nav"
+      [disabled]="isLoading || currentPage === 1"
+      (click)="pageChange.emit(currentPage - 1)">
+      <span class="material-icons">chevron_left</span>
+    </button>
+    <span class="page-indicator">{{ currentPage }} / {{ totalPages }}</span>
+    <ng-container *ngFor="let page of pageNumbers">
+      <button *ngIf="page !== '...'" type="button" class="btn-page-num"
+        [class.btn-page-num--active]="page === currentPage"
+        [disabled]="isLoading || page === currentPage"
+        (click)="pageChange.emit(+page)">{{ page }}</button>
+      <span *ngIf="page === '...'" class="page-ellipsis">...</span>
+    </ng-container>
+    <button type="button" class="btn-page-nav"
+      [disabled]="isLoading || currentPage === totalPages"
+      (click)="pageChange.emit(currentPage + 1)">
+      <span class="material-icons">chevron_right</span>
+    </button>
+  </nav>
+</div>

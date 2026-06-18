@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, NavigationEnd, NavigationStart, ActivatedRoute } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
+import { UserService } from './core/services/user.service';
 
 @Component({
   selector: 'app-root',
@@ -9,11 +10,15 @@ import { filter, map } from 'rxjs/operators';
 })
 export class AppComponent implements OnInit {
   title = 'OnboardingSIGDB1-Front';
-  currentPageTitle: string = 'Positions';
+  currentPageTitle: string = 'Dashboard';
   isLoading = false;
   sidebarOpen = false;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    readonly user: UserService
+  ) {}
 
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;

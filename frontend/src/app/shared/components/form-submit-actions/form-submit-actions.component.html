@@ -1,0 +1,10 @@
+<div class="form-card-footer">
+  <button type="button" class="btn-secondary" (click)="cancelled.emit()">
+    <span class="material-icons btn-icon-sm">close</span>
+    Cancel
+  </button>
+  <button type="submit" class="btn-primary" [disabled]="isSaving">
+    <span class="material-icons btn-icon-sm">{{ isSaving ? 'hourglass_top' : 'save' }}</span>
+    {{ isSaving ? 'Saving...' : submitLabel }}
+  </button>
+</div>

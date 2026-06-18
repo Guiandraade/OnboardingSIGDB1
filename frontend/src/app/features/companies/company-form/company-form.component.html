@@ -1,0 +1,132 @@
+<div class="page-container">
+  <div class="page-body-wrapper">
+    <div class="page-content">
+
+      <div class="form-card">
+
+        <div class="form-card-header">
+          <button type="button" class="btn-back" (click)="cancel()" title="Back to list" aria-label="Back to list">
+            <span class="material-icons" aria-hidden="true">arrow_back</span>
+          </button>
+          <div class="form-card-header-info">
+            <h2 class="form-card-title">{{ isEdit ? 'Edit company' : 'New company' }}</h2>
+            <span class="form-card-subtitle">
+              {{ isEdit ? 'Update the details for this company.' : 'Fill in the details to register a new company.' }}
+            </span>
+          </div>
+          <span class="material-icons form-card-header-icon">business</span>
+        </div>
+
+        <app-form-error-banner [message]="errorMessage" (closed)="errorMessage = ''"></app-form-error-banner>
+
+        <div *ngIf="isLoading" class="form-card-body">
+          <div class="form-skeleton">
+            <div class="skeleton form-skeleton-label"></div>
+            <div class="skeleton form-skeleton-input"></div>
+          </div>
+          <div class="form-skeleton form-skeleton--spaced">
+            <div class="skeleton form-skeleton-label"></div>
+            <div class="skeleton form-skeleton-input"></div>
+          </div>
+          <div class="form-skeleton form-skeleton--spaced">
+            <div class="skeleton form-skeleton-label"></div>
+            <div class="skeleton form-skeleton-input"></div>
+          </div>
+        </div>
+
+        <form *ngIf="!isLoading" [formGroup]="form" (ngSubmit)="save()" novalidate>
+
+          <div class="form-card-body">
+
+            <div class="form-group">
+              <label class="form-label" for="name">
+                Name <span class="form-required">*</span>
+              </label>
+              <input
+                id="name"
+                type="text"
+                formControlName="name"
+                class="form-control"
+                [class.is-invalid]="nameControl?.invalid && nameControl?.touched"
+                [attr.autofocus]="!isEdit ? true : null"
+                placeholder="e.g. Acme Corporation"
+                autocomplete="off"
+              >
+              <span class="form-error" role="alert" *ngIf="nameControl?.touched && nameControl?.hasError('required')">
+                Name is required.
+              </span>
+              <span class="form-error" role="alert" *ngIf="nameControl?.touched && nameControl?.hasError('minlength')">
+                Name must be at least 3 characters.
+              </span>
+              <span class="form-error" role="alert" *ngIf="nameControl?.touched && nameControl?.hasError('maxlength')">
+                Name must be at most 100 characters.
+              </span>
+              <span class="form-error" role="alert" *ngIf="nameControl?.hasError('serverError')">{{ nameControl?.getError('serverError') }}</span>
+              <app-validation-rules
+                [visible]="!!nameControl?.dirty || !!nameControl?.touched"
+                [rules]="nameRules">
+              </app-validation-rules>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="cnpj">
+                CNPJ <span class="form-required">*</span>
+              </label>
+              <input
+                id="cnpj"
+                type="text"
+                formControlName="cnpj"
+                class="form-control"
+                [class.is-invalid]="cnpjControl?.invalid && cnpjControl?.touched"
+                placeholder="00.000.000/0000-00"
+                autocomplete="off"
+                (input)="formatCnpj($event)"
+              >
+              <span class="form-error" role="alert" *ngIf="cnpjControl?.touched && cnpjControl?.hasError('required')">
+                CNPJ is required.
+              </span>
+              <span class="form-error" role="alert" *ngIf="cnpjControl?.touched && cnpjControl?.hasError('cnpjLength')">
+                CNPJ must contain 14 digits.
+              </span>
+              <span class="form-error" role="alert" *ngIf="cnpjControl?.touched && cnpjControl?.hasError('cnpjInvalid')">
+                CNPJ check digits are invalid.
+              </span>
+              <span class="form-error" role="alert" *ngIf="cnpjControl?.hasError('serverError')">{{ cnpjControl?.getError('serverError') }}</span>
+              <app-validation-rules
+                [visible]="!!cnpjControl?.dirty || !!cnpjControl?.touched"
+                [rules]="cnpjRules">
+              </app-validation-rules>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="foundationDate">Foundation Date</label>
+              <div class="date-input-wrapper">
+                <input
+                  id="foundationDate" type="text"
+                  class="form-control date-display-input"
+                  readonly
+                  [value]="formatDate(form.get('foundationDate')?.value)"
+                  [class.is-invalid]="foundationDateControl?.invalid && foundationDateControl?.touched"
+                  placeholder="dd/mm/aaaa"
+                >
+                <input type="date" class="date-hidden-input" formControlName="foundationDate" (click)="openDatePicker($event)">
+              </div>
+              <span class="form-error" role="alert" *ngIf="foundationDateControl?.touched && foundationDateControl?.hasError('futureDate')">Foundation date cannot be in the future.</span>
+              <span class="form-error" role="alert" *ngIf="foundationDateControl?.hasError('serverError')">{{ foundationDateControl?.getError('serverError') }}</span>
+            </div>
+
+          </div>
+
+          <app-form-submit-actions
+            [isSaving]="isSaving"
+            [submitLabel]="isEdit ? 'Save changes' : 'Create company'"
+            (cancelled)="cancel()">
+          </app-form-submit-actions>
+
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="modal-backdrop" *ngIf="visible" (click)="cancelled.emit()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-icon-wrap">
+      <span class="material-icons modal-warn-icon">warning_amber</span>
+    </div>
+    <h3 class="modal-title">{{ title }}</h3>
+    <p class="modal-body">
+      Are you sure you want to delete <strong>{{ name }}</strong>?
+      <br>This action cannot be undone.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-modal-cancel" (click)="cancelled.emit()">Cancel</button>
+      <button type="button" class="btn-modal-confirm" (click)="confirmed.emit()">Delete</button>
+    </div>
+  </div>
+</div>

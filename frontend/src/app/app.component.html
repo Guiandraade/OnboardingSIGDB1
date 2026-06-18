@@ -1,3 +1,5 @@
+<a href="#main-content" class="skip-nav">Skip to main content</a>
+
 <app-toast></app-toast>
 
 <div class="loading-overlay" *ngIf="isLoading">
@@ -75,17 +77,17 @@
 
       <div class="user-profile">
         <div class="user-info">
-          <span class="user-name">Guilherme Nascimento</span>
-          <span class="user-role">Administrator</span>
+          <span class="user-name">{{ user.name }}</span>
+          <span class="user-role">{{ user.role }}</span>
         </div>
         <div class="user-avatar-wrapper">
-          <img class="user-avatar" src="assets/1777576099585.jpg" alt="Profile">
+          <img class="user-avatar" [src]="user.avatarUrl" [alt]="user.name">
           <span class="user-avatar-status"></span>
         </div>
       </div>
     </header>
 
-    <main class="main-content">
+    <main class="main-content" id="main-content">
       <router-outlet></router-outlet>
     </main>
   </div>
