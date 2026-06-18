@@ -10,7 +10,7 @@ public class Employee : BaseEntity<Employee>
 {
     public string Name { get; private set; }
     public string Cpf { get; private set; }
-    public DateTime? HireDate { get; private set; }
+    public DateTime HireDate { get; private set; }
     
     public int CompanyId { get; private set; }
     public Company Company { get; private set; }
@@ -25,7 +25,7 @@ public class Employee : BaseEntity<Employee>
 
     protected Employee(){}
     
-    public Employee(string name, string cpf, DateTime? hireDate, int companyId)
+    public Employee(string name, string cpf, DateTime hireDate, int companyId)
     {
         Name = name;
         Cpf = StringUtils.OnlyNumbers(cpf);
@@ -56,10 +56,10 @@ public class Employee : BaseEntity<Employee>
                 .Must(CpfValidator.IsValid).WithMessage("The CPF provided is invalid.");
 
             RuleFor(e => e.HireDate)
-                .Must(d => !d.HasValue || d.Value.Date <= DateTime.UtcNow.Date)
-                .WithMessage("Hire date cannot be in the future.")
-                .Must(d => !d.HasValue || d.Value > new DateTime(1900, 1, 1))
-                .WithMessage("The hire date must be after January 1, 1900.");
+                .Cascade(CascadeMode.Stop)
+                .NotEmpty().WithMessage("Hire date is required.")
+                .Must(d => d.Date <= DateTime.UtcNow.Date).WithMessage("Hire date cannot be in the future.")
+                .Must(d => d > new DateTime(1900, 1, 1)).WithMessage("The hire date must be after January 1, 1900.");
 
             RuleFor(e => e.CompanyId)
                 .GreaterThan(0)

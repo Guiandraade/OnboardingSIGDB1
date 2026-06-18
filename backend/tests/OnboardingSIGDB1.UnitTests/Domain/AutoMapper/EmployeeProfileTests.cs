@@ -35,7 +35,7 @@ public class EmployeeProfileTests : MapperTestBase
     [Fact]
     public void EmployeeRequest_To_Employee_IgnoresIdCompanyPositionsValidation()
     {
-        var request = new EmployeeRequest("Test", "12345678901", null, 5, 10);
+        var request = new EmployeeRequest("Test", "12345678901", DateTime.UtcNow.AddDays(-1), 5, 10);
 
         var entity = _mapper.Map<Employee>(request);
 
@@ -43,16 +43,6 @@ public class EmployeeProfileTests : MapperTestBase
         entity.Company.Should().BeNull();
         entity.Positions.Should().BeEmpty();
         entity.ValidationResult.Should().BeNull();
-    }
-
-    [Fact]
-    public void EmployeeRequest_To_Employee_NullHireDate()
-    {
-        var request = new EmployeeRequest("Test", "12345678901", null, 1, 1);
-
-        var entity = _mapper.Map<Employee>(request);
-
-        entity.HireDate.Should().BeNull();
     }
     
     [Fact]
@@ -75,7 +65,7 @@ public class EmployeeProfileTests : MapperTestBase
         var entity = _mapper.Map<Employee>(request);
 
         entity.Id.Should().Be(0);
-        entity.HireDate.Should().BeNull();
+        entity.HireDate.Should().Be(default(DateTime));
         entity.CompanyId.Should().Be(0);
         entity.Company.Should().BeNull();
         entity.Positions.Should().BeEmpty();

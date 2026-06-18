@@ -54,12 +54,13 @@ public class EmployeeServiceChangePositionTests : EmployeeServiceTestBase
     [Fact]
     public async Task ChangePositionAsync_ShouldCloseActivePositionAndAssignNew_WhenEmployeeHasActivePosition()
     {
+        var fixedTime = new DateTime(2024, 6, 15, 10, 0, 0, DateTimeKind.Utc);
+        _dateTimeProviderMock.Setup(x => x.UtcNow).Returns(fixedTime);
         var company = CompanyBuilder.New().Build();
         var employee = EmployeeBuilder.New().WithId(1).WithCompany(company).Build();
         var oldPosition = PositionBuilder.New().WithId(1).Build();
         var newPosition = PositionBuilder.New().WithId(2).Build();
-        var activeEmployeePosition = EmployeePositionBuilder.New().WithEmployee(employee).WithPosition(oldPosition).Build();
-        var beforeCall = DateTime.UtcNow;
+        var activeEmployeePosition = EmployeePositionBuilder.New().WithEmployee(employee).WithPosition(oldPosition).WithStartDate(fixedTime.AddDays(-1)).Build();
         _employeeRepositoryMock.Setup(r => r.GetByIdWithCompanyAsync(1)).ReturnsAsync(employee);
         _positionRepositoryMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(newPosition);
         _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPositionAsync(1, 2)).ReturnsAsync(false);
@@ -67,12 +68,9 @@ public class EmployeeServiceChangePositionTests : EmployeeServiceTestBase
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(true);
         var service = CreateService();
         var result = await service.ChangePositionAsync(1, new ChangeEmployeePositionRequest(2));
-        var afterCall = DateTime.UtcNow;
         result.Should().BeTrue();
-        activeEmployeePosition.EndDate.Should().NotBeNull();
-        activeEmployeePosition.EndDate.Should().BeOnOrAfter(beforeCall);
-        activeEmployeePosition.EndDate.Should().BeOnOrBefore(afterCall);
-        _employeePositionsRepositoryMock.Verify(r => r.AddAsync(It.Is<EmployeePosition>(e => e.StartDate >= beforeCall && e.StartDate <= afterCall)), Times.Once);
+        activeEmployeePosition.EndDate.Should().Be(fixedTime);
+        _employeePositionsRepositoryMock.Verify(r => r.AddAsync(It.Is<EmployeePosition>(e => e.StartDate == fixedTime)), Times.Once);
         _notificationContextMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         _notificationContextMock.Verify(n => n.AddRange(It.IsAny<IEnumerable<ValidationFailure>>()), Times.Never);
         _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
@@ -118,8 +116,9 @@ public class EmployeeServiceChangePositionTests : EmployeeServiceTestBase
     [Fact]
     public async Task ChangePositionAsync_ShouldProceed_WhenFoundationDateIsCurrentOrEarlier()
     {
-        var beforeCall = DateTime.UtcNow;
-        var company = CompanyBuilder.New().WithId(1).WithFoundationDate(beforeCall).Build();
+        var fixedTime = new DateTime(2024, 6, 15, 10, 0, 0, DateTimeKind.Utc);
+        _dateTimeProviderMock.Setup(x => x.UtcNow).Returns(fixedTime);
+        var company = CompanyBuilder.New().WithId(1).WithFoundationDate(fixedTime.AddYears(-1)).Build();
         var employee = EmployeeBuilder.New().WithId(1).WithCompanyId(1).WithCompany(company).Build();
         var position = PositionBuilder.New().WithId(2).Build();
         _employeeRepositoryMock.Setup(r => r.GetByIdWithCompanyAsync(1)).ReturnsAsync(employee);
@@ -129,9 +128,8 @@ public class EmployeeServiceChangePositionTests : EmployeeServiceTestBase
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(true);
         var service = CreateService();
         var result = await service.ChangePositionAsync(1, new ChangeEmployeePositionRequest(2));
-        var afterCall = DateTime.UtcNow;
         result.Should().BeTrue();
-        _employeePositionsRepositoryMock.Verify(r => r.AddAsync(It.Is<EmployeePosition>(e => e.StartDate >= beforeCall && e.StartDate <= afterCall)), Times.Once);
+        _employeePositionsRepositoryMock.Verify(r => r.AddAsync(It.Is<EmployeePosition>(e => e.StartDate == fixedTime)), Times.Once);
         _notificationContextMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         _notificationContextMock.Verify(n => n.AddRange(It.IsAny<IEnumerable<ValidationFailure>>()), Times.Never);
         _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
@@ -175,6 +173,29 @@ public class EmployeeServiceChangePositionTests : EmployeeServiceTestBase
         _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
         _notificationContextMock.Verify(n => n.AddNotification("Commit", It.Is<string>(s => s.Contains("Unable to save"))), Times.Once);
         _notificationContextMock.Verify(n => n.AddRange(It.IsAny<IEnumerable<ValidationFailure>>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task ChangePositionAsync_ShouldSucceed_WhenFoundationDateEqualsCurrentTime()
+    {
+        var fixedTime = new DateTime(2024, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+        _dateTimeProviderMock.Setup(x => x.UtcNow).Returns(fixedTime);
+        var company = CompanyBuilder.New().WithId(1).WithFoundationDate(fixedTime).Build();
+        var employee = EmployeeBuilder.New().WithId(1).WithCompanyId(1).WithCompany(company).Build();
+        var position = PositionBuilder.New().WithId(2).Build();
+        _employeeRepositoryMock.Setup(r => r.GetByIdWithCompanyAsync(1)).ReturnsAsync(employee);
+        _positionRepositoryMock.Setup(r => r.GetByIdAsync(2)).ReturnsAsync(position);
+        _employeePositionsRepositoryMock.Setup(r => r.HasEmployeeEverHeldPositionAsync(1, 2)).ReturnsAsync(false);
+        _employeePositionsRepositoryMock.Setup(r => r.GetActivePositionAsync(1)).ReturnsAsync((EmployeePosition?)null);
+        _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(true);
+        var service = CreateService();
+
+        var result = await service.ChangePositionAsync(1, new ChangeEmployeePositionRequest(2));
+
+        result.Should().BeTrue();
+        _employeePositionsRepositoryMock.Verify(r => r.AddAsync(It.Is<EmployeePosition>(ep => ep.StartDate == fixedTime)), Times.Once);
+        _notificationContextMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
     }
 
     [Fact]

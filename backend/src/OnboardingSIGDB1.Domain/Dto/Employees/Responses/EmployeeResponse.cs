@@ -23,7 +23,7 @@ public record EmployeeResponse
     /// <summary>
     /// Employee hiring date.
     /// </summary>
-    public DateTime? HireDate { get; init; }
+    public DateTime HireDate { get; init; }
 
     /// <summary>
     /// Company name associated with the employee.

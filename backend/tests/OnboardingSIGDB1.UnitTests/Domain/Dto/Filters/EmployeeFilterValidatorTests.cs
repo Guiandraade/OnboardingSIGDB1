@@ -65,6 +65,15 @@ public class EmployeeFilterValidatorTests
     }
     
     [Fact]
+    public void HiredFrom_InTheFuture_ShouldHaveError()
+    {
+        var filter = new EmployeeFilter { HiredFrom = DateTime.UtcNow.AddDays(1) };
+        var result = _validator.TestValidate(filter);
+        result.ShouldHaveValidationErrorFor(x => x.HiredFrom)
+            .WithErrorMessage("The 'Hired From' date cannot be in the future.");
+    }
+
+    [Fact]
     public void HiredUntil_InTheFuture_ShouldHaveError()
     {
         var filter = new EmployeeFilter { HiredUntil = DateTime.UtcNow.AddDays(1) };

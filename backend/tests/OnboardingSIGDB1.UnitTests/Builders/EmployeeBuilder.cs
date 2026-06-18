@@ -7,7 +7,7 @@ public class EmployeeBuilder
 {
     private string _name = "John Doe";
     private string _cpf = "987.826.470-03";
-    private DateTime? _hireDate = DateTime.UtcNow.AddDays(-1);
+    private DateTime _hireDate = DateTime.UtcNow.AddDays(-1);
     private int _companyId = 1;
     private int? _id;
     private Company? _company;
@@ -16,7 +16,7 @@ public class EmployeeBuilder
 
     public EmployeeBuilder WithName(string name) { _name = name; return this; }
     public EmployeeBuilder WithCpf(string cpf) { _cpf = cpf; return this; }
-    public EmployeeBuilder WithHireDate(DateTime? hireDate) { _hireDate = hireDate; return this; }
+    public EmployeeBuilder WithHireDate(DateTime hireDate) { _hireDate = hireDate; return this; }
     public EmployeeBuilder WithCompanyId(int companyId) { _companyId = companyId; return this; }
     public EmployeeBuilder WithId(int id) { _id = id; return this; }
     public EmployeeBuilder WithCompany(Company company) { _company = company; return this; }

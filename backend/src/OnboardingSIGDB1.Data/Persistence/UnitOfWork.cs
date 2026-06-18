@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using OnboardingSIGDB1.Data.Context;
+using OnboardingSIGDB1.Domain.Interfaces.Contexts;
 using OnboardingSIGDB1.Domain.Interfaces.Persistence;
 
 namespace OnboardingSIGDB1.Data.Persistence;
@@ -9,11 +10,13 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly OnboardingDbContext _context;
     private readonly ILogger<UnitOfWork> _logger;
+    private readonly INotificationContext _notificationContext;
 
-    public UnitOfWork(OnboardingDbContext context, ILogger<UnitOfWork> logger)
+    public UnitOfWork(OnboardingDbContext context, ILogger<UnitOfWork> logger, INotificationContext notificationContext)
     {
         _context = context;
         _logger = logger;
+        _notificationContext = notificationContext;
     }
 
     public async Task<bool> CommitAsync()
@@ -25,17 +28,13 @@ public class UnitOfWork : IUnitOfWork
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            // Optimistic concurrency conflict — let the global middleware handle the HTTP response,
-            // but rethrow so the caller is not silently swallowed.
             _logger.LogError(ex, "Concurrency conflict detected while committing changes.");
             throw;
         }
         catch (DbUpdateException ex)
         {
-            // Database constraint violation or infrastructure failure (e.g. FK, unique index,
-            // connection drop). Returning false integrates cleanly with the notification pattern:
-            // the service layer will call NotifyError("Commit", "Unable to save changes.").
             _logger.LogError(ex, "Database error while committing changes.");
+            _notificationContext.AddNotification("Commit", "Unable to save changes.");
             return false;
         }
     }

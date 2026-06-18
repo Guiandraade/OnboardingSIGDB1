@@ -32,7 +32,7 @@ public class EmployeeServiceCreateTests : EmployeeServiceTestBase
         _employeeRepositoryMock.Setup(r => r.GetByCpfAsync(It.IsAny<string>())).ReturnsAsync((Employee?)null);
         _companyRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((OnboardingSIGDB1.Domain.Entities.Companies.Company?)null);
         var service = CreateService();
-        var request = new EmployeeRequest("Test", "987.826.470-03", null, 99, 1);
+        var request = new EmployeeRequest("Test", "987.826.470-03", DateTime.UtcNow.AddDays(-1), 99, 1);
         var result = await service.CreateAsync(request);
         result.Should().BeNull();
         _notificationContextMock.Verify(n => n.AddNotification("Company", It.Is<string>(s => s.Contains("not found"))), Times.Once);
@@ -48,7 +48,7 @@ public class EmployeeServiceCreateTests : EmployeeServiceTestBase
         _companyRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync(CompanyBuilder.New().WithId(1).Build());
         _positionRepositoryMock.Setup(r => r.GetByIdAsync(It.IsAny<int>())).ReturnsAsync((Position?)null);
         var service = CreateService();
-        var request = new EmployeeRequest("Test", "987.826.470-03", null, 1, 99);
+        var request = new EmployeeRequest("Test", "987.826.470-03", DateTime.UtcNow.AddDays(-1), 1, 99);
         var result = await service.CreateAsync(request);
         result.Should().BeNull();
         _notificationContextMock.Verify(n => n.AddNotification("Position", It.Is<string>(s => s.Contains("not found"))), Times.Once);
@@ -116,24 +116,23 @@ public class EmployeeServiceCreateTests : EmployeeServiceTestBase
     }
 
     [Fact]
-    public async Task CreateAsync_ShouldUseCurrentUtcDate_WhenHireDateIsNull()
+    public async Task CreateAsync_ShouldUseHireDate_AsStartDateForPosition()
     {
         var company = CompanyBuilder.New().WithId(1).WithFoundationDate(new DateTime(2000, 1, 1)).Build();
         var position = PositionBuilder.New().WithId(1).Build();
-        var beforeCall = DateTime.UtcNow;
+        var hireDate = new DateTime(2021, 5, 10);
         _employeeRepositoryMock.Setup(r => r.GetByCpfAsync(It.IsAny<string>())).ReturnsAsync((Employee?)null);
         _companyRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(company);
         _positionRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(position);
         _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(true);
         _mapperMock.Setup(m => m.Map<EmployeeResponse>(It.IsAny<Employee>())).Returns(new EmployeeResponse { Name = "John Doe" });
         var service = CreateService();
-        var request = new EmployeeRequest("John Doe", "987.826.470-03", null, 1, 1);
+        var request = new EmployeeRequest("John Doe", "987.826.470-03", hireDate, 1, 1);
 
         var result = await service.CreateAsync(request);
 
-        var afterCall = DateTime.UtcNow;
         result.Should().NotBeNull();
-        _employeePositionsRepositoryMock.Verify(r => r.AddAsync(It.Is<EmployeePosition>(ep => ep.StartDate >= beforeCall && ep.StartDate <= afterCall)), Times.Once);
+        _employeePositionsRepositoryMock.Verify(r => r.AddAsync(It.Is<EmployeePosition>(ep => ep.StartDate == hireDate)), Times.Once);
         _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
         _mapperMock.Verify(m => m.Map<EmployeeResponse>(It.IsAny<Employee>()), Times.Once);
         _notificationContextMock.Verify(n => n.AddNotification(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
@@ -159,6 +158,27 @@ public class EmployeeServiceCreateTests : EmployeeServiceTestBase
         _notificationContextMock.Verify(n => n.AddNotification("Commit", It.Is<string>(s => s.Contains("Unable to save"))), Times.Once);
         _notificationContextMock.Verify(n => n.AddRange(It.IsAny<IEnumerable<ValidationFailure>>()), Times.Never);
         _mapperMock.Verify(m => m.Map<EmployeeResponse>(It.IsAny<Employee>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task CreateAsync_ShouldSucceed_WhenHireDateEqualsFoundationDate()
+    {
+        var foundationDate = new DateTime(2020, 1, 1);
+        var company = CompanyBuilder.New().WithId(1).WithFoundationDate(foundationDate).Build();
+        var position = PositionBuilder.New().WithId(1).Build();
+        _employeeRepositoryMock.Setup(r => r.GetByCpfAsync(It.IsAny<string>())).ReturnsAsync((Employee?)null);
+        _companyRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(company);
+        _positionRepositoryMock.Setup(r => r.GetByIdAsync(1)).ReturnsAsync(position);
+        _unitOfWorkMock.Setup(u => u.CommitAsync()).ReturnsAsync(true);
+        _mapperMock.Setup(m => m.Map<EmployeeResponse>(It.IsAny<Employee>())).Returns(new EmployeeResponse { Name = "John Doe" });
+        var service = CreateService();
+        var request = new EmployeeRequest("John Doe", "987.826.470-03", foundationDate, 1, 1);
+
+        var result = await service.CreateAsync(request);
+
+        result.Should().NotBeNull();
+        _notificationContextMock.Verify(n => n.AddNotification("HireDate", It.IsAny<string>()), Times.Never);
+        _unitOfWorkMock.Verify(u => u.CommitAsync(), Times.Once);
     }
 
     [Fact]
