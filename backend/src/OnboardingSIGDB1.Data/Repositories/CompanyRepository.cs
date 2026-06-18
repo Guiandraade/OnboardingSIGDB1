@@ -70,7 +70,7 @@ public class CompanyRepository(OnboardingDbContext context) : BaseRepository<Com
     {
         return await Context.Employees
             .Where(e => e.CompanyId == companyId)
-            .Select(e => e.HireDate)
+            .Select(e => (DateTime?)e.HireDate)
             .MinAsync();
     }
 }   
