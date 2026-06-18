@@ -9,7 +9,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
 ![Backend](https://img.shields.io/badge/Backend-Approved-brightgreen?style=for-the-badge)
-![Frontend](https://img.shields.io/badge/Frontend-In%20Progress-yellow?style=for-the-badge)
+![Frontend](https://img.shields.io/badge/Frontend-Approved-brightgreen?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)
 
 </div>
@@ -18,7 +18,7 @@
 
 ## About the Project
 
-This project is part of the technical onboarding process, focused on demonstrating software architecture expertise using the .NET 8 ecosystem. The goal is to build a robust Web API following the standards required by the development team, paired with an Angular frontend.
+This project is part of the technical onboarding process, focused on building a personnel management system (employees, companies, and positions) while demonstrating software architecture expertise using the .NET 8 ecosystem. The goal is to build a robust Web API following the standards required by the development team, paired with an Angular frontend.
 
 ---
 
@@ -92,7 +92,7 @@ OnboardingSIGDB1/                         # Monorepo root
 
 **Frontend**
 - [x] Phase 8 — Angular project setup
-- [ ] Phase 9 — Screen implementation
+- [x] Phase 9 — Screen implementation
 
 ---
 
